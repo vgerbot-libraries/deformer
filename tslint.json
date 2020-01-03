@@ -1,0 +1,23 @@
+{
+    "extends": [
+        "tslint:recommended",
+        "tslint-config-prettier",
+        "tslint-plugin-prettier"
+    ],
+    "rules": {
+        "object-literal-sort-keys": false,
+        "no-var-require": false,
+        "no-console": false,
+        "no-bitwise": false,
+        "ordered-imports": false,
+        "interface-name": false,
+        "max-classes-per-file": false,
+        "prettier": [true, {
+            "singleQuote": true,
+            "parser": "typescript",
+            "tabWidth": 4,
+            "printWidth": 120
+        }],
+        "no-namespace": false
+    }
+}
