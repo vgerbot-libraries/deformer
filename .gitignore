@@ -6,3 +6,5 @@
 /test/dist
 /.rpt2_cache
 /dist
+package-lock.json
+yarn.lock
