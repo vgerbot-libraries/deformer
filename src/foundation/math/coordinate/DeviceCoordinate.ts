@@ -1,8 +1,9 @@
-import { Coordinate, Point } from './Coordinate';
+import { Coordinate, Point, AnyPoint } from './Coordinate';
 import { Lazy } from '../../lazy';
 import { Vector } from '../vector';
 import { PolarCoordinatate, PolarPoint } from './PolarCoordinate';
 import { CartesianCoordinate, CartesianPoint } from './CartesianCoordinate';
+import { LinearEquation } from '../LinearEquation';
 
 const devicePointLazy = new Lazy<DevicePoint>();
 
@@ -35,11 +36,19 @@ export class DevicePoint extends Point<DeviceCoordinate> {
         const r = Math.sqrt(disX * disX + disY * disY);
         return coord.point(sita, r);
     }
-    public toCartesian(coord: CartesianCoordinate = CartesianCoordinate.ORITIN): CartesianPoint {
+    public toCartesian(coord: CartesianCoordinate = CartesianCoordinate.ORIGIN): CartesianPoint {
         return coord.point(this.getDeviceX() - coord.originX, this.getDeviceY() + coord.originY);
     }
     public addVector(vector: Vector): DevicePoint {
         return this.coord.point(this.x + vector.x, this.y + vector.y);
+    }
+    public solveEquation(point: Point<any>): LinearEquation {
+        const dpoint = point.toDevice(this.coord);
+        const dx = dpoint.x - this.x;
+        const dy = dpoint.y - this.y;
+        const k = dy / dx;
+        const b = dpoint.y - k * dpoint.x;
+        return new LinearEquation(k, b);
     }
 }
 
@@ -48,5 +57,8 @@ export class DeviceCoordinate extends Coordinate<DevicePoint> {
     public origin: DevicePoint = this.point(0, 0);
     public point(x: number, y: number): DevicePoint {
         return new DevicePoint(x, y, this);
+    }
+    public convertFrom(point: AnyPoint): DevicePoint {
+        return point.toDevice(this);
     }
 }

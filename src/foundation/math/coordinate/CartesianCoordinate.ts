@@ -1,4 +1,4 @@
-import { Coordinate, Point } from './Coordinate';
+import { Coordinate, Point, AnyPoint } from './Coordinate';
 import { DeviceCoordinate, DevicePoint } from './DeviceCoordinate';
 import { PolarCoordinatate, PolarPoint } from './PolarCoordinate';
 import { Lazy } from '../../lazy';
@@ -20,7 +20,7 @@ export class CartesianPoint extends Point<CartesianCoordinate> {
     public toPolar(coord: PolarCoordinatate = PolarCoordinatate.ORIGIN): PolarPoint {
         return coord.point(this.sita, this.r);
     }
-    public toCartesian(coord: CartesianCoordinate = CartesianCoordinate.ORITIN): CartesianPoint {
+    public toCartesian(coord: CartesianCoordinate = CartesianCoordinate.ORIGIN): CartesianPoint {
         return coord.point(this.x, this.y);
     }
     public addVector(vector: Vector): CartesianPoint {
@@ -35,9 +35,12 @@ export class CartesianPoint extends Point<CartesianCoordinate> {
     }
 }
 export class CartesianCoordinate extends Coordinate<CartesianPoint> {
-    public static readonly ORITIN = new CartesianCoordinate(0, 0);
+    public static readonly ORIGIN = new CartesianCoordinate(0, 0);
     public origin = this.point(0, 0);
     public point(x: number, y: number): CartesianPoint {
         return new CartesianPoint(x, y, this);
+    }
+    public convertFrom(point: AnyPoint): CartesianPoint {
+        return point.toCartesian(this);
     }
 }

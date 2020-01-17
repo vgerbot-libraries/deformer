@@ -5,7 +5,7 @@
         "inlineSourceMap": false,
         "sourceMap": true,
         "typeRoots": [
-            "../src/typings",
+            "../src/types",
             "../node_modules/@types"
         ],
         "types": [
