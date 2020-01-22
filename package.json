@@ -17,8 +17,6 @@
     "scripts": {
         "lint": " tslint {src,test}/**/*.ts",
         "format": "tslint {src,test}/**/*.ts  --fix",
-        "commitmsg": "commitlint -E GIT_PARAMS",
-        "precommit": "lint-staged",
         "pretest:debug": "npm run lint",
         "test:debug": "karma start ./karma.debug.conf.js --browsers Chrome",
         "ci": "karma start ./karma.travis.conf.js --browsers HeadlessChrome --single-run true",
@@ -92,5 +90,11 @@
         "events": "^3.1.0",
         "hammerjs": "^2.0.8",
         "tslib": "^1.10.0"
+    },
+    "husky": {
+        "hooks": {
+            "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+            "pre-commit": "lint-staged"
+        }
     }
 }
