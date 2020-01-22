@@ -4,3 +4,4 @@ declare interface EquationSolution {
     k: number;
     b: number;
 }
+declare type DeformerHolderElement = HTMLElement | SVGElement;
