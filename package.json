@@ -20,6 +20,7 @@
         }
     },
     "scripts": {
+        "release": "standard-version",
         "commit": "git-cz",
         "lint": " tslint {src,test}/**/*.ts",
         "format": "tslint {src,test}/**/*.ts  --fix",
@@ -85,6 +86,7 @@
         "rollup-plugin-strip": "1.2.2",
         "rollup-plugin-typescript2": "0.25.3",
         "rollup-plugin-uglify": "6.0.4",
+        "standard-version": "^7.1.0",
         "ts-node": "8.5.4",
         "tslint": "5.20.1",
         "tslint-config-prettier": "1.18.0",
