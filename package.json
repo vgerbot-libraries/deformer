@@ -14,7 +14,13 @@
         "src": "src",
         "test": "test"
     },
+    "config": {
+        "commitizen": {
+            "path": "node_modules/cz-customizable"
+        }
+    },
     "scripts": {
+        "commit": "git-cz",
         "lint": " tslint {src,test}/**/*.ts",
         "format": "tslint {src,test}/**/*.ts  --fix",
         "pretest:debug": "npm run lint",
@@ -54,7 +60,9 @@
         "@types/websocket": "1.0.0",
         "chai": "4.2.0",
         "codecov": "3.6.1",
+        "commitizen": "^4.0.3",
         "commitlint": "8.3.4",
+        "cz-customizable": "^6.2.0",
         "fs-extra": "8.1.0",
         "husky": "4.0.1",
         "karma": "4.4.1",
