@@ -1,8 +1,9 @@
-import { JSEventEmitter, JSListenerFn, DOMEventListenerOptions } from './EventEmitter';
+import { JSEventEmitter, JSListenerFn, DOMEventListenerOptions } from '../EventEmitter';
 import Hammer from 'hammerjs';
-import ContourController from './ContourController';
-import Disposable from './Disposable';
-import { MousePosition } from './event-input';
+import ContourController from '../ContourController';
+import Disposable from '../Disposable';
+import { MousePosition } from '../event-input';
+import { isTouchDevice } from '../foundation/devices';
 
 interface EventTypes {
     mousemove: MouseEvent;
@@ -53,6 +54,11 @@ export default class DeformerEditor extends Disposable {
             this.holder.removeEventListener(type, listener as EventListener, options);
         });
     }
+    private handleMouseMove(positions: MousePosition[]) {
+        this.controllers.forEach(controller => {
+            controller.handleMouseMove(this.holder, positions);
+        });
+    }
     private prepare() {
         this.addDestroyHook(() => this.hammer.destroy());
         this.hammer.add(
@@ -60,34 +66,33 @@ export default class DeformerEditor extends Disposable {
                 direction: Hammer.DIRECTION_ALL
             })
         );
-        this.attachDOMEventToHolder(
-            'mousemove',
-            e => {
-                this.controllers.forEach(controller => {
-                    controller.handleMouseMove(this.holder, [new MousePosition(e, this.holder)]);
-                });
-            },
-            {
-                capture: true,
-                passive: true
-            }
-        );
-        this.attachDOMEventToHolder(
-            'touchmove',
-            e => {
-                const positions: MousePosition[] = [];
-                for (let i = 0, len = e.touches.length; i++; i < len) {
-                    positions.push(new MousePosition(e.touches[i], this.holder));
+        if (isTouchDevice) {
+            this.attachDOMEventToHolder(
+                'touchmove',
+                e => {
+                    const positions: MousePosition[] = [];
+                    for (let i = 0, len = e.touches.length; i++; i < len) {
+                        positions.push(new MousePosition(e.touches[i], this.holder));
+                    }
+                    this.handleMouseMove(positions);
+                },
+                {
+                    capture: true,
+                    passive: true
                 }
-                this.controllers.forEach(controller => {
-                    controller.handleMouseMove(this.holder, positions);
-                });
-            },
-            {
-                capture: true,
-                passive: true
-            }
-        );
+            );
+        } else {
+            this.attachDOMEventToHolder(
+                'mousemove',
+                e => {
+                    this.handleMouseMove([new MousePosition(e, this.holder)]);
+                },
+                {
+                    capture: true,
+                    passive: true
+                }
+            );
+        }
         this.hammer.on('panstart', e => {
             const { x, y } = e.center;
 
