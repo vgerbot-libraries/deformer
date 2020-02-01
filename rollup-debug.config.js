@@ -1,6 +1,7 @@
 const plugins = require('./build/rollup.plugins');
 
 const rollupPlugins = [
+    plugins.ejs(),
     plugins.typescript({
         tsconfig: './test/tsconfig.json',
         tsconfigOverride: {

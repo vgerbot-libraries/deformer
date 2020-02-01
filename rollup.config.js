@@ -23,6 +23,7 @@ module.exports = [
             [pkg.main, 'cjs']
         ].map(confs => createOutputConfig(...confs)),
         plugins: [
+            plugins.ejs(),
             plugins.nodeResolve({
                 main: true,
                 browser: true,

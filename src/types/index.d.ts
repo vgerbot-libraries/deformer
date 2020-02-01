@@ -5,3 +5,7 @@ declare interface EquationSolution {
     b: number;
 }
 declare type DeformerHolderElement = HTMLElement | SVGElement;
+
+declare module '*.ejs' {
+    export default function compilerTemplate(options: any): string;
+}
