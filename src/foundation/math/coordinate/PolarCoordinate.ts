@@ -8,15 +8,15 @@ const polarPointLazy = new Lazy<PolarPoint>();
 
 export class PolarPoint extends Point<PolarCoordinatate> {
     @polarPointLazy.property(p => Math.cos(p.sita) * p.r)
-    private $x = 0;
+    private $x!: number;
     @polarPointLazy.property(p => Math.sin(p.sita) * p.r)
-    private $y = 0;
+    private $y!: number;
     constructor(public readonly sita: number, public readonly r: number, public readonly coord: PolarCoordinatate) {
         super();
     }
     public toDevice(coord = DeviceCoordinate.ORIGIN): DevicePoint {
         const deviceX = this.$x + this.coord.originX;
-        const deviceY = this.$y + this.coord.originY;
+        const deviceY = this.coord.originY - this.$y;
         return coord.point(deviceX - coord.originX, deviceY - coord.originY);
     }
     public toPolar(coord: PolarCoordinatate = PolarCoordinatate.ORIGIN): PolarPoint {
@@ -28,9 +28,11 @@ export class PolarPoint extends Point<PolarCoordinatate> {
         return coord.point(x - coord.originX, coord.originY - y);
     }
     public addVector(vec: Vector): PolarPoint {
-        return this.toDevice()
-            .addVector(vec)
-            .toPolar(this.coord);
+        const nx = this.$x + vec.x;
+        const ny = this.$y + vec.y;
+        const sita = Math.atan2(ny, nx);
+        const r = Math.sqrt(nx * nx + ny * ny);
+        return this.coord.point(sita, r);
     }
     public expansion(r: number): PolarPoint {
         return this.coord.point(this.sita, this.r + r);

@@ -9,7 +9,7 @@ const devicePointLazy = new Lazy<DevicePoint>();
 
 export class DevicePoint extends Point<DeviceCoordinate> {
     @devicePointLazy.property(p => Math.sqrt(p.x * p.x + p.y * p.y))
-    private $sqrtLength: number = 0;
+    private $sqrtLength!: number;
     constructor(public readonly x: number, public readonly y: number, public readonly coord: DeviceCoordinate) {
         super();
     }
@@ -27,7 +27,7 @@ export class DevicePoint extends Point<DeviceCoordinate> {
         return this.coord.point(x, y);
     }
     public toDevice(coord: DeviceCoordinate = DeviceCoordinate.ORIGIN): DevicePoint {
-        return coord.point(this.x - coord.originX, this.y - coord.originY);
+        return coord.point(this.getDeviceX() - coord.originX, this.getDeviceY() - coord.originY);
     }
     public toPolar(coord: PolarCoordinatate = PolarCoordinatate.ORIGIN): PolarPoint {
         const disX = this.getDeviceX() - coord.originX;
@@ -37,7 +37,7 @@ export class DevicePoint extends Point<DeviceCoordinate> {
         return coord.point(sita, r);
     }
     public toCartesian(coord: CartesianCoordinate = CartesianCoordinate.ORIGIN): CartesianPoint {
-        return coord.point(this.getDeviceX() - coord.originX, this.getDeviceY() + coord.originY);
+        return coord.point(this.getDeviceX() - coord.originX, coord.originY - this.getDeviceY());
     }
     public addVector(vector: Vector): DevicePoint {
         return this.coord.point(this.x + vector.x, this.y + vector.y);

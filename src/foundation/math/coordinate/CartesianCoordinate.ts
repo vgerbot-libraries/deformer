@@ -8,9 +8,9 @@ const cartesianPointLazy = new Lazy<CartesianPoint>();
 
 export class CartesianPoint extends Point<CartesianCoordinate> {
     @cartesianPointLazy.property(p => Math.atan2(p.x, p.y))
-    private sita: number = 0;
+    private sita!: number;
     @cartesianPointLazy.property(p => Math.sqrt(p.x * p.x + p.y * p.y))
-    private r: number = 0;
+    private r!: number;
     constructor(public readonly x: number, public readonly y: number, public coord: CartesianCoordinate) {
         super();
     }
@@ -21,7 +21,9 @@ export class CartesianPoint extends Point<CartesianCoordinate> {
         return coord.point(this.sita, this.r);
     }
     public toCartesian(coord: CartesianCoordinate = CartesianCoordinate.ORIGIN): CartesianPoint {
-        return coord.point(this.x, this.y);
+        const x = this.x + this.coord.originX - coord.originX;
+        const y = this.coord.originY - this.y + coord.originY;
+        return coord.point(x, y);
     }
     public addVector(vector: Vector): CartesianPoint {
         return this.coord.point(this.x + vector.x, this.y + vector.y);
