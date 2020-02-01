@@ -4,24 +4,26 @@ export class Lazy<Class> {
         readony: boolean = true
     ): PropertyDecorator {
         return (target: object, propertyKey: string | symbol) => {
-            let value = target[propertyKey];
             const ownDesciptor = Object.getOwnPropertyDescriptor(target, propertyKey);
-            const descriptor: PropertyDescriptor = ownDesciptor || {};
-            if (ownDesciptor === undefined) {
-                Object.defineProperty(target, propertyKey, descriptor);
+            if (ownDesciptor && !ownDesciptor.configurable) {
+                delete target[propertyKey];
             }
-            descriptor.get = () => {
-                descriptor.get = () => value;
-                value = initializer(target as any);
-                return value;
+            const descriptor: PropertyDescriptor = {};
+            descriptor.get = function() {
+                const lazyValue = initializer(this as any);
+                descriptor.get = () => lazyValue;
+                Object.defineProperty(target, propertyKey, descriptor);
+                return lazyValue;
             };
             if (!readony) {
                 descriptor.set = newValue => {
-                    value = newValue;
+                    descriptor.get = () => newValue;
+                    Object.defineProperty(target, propertyKey, descriptor);
                 };
             }
             descriptor.enumerable = true;
-            descriptor.writable = true;
+            descriptor.configurable = true;
+            Object.defineProperty(target, propertyKey, descriptor);
         };
     }
 }

@@ -4,13 +4,13 @@ const lazy = new Lazy<Vector>();
 export class Vector {
     public static ZERO = new Vector(0, 0);
     @lazy.property(vec => vec.x * vec.x)
-    private $squareX: number = 0;
+    private $squareX!: number;
     @lazy.property(vec => vec.y * vec.y)
-    private $squareY: number = 0;
+    private $squareY!: number;
     @lazy.property(vec => Math.sqrt(vec.$squareX + vec.$squareY))
-    private $length: number = 0;
+    private $length!: number;
     @lazy.property(vec => vec.devide(vec.length()))
-    private $norm: Vector = Vector.ZERO;
+    private $norm!: Vector;
     constructor(public readonly x: number, public readonly y: number) {}
 
     public addVector(other: Vector) {

@@ -8,7 +8,7 @@ import { AnyPoint } from './foundation/math/coordinate/Coordinate';
 const DEVICE_ORIGIN = DeviceCoordinate.ORIGIN;
 const CARTESIAN_ORIGIN = CartesianCoordinate.ORIGIN;
 
-export class Contour {
+export abstract class Contour {
     protected readonly coordinate: PolarCoordinatate;
     protected points: PolarPoint[] = [];
     constructor(center: AnyPoint) {
