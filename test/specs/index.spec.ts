@@ -2,7 +2,6 @@ import { expect } from 'chai';
 import { hello } from '../../src/index';
 import { QuadrilateralDeformerEditor } from '../../src/editor/quadrilateral/QuadrilateralDeformerEditor';
 import { Quadrilateral } from '../../src/foundation/Quadrilateral';
-import { DeviceCoordinate } from '../../src/foundation/math/coordinate/DeviceCoordinate';
 
 describe('quadrilateral test', () => {
     before(() => {
@@ -17,15 +16,9 @@ describe('quadrilateral test', () => {
         `;
         document.body.appendChild(holder);
         const editor = new QuadrilateralDeformerEditor({
-            contour: Quadrilateral.fromCoordinate(
-                new DeviceCoordinate(200, 200),
-                -100,
-                100,
-                -100,
-                100
-            ),
+            contour: Quadrilateral.fromDOMElement(holder),
             holder,
-            enableDiagonally: false,
+            enableDiagonally: true,
             enableRim: true
         });
         document.body.appendChild(editor.getDOM());

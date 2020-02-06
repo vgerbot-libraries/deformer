@@ -27,10 +27,10 @@ describe('Cartesian Coordinate system', () => {
         const to = coordinate.point(1, 1);
         const ftVector = from.vector(to);
         expect(ftVector.x).to.be.eql(1);
-        expect(ftVector.y).to.be.eql(-1);
+        expect(ftVector.y).to.be.eql(1);
         const tfVector = to.vector(from);
         expect(tfVector.x).to.be.eql(-1);
-        expect(tfVector.y).to.be.eql(1);
+        expect(tfVector.y).to.be.eql(-1);
     });
     it('point rotation', () => {
         const point = coordinate.point(1, 1);
