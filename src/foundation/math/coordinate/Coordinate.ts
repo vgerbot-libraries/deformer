@@ -11,7 +11,7 @@ export abstract class Point<C extends Coordinate<any>> {
     public abstract toDevice(coord?: DeviceCoordinate): DevicePoint;
     public abstract toPolar(coord?: PolarCoordinatate): PolarPoint;
     public abstract toCartesian(coord: CartesianCoordinate): CartesianPoint;
-    public vector<T extends Point<Coordinate<T>>>(other: T): Vector {
+    public vector(other: AnyPoint): Vector {
         const from = this.toDevice();
         const to = other.toDevice();
         return new Vector(to.x - from.x, to.y - from.y);
@@ -41,6 +41,9 @@ export abstract class Coordinate<P extends Point<any>> {
         this.originY = y;
         return this;
     }
+    public abstract toDevice(): DeviceCoordinate;
+    public abstract toCartesian(): CartesianCoordinate;
+    public abstract toPolar(): PolarCoordinatate;
     public abstract point(...args: number[]): P;
     public abstract convertFrom(point: AnyPoint): P;
 }

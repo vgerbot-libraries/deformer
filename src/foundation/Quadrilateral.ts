@@ -8,6 +8,22 @@ import { AnyPoint } from './math/coordinate/Coordinate';
 const DEVICE_ORIGIN = DeviceCoordinate.ORIGIN;
 
 export class Quadrilateral extends Contour {
+    public static fromDOMElement(elm: Element) {
+        const rect = elm.getBoundingClientRect();
+        const centerX = (rect.right + rect.left) * 0.5;
+        const centerY = (rect.top + rect.bottom) * 0.5;
+        const coordinate = new CartesianCoordinate(centerX, centerY);
+        const left = -rect.width / 2;
+        const right = rect.width / 2;
+        const top = rect.height / 2;
+        const bottom = -rect.height / 2;
+        const leftTop = coordinate.point(left, top);
+        const rightTop = coordinate.point(right, top);
+        const leftBottom = coordinate.point(left, bottom);
+        const rightBottom = coordinate.point(right, bottom);
+        const center = coordinate.point(0, 0);
+        return new Quadrilateral(leftTop, rightTop, rightBottom, leftBottom, center);
+    }
     public static fromCoordinate(
         coordinate: DeviceCoordinate | CartesianCoordinate,
         left: number,
@@ -20,7 +36,7 @@ export class Quadrilateral extends Contour {
         const leftBottom = coordinate.point(left, bottom);
         const rightBottom = coordinate.point(right, bottom);
         const center = leftTop.addVector(leftTop.vector(rightBottom).multiply(0.5));
-        return new Quadrilateral(leftTop, rightTop, leftBottom, rightBottom, center);
+        return new Quadrilateral(leftTop, rightTop, rightBottom, leftBottom, center);
     }
     public static fromPoints(point1: AnyPoint, point2: AnyPoint, point3: AnyPoint, point4: AnyPoint): Quadrilateral {
         const [leftTop, rightTop, rightBottom, leftBottom] = Quadrilateral.collatePoints([
@@ -37,37 +53,34 @@ export class Quadrilateral extends Contour {
     }
     protected static collatePoints<T extends AnyPoint>(points: T[]): T[] {
         const devicePoints = points.map(point => point.toDevice(DEVICE_ORIGIN));
-        let [leftTop, leftBottom, rightTop, rightBottom] = devicePoints;
-        let leftTopIndex = 0;
-        let leftBottomIndex = 1;
-        let rightTopIndex = 2;
-        let rightBottomIndex = 3;
-        devicePoints.forEach((point, i) => {
-            if (point.x <= leftTop.x) {
-                if (point.y <= leftTop.y) {
-                    leftTop = point;
-                    leftTopIndex = i;
-                }
+        const leftTopPoint = devicePoints.reduce((prePoint, point) => {
+            if (prePoint.x < point.x || prePoint.y < point.y) {
+                return prePoint;
             }
-            if (point.x <= leftBottom.x) {
-                if (point.y >= leftBottom.y) {
-                    leftBottom = point;
-                    leftBottomIndex = i;
-                }
-            }
-            if (point.x >= rightTop.x) {
-                if (point.y <= rightTop.y) {
-                    rightTop = point;
-                    rightTopIndex = i;
-                }
-            }
-            if (point.x >= rightBottom.x) {
-                if (point.y >= rightBottom.y) {
-                    rightBottom = point;
-                    rightBottomIndex = i;
-                }
-            }
+            return point;
         });
+        const rightTopPoint = devicePoints.reduce((prePoint, point) => {
+            if (prePoint.x > point.x || prePoint.y < point.y) {
+                return prePoint;
+            }
+            return point;
+        });
+        const leftBottomPoint = devicePoints.reduce((prePoint, point) => {
+            if (prePoint.x < point.x || prePoint.y > point.y) {
+                return prePoint;
+            }
+            return point;
+        });
+        const rightBottomPoint = devicePoints.reduce((prePoint, point) => {
+            if (prePoint.x > point.x || prePoint.y > point.y) {
+                return prePoint;
+            }
+            return point;
+        });
+        const leftTopIndex = devicePoints.indexOf(leftTopPoint);
+        const rightTopIndex = devicePoints.indexOf(rightTopPoint);
+        const rightBottomIndex = devicePoints.indexOf(rightBottomPoint);
+        const leftBottomIndex = devicePoints.indexOf(leftBottomPoint);
         return [points[leftTopIndex], points[rightTopIndex], points[rightBottomIndex], points[leftBottomIndex]];
     }
     private leftTopIndex: number = 0;

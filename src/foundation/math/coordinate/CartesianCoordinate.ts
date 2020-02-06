@@ -1,8 +1,9 @@
-import { Coordinate, Point, AnyPoint } from './Coordinate';
+import { Point, AnyPoint } from './Coordinate';
 import { DeviceCoordinate, DevicePoint } from './DeviceCoordinate';
 import { PolarCoordinatate, PolarPoint } from './PolarCoordinate';
 import { Lazy } from '../../lazy';
 import { Vector } from '../vector';
+import { CoordinateConvertionTpl } from './CoordinateConversionTpl';
 
 const cartesianPointLazy = new Lazy<CartesianPoint>();
 
@@ -18,12 +19,20 @@ export class CartesianPoint extends Point<CartesianCoordinate> {
         return coord.point(this.x + this.coord.originX - coord.originX, this.coord.originY - this.y - coord.originY);
     }
     public toPolar(coord: PolarCoordinatate = PolarCoordinatate.ORIGIN): PolarPoint {
-        return coord.point(this.sita, this.r);
+        const x = this.x - (coord.originX - this.coord.originX);
+        const y = this.y - (this.coord.originY - coord.originY);
+        const sita = Math.atan2(x, y);
+        const r = Math.sqrt(x * x + y * y);
+        return coord.point(sita, r);
     }
     public toCartesian(coord: CartesianCoordinate = CartesianCoordinate.ORIGIN): CartesianPoint {
-        const x = this.x + this.coord.originX - coord.originX;
-        const y = this.coord.originY - this.y + coord.originY;
+        const x = this.x - (coord.originX - this.coord.originX);
+        const y = this.y - (this.coord.originY - coord.originY);
         return coord.point(x, y);
+    }
+    public vector(other: AnyPoint): Vector {
+        const otherPoint = other.toCartesian(this.coord);
+        return new Vector(otherPoint.x - this.x, otherPoint.y - this.y);
     }
     public addVector(vector: Vector): CartesianPoint {
         return this.coord.point(this.x + vector.x, this.y + vector.y);
@@ -36,7 +45,7 @@ export class CartesianPoint extends Point<CartesianCoordinate> {
         return this.coord.point(x, y);
     }
 }
-export class CartesianCoordinate extends Coordinate<CartesianPoint> {
+export class CartesianCoordinate extends CoordinateConvertionTpl<CartesianPoint> {
     public static readonly ORIGIN = new CartesianCoordinate(0, 0);
     public origin = this.point(0, 0);
     public point(x: number, y: number): CartesianPoint {

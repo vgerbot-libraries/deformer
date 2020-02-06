@@ -1,8 +1,11 @@
+import { uniqId } from './unique';
+
 export class Lazy<Class> {
     public property<ReturnType>(
         initializer: Initializer<Class, ReturnType>,
         readony: boolean = true
     ): PropertyDecorator {
+        const key = uniqId('__lazy__');
         return (target: object, propertyKey: string | symbol) => {
             const ownDesciptor = Object.getOwnPropertyDescriptor(target, propertyKey);
             if (ownDesciptor && !ownDesciptor.configurable) {
@@ -10,15 +13,14 @@ export class Lazy<Class> {
             }
             const descriptor: PropertyDescriptor = {};
             descriptor.get = function() {
-                const lazyValue = initializer(this as any);
-                descriptor.get = () => lazyValue;
-                Object.defineProperty(target, propertyKey, descriptor);
-                return lazyValue;
+                if (!(key in this)) {
+                    this[key] = initializer(this as any);
+                }
+                return this[key];
             };
             if (!readony) {
                 descriptor.set = newValue => {
-                    descriptor.get = () => newValue;
-                    Object.defineProperty(target, propertyKey, descriptor);
+                    this[key] = newValue;
                 };
             }
             descriptor.enumerable = true;

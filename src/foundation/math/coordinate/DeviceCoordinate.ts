@@ -1,9 +1,10 @@
-import { Coordinate, Point, AnyPoint } from './Coordinate';
+import { Point, AnyPoint } from './Coordinate';
 import { Lazy } from '../../lazy';
 import { Vector } from '../vector';
 import { PolarCoordinatate, PolarPoint } from './PolarCoordinate';
 import { CartesianCoordinate, CartesianPoint } from './CartesianCoordinate';
 import { LinearEquation } from '../LinearEquation';
+import { CoordinateConvertionTpl } from './CoordinateConversionTpl';
 
 const devicePointLazy = new Lazy<DevicePoint>();
 
@@ -52,7 +53,7 @@ export class DevicePoint extends Point<DeviceCoordinate> {
     }
 }
 
-export class DeviceCoordinate extends Coordinate<DevicePoint> {
+export class DeviceCoordinate extends CoordinateConvertionTpl<DevicePoint> {
     public static ORIGIN = new DeviceCoordinate(0, 0);
     public origin: DevicePoint = this.point(0, 0);
     public point(x: number, y: number): DevicePoint {

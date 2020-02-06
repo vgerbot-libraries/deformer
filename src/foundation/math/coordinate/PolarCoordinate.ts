@@ -1,8 +1,9 @@
-import { Point, Coordinate, AnyPoint } from './Coordinate';
+import { Point, AnyPoint } from './Coordinate';
 import { DevicePoint, DeviceCoordinate } from './DeviceCoordinate';
 import { Lazy } from '../../lazy';
 import { Vector } from '../vector';
 import { CartesianCoordinate, CartesianPoint } from './CartesianCoordinate';
+import { CoordinateConvertionTpl } from './CoordinateConversionTpl';
 
 const polarPointLazy = new Lazy<PolarPoint>();
 
@@ -24,8 +25,14 @@ export class PolarPoint extends Point<PolarCoordinatate> {
     }
     public toCartesian(coord: CartesianCoordinate = CartesianCoordinate.ORIGIN): CartesianPoint {
         const x = this.$x + this.coord.originX; // device axis-x
-        const y = this.$y - this.coord.originY; // device axis-y
+        const y = this.coord.originY - this.$y; // device axis-y
         return coord.point(x - coord.originX, coord.originY - y);
+    }
+    public vector(other: AnyPoint): Vector {
+        const cartesian = this.coord.toCartesian();
+        const otherPoint = other.toCartesian(cartesian);
+        const thisPoint = this.toCartesian(cartesian);
+        return thisPoint.vector(otherPoint);
     }
     public addVector(vec: Vector): PolarPoint {
         const nx = this.$x + vec.x;
@@ -45,7 +52,7 @@ export class PolarPoint extends Point<PolarCoordinatate> {
     }
 }
 
-export class PolarCoordinatate extends Coordinate<PolarPoint> {
+export class PolarCoordinatate extends CoordinateConvertionTpl<PolarPoint> {
     public static ORIGIN = new PolarCoordinatate(0, 0);
     public origin = this.point(0, 0);
     public point(sita: number, r: number): PolarPoint {
