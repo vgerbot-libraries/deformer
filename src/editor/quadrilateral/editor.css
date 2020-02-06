@@ -1,4 +1,4 @@
-.deformer--editor-wrapper {
+.deformer--editor {
     position: fixed;
     display: block;
 }
@@ -19,6 +19,7 @@
 }
 .deformer--editor-controller {
     position: absolute;
+    background-color: #00FFFF;
 }
 .deformer--editor-controller-left {
     cursor: e-resize;

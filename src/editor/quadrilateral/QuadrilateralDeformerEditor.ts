@@ -2,6 +2,8 @@ import DeformerEditor, { DeformerEditorOptions } from '../DeformerEditor';
 import { QuadrilateralController, Direction } from './QuadrilateralController';
 import { Quadrilateral } from '../../foundation/Quadrilateral';
 import template from './editor.ejs';
+import './editor.css';
+import { DeviceCoordinate } from '../../foundation/math/coordinate/DeviceCoordinate';
 
 export interface QuadrilateralDeformerEditorOptions extends DeformerEditorOptions<Quadrilateral> {
     contour: Quadrilateral;
@@ -19,8 +21,10 @@ export interface QuadrilateralDeformerEditorOptions extends DeformerEditorOption
 
 export class QuadrilateralDeformerEditor extends DeformerEditor<Quadrilateral, QuadrilateralController> {
     private dom!: HTMLElement;
+    private controlsDOM: HTMLElement;
     constructor(options: QuadrilateralDeformerEditorOptions) {
         super(options);
+        this.controlsDOM = this.dom.querySelector('.deformer--editor-controls') as HTMLElement;
         const enableRim = options.enableRim === true;
         const enableDiagonally = options.enableDiagonally !== false;
         const $options = Object.assign(
@@ -39,38 +43,48 @@ export class QuadrilateralDeformerEditor extends DeformerEditor<Quadrilateral, Q
             options
         );
         if ($options.enableLeft) {
-            super.attach(new QuadrilateralController(this, Direction.LEFT));
+            this.attach(new QuadrilateralController(this, Direction.LEFT));
         }
         if ($options.enableRight) {
-            super.attach(new QuadrilateralController(this, Direction.RIGHT));
+            this.attach(new QuadrilateralController(this, Direction.RIGHT));
         }
         if ($options.enableTop) {
-            super.attach(new QuadrilateralController(this, Direction.TOP));
+            this.attach(new QuadrilateralController(this, Direction.TOP));
         }
         if ($options.enableBottom) {
-            super.attach(new QuadrilateralController(this, Direction.BOTTOM));
+            this.attach(new QuadrilateralController(this, Direction.BOTTOM));
         }
         if ($options.enableLeftTop) {
-            super.attach(new QuadrilateralController(this, Direction.LEFT_TOP));
+            this.attach(new QuadrilateralController(this, Direction.LEFT_TOP));
         }
         if ($options.enableRightTop) {
-            super.attach(new QuadrilateralController(this, Direction.RIGHT_TOP));
+            this.attach(new QuadrilateralController(this, Direction.RIGHT_TOP));
         }
         if ($options.enableRightBottom) {
-            super.attach(new QuadrilateralController(this, Direction.RIGHT_BOTTOM));
+            this.attach(new QuadrilateralController(this, Direction.RIGHT_BOTTOM));
         }
         if ($options.enableLeftBottom) {
-            super.attach(new QuadrilateralController(this, Direction.LEFT_BOTTOM));
+            this.attach(new QuadrilateralController(this, Direction.LEFT_BOTTOM));
         }
+        this.attach = () => {
+            throw new Error('Illegal operation!');
+        };
+        this.updateUI();
     }
     public attach(controller: QuadrilateralController): boolean {
-        throw new Error('Illegal operation!');
+        try {
+            return super.attach(controller);
+        } finally {
+            this.controlsDOM.appendChild(controller.getDOM());
+        }
     }
     public updateUI() {
+        const origin = this.contour.getLeftTop().toDevice();
+        const coordinate = new DeviceCoordinate(origin.x, origin.y);
         this.controllers.forEach(ctrl => {
             const dom = ctrl.getDOM();
-            const point = ctrl.getPoint().toDevice();
-            dom.className = `.deformer--editor-controller .deformer--editor-controller-${ctrl.getDirectionName()}`;
+            const point = ctrl.getPoint().toDevice(coordinate);
+            dom.className = `deformer--editor-controller deformer--editor-controller-${ctrl.getDirectionName()}`;
             dom.style.cssText = `
                 width: ${ctrl.size}px;
                 height: ${ctrl.size}px;
@@ -92,14 +106,7 @@ export class QuadrilateralDeformerEditor extends DeformerEditor<Quadrilateral, Q
     protected prepare() {
         super.prepare();
         const editorDOM = this.parseTemplateToDOM();
-        const controlsDOM = editorDOM.querySelector('.deformer--editor-controls');
-        this.controllers.forEach(ctl => {
-            const dom = ctl.getDOM();
-            // tslint:disable-next-line:no-unused-expression
-            controlsDOM?.appendChild(dom);
-        });
         this.dom = editorDOM;
-        this.updateUI();
     }
     private parseTemplateToDOM() {
         const tpl = template({
