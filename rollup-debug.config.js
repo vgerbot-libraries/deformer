@@ -1,6 +1,10 @@
 const plugins = require('./build/rollup.plugins');
 
 const rollupPlugins = [
+    plugins.postcss({
+        extract: false,
+        inject: true
+    }),
     plugins.ejs(),
     plugins.typescript({
         tsconfig: './test/tsconfig.json',

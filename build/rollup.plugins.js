@@ -6,6 +6,7 @@ const strip = require('rollup-plugin-strip');
 const json = require('rollup-plugin-json');
 const uglify = require('rollup-plugin-uglify');
 const ejs = require('rollup-plugin-ejs');
+const postcss = require('rollup-plugin-postcss');
 
 function ext(opt1, opt2) {
     if(opt2 && opt1) {
@@ -17,6 +18,14 @@ function ext(opt1, opt2) {
 }
 
 module.exports = {
+    postcss(opt) {
+        return postcss(ext({
+            plugins:[
+                require('autoprefixer')
+            ],
+            extract: true
+        },opt));
+    },
     ejs(opt){
         return ejs(ext({
             include: ['**/*.ejs', '**/*.html'],

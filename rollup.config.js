@@ -23,6 +23,7 @@ module.exports = [
             [pkg.main, 'cjs']
         ].map(confs => createOutputConfig(...confs)),
         plugins: [
+            plugins.postcss(),
             plugins.ejs(),
             plugins.nodeResolve({
                 main: true,
