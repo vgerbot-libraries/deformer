@@ -59,20 +59,14 @@ describe('Device Coordinate system', () => {
     });
     it('convert to polar coordinate', () => {
         const point = coordinate.point(1, 1);
-        const polar = new PolarCoordinatate(
-            coordinate.originX,
-            coordinate.originY
-        );
+        const polar = new PolarCoordinatate(coordinate.originX, coordinate.originY);
         const polarPoint = point.toPolar(polar);
         expect(polarPoint.sita).to.be.closeTo(Math.PI / 4, MIN_ACCURACY);
         expect(polarPoint.r).to.be.closeTo(Math.sqrt(2), MIN_ACCURACY);
     });
     it('convert to cartesian coordinate', () => {
         const point = coordinate.point(1, 1);
-        const cartesian = new CartesianCoordinate(
-            coordinate.originX,
-            coordinate.originY
-        );
+        const cartesian = new CartesianCoordinate(coordinate.originX, coordinate.originY);
         const cartesianPoint = point.toCartesian(cartesian);
         expect(cartesianPoint.x).to.be.eql(1);
         expect(cartesianPoint.y).to.be.eql(-1);

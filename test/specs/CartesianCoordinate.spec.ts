@@ -17,7 +17,7 @@ describe('Cartesian Coordinate system', () => {
         expect(point.y).to.be.eql(1);
     });
     it('point addVector', () => {
-        const point = coordinate.point(1,1);
+        const point = coordinate.point(1, 1);
         const npoint = point.addVector(new Vector(1, 1));
         expect(npoint.x).to.be.eq(2);
         expect(npoint.y).to.be.eq(2);
@@ -40,9 +40,7 @@ describe('Cartesian Coordinate system', () => {
     });
     it('convert to device point', () => {
         const point = coordinate.point(1, 1);
-        const devicePoint = point.toDevice(
-            new DeviceCoordinate(coordinate.originX, coordinate.originY)
-        );
+        const devicePoint = point.toDevice(new DeviceCoordinate(coordinate.originX, coordinate.originY));
         expect(devicePoint.x).to.be.eq(1);
         expect(devicePoint.y).to.be.eq(-1);
         expect(devicePoint.getDeviceX()).to.be.eq(2);
@@ -59,9 +57,7 @@ describe('Cartesian Coordinate system', () => {
     });
     it('convert to polar point', () => {
         const point = coordinate.point(1, 1);
-        const polar = point.toPolar(
-            new PolarCoordinatate(coordinate.originX, coordinate.originY)
-        );
+        const polar = point.toPolar(new PolarCoordinatate(coordinate.originX, coordinate.originY));
         expect(polar.sita).to.be.closeTo(Math.PI / 4, MIN_ACCURACY);
         expect(polar.r).to.be.closeTo(Math.sqrt(2), MIN_ACCURACY);
     });
