@@ -79,6 +79,12 @@ export class QuadrilateralDeformerEditor extends DeformerEditor<Quadrilateral, Q
         }
     }
     public updateUI() {
+        this.controllers.forEach(ctrl => {
+            const direction = ctrl.direction;
+            switch (direction) {
+                case Direction.LEFT:
+            }
+        });
         const origin = this.contour.getLeftTop().toDevice();
         const coordinate = new DeviceCoordinate(origin.x, origin.y);
         this.controllers.forEach(ctrl => {
@@ -101,12 +107,11 @@ export class QuadrilateralDeformerEditor extends DeformerEditor<Quadrilateral, Q
         `;
     }
     public getDOM() {
+        if (!this.dom) {
+            this.dom = this.parseTemplateToDOM();
+            (this.dom as any).editor = this;
+        }
         return this.dom;
-    }
-    protected prepare() {
-        super.prepare();
-        const editorDOM = this.parseTemplateToDOM();
-        this.dom = editorDOM;
     }
     private parseTemplateToDOM() {
         const tpl = template({

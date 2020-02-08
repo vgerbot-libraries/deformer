@@ -8,7 +8,11 @@ import { Contour } from '../Contour';
 
 interface EventTypes {
     mousemove: MouseEvent;
+    mousedown: MouseEvent;
+    mouseup: MouseEvent;
     touchmove: TouchEvent;
+    touchstart: TouchEvent;
+    touchend: TouchEvent;
 }
 export interface DeformerEditorOptions<C extends Contour> {
     contour: C;
@@ -16,7 +20,7 @@ export interface DeformerEditorOptions<C extends Contour> {
     rotatable?: boolean;
     moveable?: boolean;
 }
-export default class DeformerEditor<C extends Contour, CC extends ContourController<C>> extends Disposable {
+export default abstract class DeformerEditor<C extends Contour, CC extends ContourController<C>> extends Disposable {
     public readonly contour: C;
     protected readonly holder: DeformerHolderElement;
     protected rotatable: boolean;
@@ -31,7 +35,7 @@ export default class DeformerEditor<C extends Contour, CC extends ContourControl
         this.contour = options.contour;
         this.rotatable = options.rotatable === undefined ? false : options.rotatable;
         this.moveable = options.moveable === undefined ? true : options.moveable;
-        this.hammer = new Hammer(this.holder);
+        this.hammer = new Hammer(this.getDOM());
         this.prepare();
     }
     public on(type: string, callback: JSListenerFn) {
@@ -59,6 +63,8 @@ export default class DeformerEditor<C extends Contour, CC extends ContourControl
         }
         return false;
     }
+    public abstract getDOM(): HTMLElement;
+    public abstract updateUI();
     protected prepare() {
         this.addDestroyHook(() => this.hammer.destroy());
         this.hammer.add(
@@ -66,8 +72,15 @@ export default class DeformerEditor<C extends Contour, CC extends ContourControl
                 direction: Hammer.DIRECTION_ALL
             })
         );
+        let isMouseDown = false;
         if (isTouchDevice) {
-            this.attachDOMEventToHolder(
+            this.attachDOMEvent('touchstart', e => {
+                isMouseDown = true;
+            });
+            this.attachDOMEvent('touchend', e => {
+                isMouseDown = false;
+            });
+            this.attachDOMEvent(
                 'touchmove',
                 e => {
                     const positions: MousePosition[] = [];
@@ -82,9 +95,18 @@ export default class DeformerEditor<C extends Contour, CC extends ContourControl
                 }
             );
         } else {
-            this.attachDOMEventToHolder(
+            this.attachDOMEvent('mousedown', e => {
+                isMouseDown = true;
+            });
+            this.attachDOMEvent('mouseup', e => {
+                isMouseDown = false;
+            });
+            this.attachDOMEvent(
                 'mousemove',
                 e => {
+                    if (isMouseDown) {
+                        return;
+                    }
                     this.handleMouseMove([mousePositionFromMouseEvent(e, this.holder)]);
                 },
                 {
@@ -138,14 +160,14 @@ export default class DeformerEditor<C extends Contour, CC extends ContourControl
             lastDeltaY = e.deltaY;
         });
     }
-    private attachDOMEventToHolder<T extends keyof EventTypes>(
+    private attachDOMEvent<T extends keyof EventTypes>(
         type: T,
         listener: (e: EventTypes[T]) => void,
         options?: DOMEventListenerOptions | boolean
     ) {
-        this.holder.addEventListener(type, listener as EventListener, options);
+        this.getDOM().addEventListener(type, listener as EventListener, options);
         this.addDestroyHook(() => {
-            this.holder.removeEventListener(type, listener as EventListener, options);
+            this.getDOM().removeEventListener(type, listener as EventListener, options);
         });
     }
     private handleMouseMove(positions: MousePosition[]) {

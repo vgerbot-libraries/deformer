@@ -77,12 +77,37 @@ export class QuadrilateralController extends ContourController<Quadrilateral> {
         this.isMouseOver = point.vector(mousePoint).length() < this.size;
     }
     public handlePanStart(holder: DeformerHolderElement, offset: PanMoveOffset) {
-        throw new Error('Method not implemented.');
+        this.handlePanEvent(holder, offset);
     }
     public handlePanMove(holder: DeformerHolderElement, offset: PanMoveOffset) {
-        throw new Error('Method not implemented.');
+        this.handlePanEvent(holder, offset);
     }
     public handlePanStop(holder: DeformerHolderElement, offset: PanMoveOffset) {
-        throw new Error('Method not implemented.');
+        this.handlePanEvent(holder, offset);
+    }
+    private handlePanEvent(holder: DeformerHolderElement, offset: PanMoveOffset) {
+        switch (this.direction) {
+            case Direction.LEFT:
+                this.contour.addLeftOffset(offset.moveX);
+                break;
+            case Direction.TOP:
+                this.contour.addTopOffset(offset.moveY);
+                break;
+            case Direction.RIGHT:
+                this.contour.addRightOffset(offset.moveX);
+                break;
+            case Direction.BOTTOM:
+                this.contour.addBottomOffset(-offset.moveY);
+                break;
+            case Direction.LEFT_TOP:
+                break;
+            case Direction.RIGHT_TOP:
+                break;
+            case Direction.RIGHT_BOTTOM:
+                break;
+            case Direction.LEFT_BOTTOM:
+                break;
+        }
+        this.editor.updateUI();
     }
 }

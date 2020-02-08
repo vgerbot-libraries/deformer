@@ -21,6 +21,12 @@ export abstract class Point<C extends Coordinate<any>> {
     public solveEquation(point: Point<any>): LinearEquation {
         return this.toDevice().solveEquation(point.toDevice());
     }
+    public closeTo(other: AnyPoint): boolean {
+        const ACCURACY = 0.001;
+        const thisPoint = this.toDevice();
+        const otherPoint = other.toDevice();
+        return Math.abs(thisPoint.x - otherPoint.x) < ACCURACY && Math.abs(thisPoint.y - otherPoint.y) < ACCURACY;
+    }
 }
 
 export abstract class Coordinate<P extends Point<any>> {

@@ -4,9 +4,11 @@ import { Vector } from './math/vector';
 import { CartesianCoordinate } from './math/coordinate/CartesianCoordinate';
 import { PolarPoint } from './math/coordinate/PolarCoordinate';
 import { AnyPoint } from './math/coordinate/Coordinate';
+import { Lazy } from './lazy';
 
 const DEVICE_ORIGIN = DeviceCoordinate.ORIGIN;
 
+const lazy = new Lazy<Quadrilateral>();
 export class Quadrilateral extends Contour {
     public static fromDOMElement(elm: Element) {
         const rect = elm.getBoundingClientRect();
@@ -87,6 +89,30 @@ export class Quadrilateral extends Contour {
     private rightTopIndex: number = 1;
     private rightBottomIndex: number = 2;
     private leftBottomIndex: number = 3;
+    @lazy.resetOnChange(
+        q => q.getLeftTop(),
+        q => q.getLeftBottom()
+    )
+    @lazy.property(q => q.initLeftCenter())
+    private leftCenter!: PolarPoint;
+    @lazy.resetOnChange(
+        q => q.getRightTop(),
+        q => q.getRightBottom()
+    )
+    @lazy.property(q => q.initRightCenter())
+    private rightCenter!: PolarPoint;
+    @lazy.resetOnChange(
+        q => q.getLeftTop(),
+        q => q.getRightTop()
+    )
+    @lazy.property(q => q.initTopCenter())
+    private topCenter!: PolarPoint;
+    @lazy.resetOnChange(
+        q => q.getLeftBottom(),
+        q => q.getRightBottom()
+    )
+    @lazy.property(q => q.initBottomCenter())
+    private bottomCenter!: PolarPoint;
     protected constructor(point1: AnyPoint, point2: AnyPoint, point3: AnyPoint, point4: AnyPoint, center: AnyPoint) {
         super(center);
         super.addPoint(point1);
@@ -96,28 +122,16 @@ export class Quadrilateral extends Contour {
         this.collate();
     }
     public getLeftCenter(): PolarPoint {
-        const halfVector = this.getLeftTop()
-            .vector(this.getLeftBottom())
-            .multiply(0.5);
-        return this.getLeftTop().addVector(halfVector);
+        return this.leftCenter;
     }
     public getRightCenter(): PolarPoint {
-        const halfVector = this.getRightTop()
-            .vector(this.getRightBottom())
-            .multiply(0.5);
-        return this.getRightTop().addVector(halfVector);
+        return this.rightCenter;
     }
     public getTopCenter(): PolarPoint {
-        const halfVector = this.getLeftTop()
-            .vector(this.getRightTop())
-            .multiply(0.5);
-        return this.getLeftTop().addVector(halfVector);
+        return this.topCenter;
     }
     public getBottomCenter(): PolarPoint {
-        const halfVector = this.getLeftBottom()
-            .vector(this.getRightBottom())
-            .multiply(0.5);
-        return this.getLeftBottom().addVector(halfVector);
+        return this.bottomCenter;
     }
     public getLeftTop(): PolarPoint {
         return this.points[this.leftTopIndex];
@@ -139,11 +153,7 @@ export class Quadrilateral extends Contour {
         this.collate();
     }
     public addRightOffset(offset: number) {
-        const rightTop = this.getRightTop();
-        const rightBottom = this.getRightBottom();
-        super.setPoint(this.rightTopIndex, rightTop.toPolar(this.coordinate).expansion(offset));
-        super.setPoint(this.rightBottomIndex, rightBottom.toPolar(this.coordinate).expansion(offset));
-        this.collate();
+        this.addRightv(new Vector(offset, 0));
     }
     public addLeftv(vector: Vector) {
         const leftTop = this.getLeftTop();
@@ -153,11 +163,7 @@ export class Quadrilateral extends Contour {
         this.collate();
     }
     public addLeftOffset(offset: number) {
-        const leftTop = this.getLeftTop();
-        const leftBottom = this.getLeftBottom();
-        super.setPoint(this.leftTopIndex, leftTop.toPolar(this.coordinate).expansion(offset));
-        super.setPoint(this.leftBottomIndex, leftBottom.toPolar(this.coordinate).expansion(offset));
-        this.collate();
+        this.addLeftv(new Vector(offset, 0));
     }
     public addTopv(vector: Vector) {
         const leftTop = this.getLeftTop();
@@ -167,11 +173,7 @@ export class Quadrilateral extends Contour {
         this.collate();
     }
     public addTopOffset(offset: number) {
-        const leftTop = this.getLeftTop();
-        const rightTop = this.getRightTop();
-        super.setPoint(this.leftTopIndex, leftTop.toPolar(this.coordinate).expansion(offset));
-        super.setPoint(this.rightTopIndex, rightTop.toPolar(this.coordinate).expansion(offset));
-        this.collate();
+        this.addTopv(new Vector(0, offset));
     }
     public addBottomv(vector: Vector) {
         const leftTop = this.getLeftTop();
@@ -181,11 +183,7 @@ export class Quadrilateral extends Contour {
         this.collate();
     }
     public addBottomOffset(offset: number) {
-        const leftBottom = this.getLeftBottom();
-        const rightBottom = this.getRightBottom();
-        super.setPoint(this.leftBottomIndex, leftBottom.toPolar(this.coordinate).expansion(offset));
-        super.setPoint(this.rightBottomIndex, rightBottom.toPolar(this.coordinate).expansion(offset));
-        this.collate();
+        this.addBottomv(new Vector(0, offset));
     }
     public straighten() {
         const vec = this.getLeftTop().vector(this.getRightTop());
@@ -204,6 +202,35 @@ export class Quadrilateral extends Contour {
     }
 
     private collate() {
-        this.points = Quadrilateral.collatePoints(this.points);
+        this.points = Quadrilateral.collatePoints(this.points).map(point => {
+            if (point.coord !== this.coordinate || !(point instanceof PolarPoint)) {
+                return point.toPolar(this.coordinate);
+            }
+            return point;
+        });
+    }
+    private initLeftCenter(): PolarPoint {
+        const halfVector = this.getLeftTop()
+            .vector(this.getLeftBottom())
+            .multiply(0.5);
+        return this.getLeftTop().addVector(halfVector);
+    }
+    private initRightCenter(): PolarPoint {
+        const halfVector = this.getRightTop()
+            .vector(this.getRightBottom())
+            .multiply(0.5);
+        return this.getRightTop().addVector(halfVector);
+    }
+    private initTopCenter(): PolarPoint {
+        const halfVector = this.getLeftTop()
+            .vector(this.getRightTop())
+            .multiply(0.5);
+        return this.getLeftTop().addVector(halfVector);
+    }
+    private initBottomCenter(): PolarPoint {
+        const halfVector = this.getLeftBottom()
+            .vector(this.getRightBottom())
+            .multiply(0.5);
+        return this.getLeftBottom().addVector(halfVector);
     }
 }

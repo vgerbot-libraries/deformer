@@ -38,7 +38,10 @@ export class Lazy<Class> {
             });
         };
     }
-    public property<ReturnType>(initializer: Initializer<Class, ReturnType>, readony: boolean = true): PropertyDecorator {
+    public property<ReturnType>(
+        initializer: Initializer<Class, ReturnType>,
+        readony: boolean = true
+    ): PropertyDecorator {
         const key = uniqId('__lazy__');
         return (targetPrototype: object, propertyKey: string | symbol) => {
             const ownDesciptor = Object.getOwnPropertyDescriptor(targetPrototype, propertyKey);
