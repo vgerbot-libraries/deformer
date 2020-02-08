@@ -30,7 +30,7 @@ module.exports = {
             name: 'revert: Revert to a commit'
         }
     ],
-    scopes: [],
+    scopes: ['editor', 'coordinate', 'contour'],
     messages: {
         type: 'Select the type of change that you\'re committing',
         scope: '\nDenote the SCOPE of this change(optional)',
