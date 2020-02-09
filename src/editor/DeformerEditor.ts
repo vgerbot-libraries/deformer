@@ -77,9 +77,16 @@ export default abstract class DeformerEditor<C extends Contour, CC extends Conto
             this.attachDOMEvent('touchstart', e => {
                 isMouseDown = true;
             });
-            this.attachDOMEvent('touchend', e => {
-                isMouseDown = false;
-            });
+            this.attachDOMEvent(
+                'touchend',
+                e => {
+                    isMouseDown = false;
+                },
+                this.getDOM(),
+                {
+                    capture: true
+                }
+            );
             this.attachDOMEvent(
                 'touchmove',
                 e => {
@@ -89,6 +96,7 @@ export default abstract class DeformerEditor<C extends Contour, CC extends Conto
                     }
                     this.handleMouseMove(positions);
                 },
+                this.getDOM(),
                 {
                     capture: true,
                     passive: true
@@ -98,17 +106,26 @@ export default abstract class DeformerEditor<C extends Contour, CC extends Conto
             this.attachDOMEvent('mousedown', e => {
                 isMouseDown = true;
             });
-            this.attachDOMEvent('mouseup', e => {
-                isMouseDown = false;
-            });
+            this.attachDOMEvent(
+                'mouseup',
+                e => {
+                    isMouseDown = false;
+                },
+                document,
+                {
+                    capture: true
+                }
+            );
             this.attachDOMEvent(
                 'mousemove',
                 e => {
                     if (isMouseDown) {
                         return;
                     }
+                    console.info('mouse moving');
                     this.handleMouseMove([mousePositionFromMouseEvent(e, this.holder)]);
                 },
+                this.getDOM(),
                 {
                     capture: true,
                     passive: true
@@ -125,7 +142,8 @@ export default abstract class DeformerEditor<C extends Contour, CC extends Conto
                     moveY: e.deltaY,
                     totalMoveX: e.deltaX,
                     totalMoveY: e.deltaY,
-                    mousePosition: position
+                    mousePosition: position,
+                    direction: e.direction
                 });
             });
             lastDeltaX = e.deltaX;
@@ -139,7 +157,8 @@ export default abstract class DeformerEditor<C extends Contour, CC extends Conto
                     moveY: e.deltaY - lastDeltaY,
                     totalMoveX: e.deltaX,
                     totalMoveY: e.deltaY,
-                    mousePosition: position
+                    mousePosition: position,
+                    direction: e.direction
                 });
             });
             lastDeltaX = e.deltaX;
@@ -153,7 +172,8 @@ export default abstract class DeformerEditor<C extends Contour, CC extends Conto
                     moveY: e.deltaY - lastDeltaY,
                     totalMoveX: e.deltaX,
                     totalMoveY: e.deltaY,
-                    mousePosition: position
+                    mousePosition: position,
+                    direction: e.direction
                 });
             });
             lastDeltaX = e.deltaX;
@@ -163,11 +183,12 @@ export default abstract class DeformerEditor<C extends Contour, CC extends Conto
     private attachDOMEvent<T extends keyof EventTypes>(
         type: T,
         listener: (e: EventTypes[T]) => void,
+        target: Document | HTMLElement = this.getDOM(),
         options?: DOMEventListenerOptions | boolean
     ) {
-        this.getDOM().addEventListener(type, listener as EventListener, options);
+        target.addEventListener(type, listener as EventListener, options);
         this.addDestroyHook(() => {
-            this.getDOM().removeEventListener(type, listener as EventListener, options);
+            target.removeEventListener(type, listener as EventListener, options);
         });
     }
     private handleMouseMove(positions: MousePosition[]) {

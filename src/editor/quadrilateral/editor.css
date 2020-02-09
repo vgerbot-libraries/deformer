@@ -33,3 +33,6 @@
 .deformer--editor-controller-bottom {
     cursor: s-resize;
 }
+.deformer--editor, .deformer--editor-movearea, .deformer--editor-controller {
+    user-select: none;
+}

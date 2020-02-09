@@ -6,11 +6,11 @@ import { CartesianCoordinate, CartesianPoint } from './CartesianCoordinate';
 import { CoordinateConvertionTpl } from './CoordinateConversionTpl';
 
 const polarPointLazy = new Lazy<PolarPoint>();
-
+const ACCURACY = 1e-13;
 export class PolarPoint extends Point<PolarCoordinatate> {
-    @polarPointLazy.property(p => Math.cos(p.sita) * p.r)
+    @polarPointLazy.property(p => Math.round(((Math.cos(p.sita) * p.r) / ACCURACY) * ACCURACY))
     private $x!: number;
-    @polarPointLazy.property(p => Math.sin(p.sita) * p.r)
+    @polarPointLazy.property(p => Math.round((Math.sin(p.sita) * p.r) / ACCURACY) * ACCURACY)
     private $y!: number;
     constructor(public readonly sita: number, public readonly r: number, public readonly coord: PolarCoordinatate) {
         super();

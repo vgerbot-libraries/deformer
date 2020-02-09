@@ -96,7 +96,9 @@ export class QuadrilateralDeformerEditor extends DeformerEditor<Quadrilateral, Q
                 height: ${ctrl.size}px;
                 left: ${point.x - ctrl.size / 2}px;
                 top: ${point.y - ctrl.size / 2}px;
+                font-size: 10px;
             `;
+            dom.innerText = ctrl.getDirectionName();
         });
         const boundary = this.contour.getDeviceBoundary();
         this.dom.style.cssText = `
@@ -105,6 +107,26 @@ export class QuadrilateralDeformerEditor extends DeformerEditor<Quadrilateral, Q
             width: ${boundary.right - boundary.left}px;
             height: ${boundary.bottom - boundary.top}px;
         `;
+    }
+    public reverseControllersDirection(direction: Direction) {
+        const otherSideDirection = (() => {
+            if (direction > 0b1111) {
+                return direction & 0b1111;
+            } else {
+                return 0b100000 | direction;
+            }
+        })();
+        let thisSideCtrl!: QuadrilateralController;
+        let otherSideCtrl!: QuadrilateralController;
+        this.controllers.forEach(ctrl => {
+            if (ctrl.direction === direction) {
+                thisSideCtrl = ctrl;
+            } else if (ctrl.direction === otherSideDirection) {
+                otherSideCtrl = ctrl;
+            }
+        });
+        thisSideCtrl.setDirection(otherSideDirection);
+        otherSideCtrl.setDirection(direction);
     }
     public getDOM() {
         if (!this.dom) {

@@ -1,3 +1,11 @@
+export enum HammerDirection {
+    LEFT = Hammer.DIRECTION_LEFT,
+    RIGHT = Hammer.DIRECTION_RIGHT,
+    HORIZONTAL = Hammer.DIRECTION_HORIZONTAL,
+    VERTICAL = Hammer.DIRECTION_VERTICAL,
+    UP = Hammer.DIRECTION_UP,
+    DOWN = Hammer.DIRECTION_DOWN
+}
 export function mousePositionFromHammerInput(e: HammerInput): MousePosition {
     const native = e.srcEvent;
     if (native instanceof TouchEvent) {
@@ -48,4 +56,5 @@ export interface PanMoveOffset {
     totalMoveX: number;
     totalMoveY: number;
     mousePosition: MousePosition;
+    direction: HammerDirection;
 }

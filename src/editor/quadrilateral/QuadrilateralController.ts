@@ -1,5 +1,5 @@
 import ContourController from '../../ContourController';
-import { MousePosition, PanMoveOffset } from '../../event-input';
+import { MousePosition, PanMoveOffset, HammerDirection } from '../../event-input';
 import { Quadrilateral } from '../../foundation/Quadrilateral';
 import { QuadrilateralDeformerEditor } from './QuadrilateralDeformerEditor';
 import { PolarPoint } from '../../foundation/math/coordinate/PolarCoordinate';
@@ -19,6 +19,7 @@ export enum Direction {
     RIGHT_TOP = 0b1011,
     LEFT_BOTTOM = 0b101011
 }
+
 type getPointMethodNames =
     | 'getLeftCenter'
     | 'getTopCenter'
@@ -60,6 +61,13 @@ export class QuadrilateralController extends ContourController<Quadrilateral> {
             throw new Error('Uncompatible direction');
         }
     }
+    public reverseDirection() {
+        if (this.direction > 0b1111) {
+            this.direction = this.direction & 0b1111;
+        } else {
+            this.direction = 0b100000 | this.direction;
+        }
+    }
     public getDirectionName(): string {
         return Direction[this.direction].toLowerCase();
     }
@@ -85,19 +93,69 @@ export class QuadrilateralController extends ContourController<Quadrilateral> {
     public handlePanStop(holder: DeformerHolderElement, offset: PanMoveOffset) {
         this.handlePanEvent(holder, offset);
     }
+    private isDirection(offsetDirection: HammerDirection, ...directions: HammerDirection[]) {
+        return directions.some(d => {
+            return (d | offsetDirection) === d;
+        });
+    }
+    private handleHorizontalPanEvent(offset: PanMoveOffset): boolean {
+        if (
+            !this.isDirection(offset.direction, HammerDirection.LEFT, HammerDirection.RIGHT, HammerDirection.HORIZONTAL)
+        ) {
+            return false;
+        }
+        const isLeft = this.direction === Direction.LEFT;
+        const contour = this.contour;
+        const leftTop = contour.getLeftTop().toDevice();
+        const rightTop = contour.getRightTop().toDevice();
+        let ofsX = offset.moveX;
+        const mouseX = offset.mousePosition.clientX;
+        const leftSideX = leftTop.getDeviceX();
+        const rightSideX = rightTop.getDeviceX();
+        if (isLeft) {
+            if ((mouseX > leftSideX && ofsX < 0) || (mouseX < leftSideX && ofsX > 0)) {
+                return false;
+            }
+        } else {
+            // is right side
+            if ((mouseX < rightSideX && ofsX > 0) || (mouseX > rightSideX && ofsX < 0)) {
+                return false;
+            }
+        }
+        const width = rightTop.x - leftTop.x;
+        if (width < Math.abs(ofsX)) {
+            this.editor.reverseControllersDirection(this.direction);
+            if (ofsX < 0) {
+                ofsX += width;
+            } else {
+                ofsX -= width;
+            }
+        }
+        if (isLeft) {
+            contour.addLeftOffset(ofsX);
+        } else {
+            contour.addRightOffset(ofsX);
+        }
+        return true;
+    }
+    private handleVerticalPanEvent(offset: PanMoveOffset): boolean {
+        return true;
+    }
     private handlePanEvent(holder: DeformerHolderElement, offset: PanMoveOffset) {
-        switch (this.direction) {
+        // let ofsY = offset.moveY;
+        let isHandled = false;
+        outer: switch (this.direction) {
             case Direction.LEFT:
-                this.contour.addLeftOffset(offset.moveX);
-                break;
-            case Direction.TOP:
-                this.contour.addTopOffset(offset.moveY);
-                break;
             case Direction.RIGHT:
-                this.contour.addRightOffset(offset.moveX);
-                break;
+                isHandled = this.handleHorizontalPanEvent(offset);
+                break outer;
+            case Direction.TOP:
+            // this.contour.addTopOffset(offset.moveY);
+            // break;
             case Direction.BOTTOM:
-                this.contour.addBottomOffset(-offset.moveY);
+                // this.contour.addBottomOffset(-offset.moveY);
+                // break;
+                isHandled = this.handleVerticalPanEvent(offset);
                 break;
             case Direction.LEFT_TOP:
                 break;
@@ -108,6 +166,8 @@ export class QuadrilateralController extends ContourController<Quadrilateral> {
             case Direction.LEFT_BOTTOM:
                 break;
         }
-        this.editor.updateUI();
+        if (isHandled) {
+            this.editor.updateUI();
+        }
     }
 }
