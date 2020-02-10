@@ -108,7 +108,7 @@ export class QuadrilateralController extends ContourController<Quadrilateral> {
         const contour = this.contour;
         const leftTop = contour.getLeftTop().toDevice();
         const rightTop = contour.getRightTop().toDevice();
-        let ofsX = offset.moveX;
+        const ofsX = offset.moveX;
         const mouseX = offset.mousePosition.clientX;
         const leftSideX = leftTop.getDeviceX();
         const rightSideX = rightTop.getDeviceX();
@@ -124,11 +124,8 @@ export class QuadrilateralController extends ContourController<Quadrilateral> {
         }
         const width = rightTop.x - leftTop.x;
         if (width < Math.abs(ofsX)) {
-            this.editor.reverseControllersDirection(this.direction);
-            if (ofsX < 0) {
-                ofsX += width;
-            } else {
-                ofsX -= width;
+            if ((ofsX < 0 && !isLeft) || (ofsX > 0 && isLeft)) {
+                this.editor.reverseControllersDirection(this.direction);
             }
         }
         if (isLeft) {
