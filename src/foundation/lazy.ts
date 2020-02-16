@@ -5,35 +5,32 @@ export class Lazy<Class> {
     private changeDetectors = {};
     public resetOnChange(...watchFields: string[] | Array<FieldWatcher<Class>>) {
         return (targetPrototype: object, propertyKey: string | symbol) => {
-            const FIRST_TIME_DETECTION_VALUE = {};
             const detectors = (this.changeDetectors[propertyKey] = []) as Array<FieldChangeDetector<Class>>;
             watchFields.forEach((watchField: string | FieldWatcher<Class>) => {
+                const CACHE_VALUE_KEY = uniqId('__cache_value_' + propertyKey.toString());
                 if (typeof watchField === 'string') {
-                    let lastValue = FIRST_TIME_DETECTION_VALUE;
                     detectors.push((obj: Class) => {
                         try {
-                            if (lastValue === FIRST_TIME_DETECTION_VALUE) {
+                            if (!(CACHE_VALUE_KEY in obj)) {
                                 return false;
                             }
-                            return lastValue !== obj[watchField];
+                            return obj[CACHE_VALUE_KEY] !== obj[watchField];
                         } finally {
-                            lastValue = obj[watchField];
+                            obj[CACHE_VALUE_KEY] = obj[watchField];
                         }
                     });
                 } else {
-                    detectors.push(
-                        (() => {
-                            let lastValue = FIRST_TIME_DETECTION_VALUE;
-                            return (obj: Class) => {
-                                const currentValue = watchField(obj);
-                                try {
-                                    return lastValue !== currentValue;
-                                } finally {
-                                    lastValue = currentValue;
-                                }
-                            };
-                        })()
-                    );
+                    detectors.push((obj: Class) => {
+                        if (!(CACHE_VALUE_KEY in obj)) {
+                            return false;
+                        }
+                        const currentValue = watchField(obj);
+                        try {
+                            return obj[CACHE_VALUE_KEY] !== currentValue;
+                        } finally {
+                            obj[CACHE_VALUE_KEY] = currentValue;
+                        }
+                    });
                 }
             });
         };
