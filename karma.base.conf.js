@@ -3,7 +3,7 @@
 module.exports = {
     basePath: '',
 
-    frameworks: ['mocha', 'chai'],
+    frameworks: ['mocha', 'chai', 'chai-spies'],
 
     restartBrowserBetweenTests: false,
 

@@ -14,12 +14,13 @@ module.exports = function (config) {
         rollupPreprocessor: rollupConfig,
         reporters: ['progress', 'mocha'],
 
-        logLevel: config.LOG_DEBUG,
+        logLevel: config.LOG_INFO,
 
         plugins: [
             'karma-chrome-launcher',
             'karma-mocha',
             'karma-chai',
+            'karma-chai-spies',
             'karma-mocha-reporter',
             '@vgerbot/karma-rollup-preprocessor',
             'karma-sourcemap-loader'
