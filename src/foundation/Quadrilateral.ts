@@ -176,10 +176,10 @@ export class Quadrilateral extends Contour {
         this.addTopv(new Vector(0, offset));
     }
     public addBottomv(vector: Vector) {
-        const leftTop = this.getLeftTop();
-        const rightTop = this.getRightTop();
-        super.setPoint(this.leftTopIndex, leftTop.addVector(vector));
-        super.setPoint(this.rightTopIndex, rightTop.addVector(vector));
+        const leftBottom = this.getLeftBottom();
+        const rightBottom = this.getRightBottom();
+        super.setPoint(this.leftBottomIndex, leftBottom.addVector(vector));
+        super.setPoint(this.rightBottomIndex, rightBottom.addVector(vector));
         this.collate();
     }
     public addBottomOffset(offset: number) {

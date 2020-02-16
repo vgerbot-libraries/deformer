@@ -136,6 +136,41 @@ export class QuadrilateralController extends ContourController<Quadrilateral> {
         return true;
     }
     private handleVerticalPanEvent(offset: PanMoveOffset): boolean {
+        if (!this.isDirection(offset.direction, HammerDirection.UP, HammerDirection.DOWN, HammerDirection.VERTICAL)) {
+            return false;
+        }
+        const isTop = this.direction === Direction.TOP;
+        const contour = this.contour;
+        const leftTop = contour.getLeftTop().toDevice();
+        const leftBottom = contour.getLeftBottom().toDevice();
+        const ofsY = offset.moveY;
+        const mouseY = offset.mousePosition.clientY;
+        const topSideY = leftTop.getDeviceY();
+        const bottomSideY = leftBottom.getDeviceY();
+        if (isTop) {
+            if ((mouseY > topSideY && ofsY < 0) || (mouseY < topSideY && ofsY > 0)) {
+                return false;
+            }
+        } else {
+            if ((mouseY > bottomSideY && ofsY < 0) || (mouseY < bottomSideY && ofsY > 0)) {
+                return false;
+            }
+        }
+        const height = leftBottom.getDeviceY() - leftTop.getDeviceY();
+        if (height < Math.abs(ofsY)) {
+            if ((ofsY > 0 && isTop) || (ofsY < 0 && !isTop)) {
+                this.editor.reverseControllersDirection(this.direction);
+            }
+        }
+        if (isTop) {
+            console.info('before add top offset', ofsY, contour.devicePoints());
+            contour.addTopOffset(-ofsY);
+            console.info('after add top offset', ofsY, contour.devicePoints());
+        } else {
+            console.info('before add bottom offset', ofsY, contour.devicePoints());
+            contour.addBottomOffset(-ofsY);
+            console.info('after add bottom offset', ofsY, contour.devicePoints());
+        }
         return true;
     }
     private handlePanEvent(holder: DeformerHolderElement, offset: PanMoveOffset) {

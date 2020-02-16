@@ -37,6 +37,7 @@ describe('Quadrilateral', () => {
     });
     it('addLeftOffset', () => {
         const quad = Quadrilateral.fromDOMElement(dom);
+        console.info(quad);
         const rect = dom.getBoundingClientRect();
         const offset = -10;
         quad.addLeftOffset(offset);
