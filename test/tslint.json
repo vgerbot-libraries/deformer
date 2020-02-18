@@ -1,6 +1,16 @@
 {
     "extends": "../tslint.json",
     "rules": {
+        "object-literal-sort-keys": false,
+        "no-console": false,
+        "no-bitwise": false,
+        "ordered-imports": false,
+        "interface-name": false,
+        "max-classes-per-file": false,
+        "no-namespace": false,
+        "max-line-length": [true, 120],
+        "prettier": [true, ".prettierrc"],
+        "forin": false,
         "no-unused-expression": false,
         "only-arrow-functions": false
     }

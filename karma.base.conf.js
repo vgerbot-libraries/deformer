@@ -3,7 +3,7 @@
 module.exports = {
     basePath: '',
 
-    frameworks: ['mocha', 'chai', 'chai-spies'],
+    frameworks: ['chai-sinon', 'chai', 'mocha'],
 
     restartBrowserBetweenTests: false,
 
@@ -13,7 +13,11 @@ module.exports = {
         included: false,
         watched: true
     }],
-
+    client: {
+        chai: {
+            includeStack: true
+        }
+    },
     mime: {
         'text/x-typescript': ['ts','tsx']
     },
@@ -44,5 +48,16 @@ module.exports = {
 
     singleRun: false,
 
-    concurrency: Infinity
+    concurrency: Infinity,
+
+    plugins: [
+        'karma-chrome-launcher',
+        'karma-mocha',
+        'karma-chai',
+        'karma-chai-sinon',
+        'karma-mocha-reporter',
+        '@vgerbot/karma-rollup-preprocessor',
+        'karma-coverage-istanbul-reporter',
+        'karma-sourcemap-loader'
+    ],
 };

@@ -27,6 +27,7 @@ const rollupPlugins = [
 module.exports = {
     context: 'this',
     watch: true,
+    external: ['chai', 'sinon'],
     output: {
         format: 'iife',
         name: 'RMI',
