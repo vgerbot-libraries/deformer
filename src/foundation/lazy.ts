@@ -11,9 +11,6 @@ export class Lazy<Class> {
                 if (typeof watchField === 'string') {
                     detectors.push((obj: Class) => {
                         try {
-                            if (!(CACHE_VALUE_KEY in obj)) {
-                                return false;
-                            }
                             return obj[CACHE_VALUE_KEY] !== obj[watchField];
                         } finally {
                             obj[CACHE_VALUE_KEY] = obj[watchField];
@@ -21,9 +18,6 @@ export class Lazy<Class> {
                     });
                 } else {
                     detectors.push((obj: Class) => {
-                        if (!(CACHE_VALUE_KEY in obj)) {
-                            return false;
-                        }
                         const currentValue = watchField(obj);
                         try {
                             return obj[CACHE_VALUE_KEY] !== currentValue;
