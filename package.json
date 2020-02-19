@@ -64,7 +64,7 @@
         "@vgerbot/karma-rollup-preprocessor": "^7.0.2",
         "autoprefixer": "^9.7.4",
         "chai": "4.2.0",
-        "codecov": "3.6.1",
+        "codecov": "3.6.5",
         "commitizen": "^4.0.3",
         "commitlint": "8.3.4",
         "cz-customizable": "^6.2.0",
