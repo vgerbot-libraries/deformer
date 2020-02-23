@@ -35,8 +35,8 @@ export abstract class Contour {
     public removePoint(index: number): boolean {
         return this.points.splice(index, 1).length > 0;
     }
-    public rotate(radian: number) {
-        this.points = this.points.map(it => it.rotate(radian));
+    public rotate(radian: number, origin: AnyPoint = this.getCenter()) {
+        this.points = this.points.map(it => it.rotate(radian, origin));
     }
     public expansion(r: number) {
         this.points = this.points.map(it => it.expansion(r));
@@ -70,4 +70,5 @@ export abstract class Contour {
         const bottom = Math.max(...aAxisY);
         return new Boundary(left, top, right, bottom);
     }
+    public abstract getCenter(): AnyPoint;
 }

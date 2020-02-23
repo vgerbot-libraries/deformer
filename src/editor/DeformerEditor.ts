@@ -122,7 +122,6 @@ export default abstract class DeformerEditor<C extends Contour, CC extends Conto
                     if (isMouseDown) {
                         return;
                     }
-                    console.info('mouse moving');
                     this.handleMouseMove([mousePositionFromMouseEvent(e, this.holder)]);
                 },
                 this.getDOM(),
@@ -146,6 +145,9 @@ export default abstract class DeformerEditor<C extends Contour, CC extends Conto
                     direction: e.direction
                 });
             });
+            this.mouseOverControllers.forEach(ctrl => {
+                ctrl.afterAllHandlePanMove(this.mouseOverControllers);
+            });
             lastDeltaX = e.deltaX;
             lastDeltaY = e.deltaY;
         });
@@ -161,6 +163,9 @@ export default abstract class DeformerEditor<C extends Contour, CC extends Conto
                     direction: e.direction
                 });
             });
+            this.mouseOverControllers.forEach(ctrl => {
+                ctrl.afterAllHandlePanMove(this.mouseOverControllers);
+            });
             lastDeltaX = e.deltaX;
             lastDeltaY = e.deltaY;
         });
@@ -175,6 +180,9 @@ export default abstract class DeformerEditor<C extends Contour, CC extends Conto
                     mousePosition: position,
                     direction: e.direction
                 });
+            });
+            this.mouseOverControllers.forEach(ctrl => {
+                ctrl.afterAllHandlePanStop(this.mouseOverControllers);
             });
             lastDeltaX = e.deltaX;
             lastDeltaY = e.deltaY;
@@ -194,6 +202,9 @@ export default abstract class DeformerEditor<C extends Contour, CC extends Conto
     private handleMouseMove(positions: MousePosition[]) {
         this.controllers.forEach(controller => {
             controller.handleMouseMove(this.holder, positions);
+        });
+        this.controllers.forEach(ctrl => {
+            ctrl.afterAllHandleMouseMove(this.controllers);
         });
         this.mouseOverControllers = this.controllers.filter(it => it.isMouseOver);
     }

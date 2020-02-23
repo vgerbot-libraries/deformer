@@ -4,6 +4,7 @@ import { PolarCoordinatate, PolarPoint } from './PolarCoordinate';
 import { Lazy } from '../../lazy';
 import { Vector } from '../vector';
 import { CoordinateConvertionTpl } from './CoordinateConversionTpl';
+import { fixAccuracy } from '../fixAccuracy';
 
 const cartesianPointLazy = new Lazy<CartesianPoint>();
 
@@ -47,9 +48,13 @@ export class CartesianPoint extends Point<CartesianCoordinate> {
 }
 export class CartesianCoordinate extends CoordinateConvertionTpl<CartesianPoint> {
     public static readonly ORIGIN = new CartesianCoordinate(0, 0);
+    public static by(point: AnyPoint): CartesianCoordinate {
+        const devicePoint = point.toDevice();
+        return new CartesianCoordinate(devicePoint.x, devicePoint.y);
+    }
     public origin = this.point(0, 0);
     public point(x: number, y: number): CartesianPoint {
-        return new CartesianPoint(x, y, this);
+        return new CartesianPoint(fixAccuracy(x), fixAccuracy(y), this);
     }
     public convertFrom(point: AnyPoint): CartesianPoint {
         return point.toCartesian(this);

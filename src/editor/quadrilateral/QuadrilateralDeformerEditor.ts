@@ -1,9 +1,10 @@
 import DeformerEditor, { DeformerEditorOptions } from '../DeformerEditor';
-import { QuadrilateralController, Direction } from './QuadrilateralController';
+import { QuadrilateralController } from './QuadrilateralController';
 import { Quadrilateral } from '../../foundation/Quadrilateral';
 import template from './editor.ejs';
 import './editor.css';
 import { DeviceCoordinate } from '../../foundation/math/coordinate/DeviceCoordinate';
+import { Direction } from '../../foundation/Direction';
 
 export interface QuadrilateralDeformerEditorOptions extends DeformerEditorOptions<Quadrilateral> {
     contour: Quadrilateral;
@@ -116,17 +117,20 @@ export class QuadrilateralDeformerEditor extends DeformerEditor<Quadrilateral, Q
                 return 0b100000 | direction;
             }
         })();
-        let thisSideCtrl!: QuadrilateralController;
-        let otherSideCtrl!: QuadrilateralController;
+        this.exchangeDirection(direction, otherSideDirection);
+    }
+    public exchangeDirection(fromDirection: Direction, toDirection: Direction) {
+        let fromSideCtrl!: QuadrilateralController;
+        let toSideCtrl!: QuadrilateralController;
         this.controllers.forEach(ctrl => {
-            if (ctrl.direction === direction) {
-                thisSideCtrl = ctrl;
-            } else if (ctrl.direction === otherSideDirection) {
-                otherSideCtrl = ctrl;
+            if (ctrl.direction === fromDirection) {
+                fromSideCtrl = ctrl;
+            } else if (ctrl.direction === toDirection) {
+                toSideCtrl = ctrl;
             }
         });
-        thisSideCtrl.setDirection(otherSideDirection);
-        otherSideCtrl.setDirection(direction);
+        fromSideCtrl.setDirection(toDirection);
+        toSideCtrl.setDirection(fromDirection);
     }
     public getDOM() {
         if (!this.dom) {

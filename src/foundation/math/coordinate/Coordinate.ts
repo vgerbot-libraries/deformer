@@ -17,7 +17,7 @@ export abstract class Point<C extends Coordinate<any>> {
         return new Vector(to.x - from.x, to.y - from.y);
     }
     public abstract addVector(vec: Vector): Point<C>;
-    public abstract rotate(radian: number): Point<C>;
+    public abstract rotate(radian: number, originPoint?: AnyPoint): Point<C>;
     public solveEquation(point: Point<any>): LinearEquation {
         return this.toDevice().solveEquation(point.toDevice());
     }

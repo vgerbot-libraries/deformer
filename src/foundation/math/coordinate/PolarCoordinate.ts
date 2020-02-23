@@ -6,11 +6,11 @@ import { CartesianCoordinate, CartesianPoint } from './CartesianCoordinate';
 import { CoordinateConvertionTpl } from './CoordinateConversionTpl';
 
 const polarPointLazy = new Lazy<PolarPoint>();
-const ACCURACY = 1e-13;
+
 export class PolarPoint extends Point<PolarCoordinatate> {
-    @polarPointLazy.property(p => Math.round(((Math.cos(p.sita) * p.r) / ACCURACY) * ACCURACY))
+    @polarPointLazy.property(p => Math.cos(p.sita) * p.r)
     private $x!: number;
-    @polarPointLazy.property(p => Math.round((Math.sin(p.sita) * p.r) / ACCURACY) * ACCURACY)
+    @polarPointLazy.property(p => Math.sin(p.sita) * p.r)
     private $y!: number;
     constructor(public readonly sita: number, public readonly r: number, public readonly coord: PolarCoordinatate) {
         super();
@@ -47,13 +47,22 @@ export class PolarPoint extends Point<PolarCoordinatate> {
     public scale(ratio: number): PolarPoint {
         return this.coord.point(this.sita, this.r * ratio);
     }
-    public rotate(radian: number): PolarPoint {
-        return this.coord.point(this.sita + radian, this.r);
+    public rotate(radian: number, originPoint?: AnyPoint): PolarPoint {
+        if (originPoint) {
+            const coordinate = PolarCoordinatate.by(originPoint);
+            return this.toPolar(coordinate).rotate(radian);
+        } else {
+            return this.coord.point(this.sita + radian, this.r);
+        }
     }
 }
 
 export class PolarCoordinatate extends CoordinateConvertionTpl<PolarPoint> {
     public static ORIGIN = new PolarCoordinatate(0, 0);
+    public static by(point: AnyPoint): PolarCoordinatate {
+        const devicePoint = point.toDevice();
+        return new PolarCoordinatate(devicePoint.x, devicePoint.y);
+    }
     public origin = this.point(0, 0);
     public point(sita: number, r: number): PolarPoint {
         return new PolarPoint(sita, r, this);

@@ -8,7 +8,7 @@ describe('lazy', () => {
         const initLazyPropertySpy = sinon.spy();
         const detectChangeSpy = sinon.spy();
         class A {
-            @lazy.resetOnChange((aa: A) => {
+            @lazy.detectFieldChange((aa: A) => {
                 detectChangeSpy(aa);
                 return aa.prop;
             })

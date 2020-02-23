@@ -5,6 +5,7 @@ import { PolarCoordinatate, PolarPoint } from './PolarCoordinate';
 import { CartesianCoordinate, CartesianPoint } from './CartesianCoordinate';
 import { LinearEquation } from '../LinearEquation';
 import { CoordinateConvertionTpl } from './CoordinateConversionTpl';
+import { fixAccuracy } from '../fixAccuracy';
 
 const devicePointLazy = new Lazy<DevicePoint>();
 
@@ -55,9 +56,13 @@ export class DevicePoint extends Point<DeviceCoordinate> {
 
 export class DeviceCoordinate extends CoordinateConvertionTpl<DevicePoint> {
     public static ORIGIN = new DeviceCoordinate(0, 0);
+    public static by(point: AnyPoint): DeviceCoordinate {
+        const devicePoint = point.toDevice();
+        return new DeviceCoordinate(devicePoint.x, devicePoint.y);
+    }
     public origin: DevicePoint = this.point(0, 0);
     public point(x: number, y: number): DevicePoint {
-        return new DevicePoint(x, y, this);
+        return new DevicePoint(fixAccuracy(x), fixAccuracy(y), this);
     }
     public convertFrom(point: AnyPoint): DevicePoint {
         return point.toDevice(this);
