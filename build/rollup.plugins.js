@@ -7,6 +7,8 @@ const json = require('rollup-plugin-json');
 const uglify = require('rollup-plugin-uglify');
 const ejs = require('rollup-plugin-ejs');
 const postcss = require('rollup-plugin-postcss');
+const devServer = require('rollup-plugin-dev-server');
+const del = require('rollup-plugin-delete');
 
 function ext(opt1, opt2) {
     if(opt2 && opt1) {
@@ -18,6 +20,19 @@ function ext(opt1, opt2) {
 }
 
 module.exports = {
+    devServer(opt) {
+        return devServer(ext({
+            verbose: false,
+            contentBase: '',
+            // host: '0.0.0.0',
+            port: 8080
+        }, opt))
+    },
+    del(opt) {
+        return del(ext({
+            targets: 'dist/*'
+        }, opt))
+    },
     postcss(opt) {
         return postcss(ext({
             plugins:[
@@ -49,10 +64,7 @@ module.exports = {
     },
     nodeResolve(opt){
         return nodeResolve(ext({
-            jsnext: true,
-            main: true,
-            module: true,
-            browser: true,
+            mainFields: ['module', 'jsnext', 'main', 'browser'],
             preferBuiltins: false
         }, opt));
     },

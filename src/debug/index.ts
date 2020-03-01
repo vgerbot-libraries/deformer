@@ -1,31 +1,33 @@
+import { Quadrilateral } from '../foundation/Quadrilateral';
+import QuadrilateralDeformerEditor from '../editor/quadrilateral/QuadrilateralDeformerEditor';
+
 // tslint-ignore all
 
-// rectangle
-// {
-//     const settings = new DeformerSettings(new Rectangle());
-
-//     const editor = new DeformerEditor(settings);
-//     const Events = DeformerEditor.Events;
-
-//     editor.on(Events.ROTATE, (radians,newContour,) => {
-
-//     });
-//     editor.on(Events.UPDATE, (newContour,) => {
-
-//     });
-//     editor.on(Events.RESIZE, (newContour) => {
-
-//     });
-//     editor.on(Events.MOVE, (vector, newContour, oldContour) => {
-
-//     });
-// }
-// // polygon contour
-// {
-//     const settings = new DeformerSettings(new Polygon());
-//     const domEditor = new DOMDeformerEditor(settings);
-//     domEditor.setRenderer(new DOMEditorRenderer(document.body));
-//     const unrender = domEditor.render();
-//     const canvasEditor = new CanvasDeformerEditor(settings);
-//     domEditor.render();
-// }
+const holder = document.createElement('div');
+holder.style.cssText = `
+    position: absolute;
+    display: block;
+    left: 100px;
+    top: 100px;
+    width: 200px;
+    height: 200px;
+    outline: 1px red inset;
+`;
+document.body.appendChild(holder);
+const editor = new QuadrilateralDeformerEditor({
+    contour: Quadrilateral.fromDOMElement(holder),
+    enableEdge: true,
+    enableVerticies: true,
+    rotatable: true
+});
+document.body.appendChild(editor.getDOM());
+editor.updateUI();
+editor.on('update', contour => {
+    const boundary = contour.getDeviceBoundary();
+    holder.style.cssText += `
+        left: ${boundary.left}px;
+        top: ${boundary.top}px;
+        width: ${boundary.getWidth()}px;
+        height: ${boundary.getHeight()}px;
+    `;
+});

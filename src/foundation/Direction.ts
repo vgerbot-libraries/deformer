@@ -22,6 +22,18 @@ export type DiagonalDirection =
     | Direction.RIGHT_BOTTOM
     | Direction.LEFT_BOTTOM;
 
+export enum Side {
+    LEFT = Direction.LEFT,
+    RIGHT = Direction.RIGHT,
+    TOP = Direction.TOP,
+    BOTTOM = Direction.BOTTOM,
+    LEFT_TOP = Direction.LEFT_TOP,
+    RIGHT_TOP = Direction.RIGHT_TOP,
+    RIGHT_BOTTOM = Direction.RIGHT_BOTTOM,
+    LEFT_BOTTOM = Direction.LEFT_BOTTOM,
+    ALL = Direction.ALL
+}
+
 export function isOpposite(direction: Direction, otherDirection: Direction) {
     return (direction ^ otherDirection) === 0b100000;
 }
@@ -36,5 +48,12 @@ export function getOppositeDirection(direction: Direction): Direction {
         return direction & 0b1111;
     } else {
         return 0b100000 | direction;
+    }
+}
+export function getOppositeSite(side: Side): Side {
+    if (side > 0b1111) {
+        return side & 0b1111;
+    } else {
+        return 0b100000 | side;
     }
 }

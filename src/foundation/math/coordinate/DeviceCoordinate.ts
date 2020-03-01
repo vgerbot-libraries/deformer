@@ -21,12 +21,8 @@ export class DevicePoint extends Point<DeviceCoordinate> {
     public getDeviceY() {
         return this.coord.originY + this.y;
     }
-    public rotate(radian: number): DevicePoint {
-        const sita = Math.atan2(this.y, this.x) + radian;
-        const r = this.$sqrtLength;
-        const x = r * Math.cos(sita);
-        const y = r * Math.sin(sita);
-        return this.coord.point(x, y);
+    public rotate(radian: number, origin: AnyPoint = this.coord.origin): DevicePoint {
+        return this.toDevice(DeviceCoordinate.by(origin)).rotateBaseOrigin(radian);
     }
     public toDevice(coord: DeviceCoordinate = DeviceCoordinate.ORIGIN): DevicePoint {
         return coord.point(this.getDeviceX() - coord.originX, this.getDeviceY() - coord.originY);
@@ -52,8 +48,14 @@ export class DevicePoint extends Point<DeviceCoordinate> {
         const b = dpoint.y - k * dpoint.x;
         return new LinearEquation(k, b);
     }
+    private rotateBaseOrigin(radian: number) {
+        const sita = Math.atan2(this.y, this.x) + radian;
+        const r = this.$sqrtLength;
+        const x = r * Math.cos(sita);
+        const y = r * Math.sin(sita);
+        return this.coord.point(x, y);
+    }
 }
-
 export class DeviceCoordinate extends CoordinateConvertionTpl<DevicePoint> {
     public static ORIGIN = new DeviceCoordinate(0, 0);
     public static by(point: AnyPoint): DeviceCoordinate {

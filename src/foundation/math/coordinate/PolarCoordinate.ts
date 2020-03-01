@@ -21,7 +21,11 @@ export class PolarPoint extends Point<PolarCoordinatate> {
         return coord.point(deviceX - coord.originX, deviceY - coord.originY);
     }
     public toPolar(coord: PolarCoordinatate = PolarCoordinatate.ORIGIN): PolarPoint {
-        return coord.point(this.sita, this.r);
+        const devicePoint = this.toDevice();
+        const vec = coord.origin.vector(devicePoint);
+        const sita = Math.atan2(vec.y, vec.x);
+        const r = vec.length();
+        return coord.point(sita, r);
     }
     public toCartesian(coord: CartesianCoordinate = CartesianCoordinate.ORIGIN): CartesianPoint {
         const x = this.$x + this.coord.originX; // device axis-x
@@ -47,13 +51,12 @@ export class PolarPoint extends Point<PolarCoordinatate> {
     public scale(ratio: number): PolarPoint {
         return this.coord.point(this.sita, this.r * ratio);
     }
-    public rotate(radian: number, originPoint?: AnyPoint): PolarPoint {
-        if (originPoint) {
-            const coordinate = PolarCoordinatate.by(originPoint);
-            return this.toPolar(coordinate).rotate(radian);
-        } else {
-            return this.coord.point(this.sita + radian, this.r);
-        }
+    public rotate(radian: number, originPoint: AnyPoint = this.coord.origin): PolarPoint {
+        const coordinate = PolarCoordinatate.by(originPoint);
+        return this.toPolar(coordinate).rotateByOrigin(radian);
+    }
+    private rotateByOrigin(radian) {
+        return this.coord.point(this.sita + radian, this.r);
     }
 }
 

@@ -22,7 +22,7 @@ export class CartesianPoint extends Point<CartesianCoordinate> {
     public toPolar(coord: PolarCoordinatate = PolarCoordinatate.ORIGIN): PolarPoint {
         const x = this.x - (coord.originX - this.coord.originX);
         const y = this.y - (this.coord.originY - coord.originY);
-        const sita = Math.atan2(x, y);
+        const sita = Math.atan2(x, y) + Math.PI * 0.5;
         const r = Math.sqrt(x * x + y * y);
         return coord.point(sita, r);
     }
@@ -38,7 +38,10 @@ export class CartesianPoint extends Point<CartesianCoordinate> {
     public addVector(vector: Vector): CartesianPoint {
         return this.coord.point(this.x + vector.x, this.y + vector.y);
     }
-    public rotate(radian: number): CartesianPoint {
+    public rotate(radian: number, origin: AnyPoint = this.coord.origin): CartesianPoint {
+        return this.toCartesian(CartesianCoordinate.by(origin)).rotateByOrigin(radian);
+    }
+    private rotateByOrigin(radian: number) {
         const sita = this.sita + radian;
         const r = this.r;
         const x = r * Math.cos(sita);

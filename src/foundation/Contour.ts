@@ -1,29 +1,38 @@
-import { DeviceCoordinate, DevicePoint } from './foundation/math/coordinate/DeviceCoordinate';
-import { PolarCoordinatate, PolarPoint } from './foundation/math/coordinate/PolarCoordinate';
-import { Vector } from './foundation/math/vector';
-import { Boundary } from './foundation/Boundary';
-import { CartesianCoordinate, CartesianPoint } from './foundation/math/coordinate/CartesianCoordinate';
-import { AnyPoint } from './foundation/math/coordinate/Coordinate';
+import { DeviceCoordinate, DevicePoint } from './math/coordinate/DeviceCoordinate';
+import { PolarCoordinatate, PolarPoint } from './math/coordinate/PolarCoordinate';
+import { Vector } from './math/vector';
+import { Boundary } from './Boundary';
+import { CartesianCoordinate, CartesianPoint } from './math/coordinate/CartesianCoordinate';
+import { AnyPoint } from './math/coordinate/Coordinate';
 
 const DEVICE_ORIGIN = DeviceCoordinate.ORIGIN;
 const CARTESIAN_ORIGIN = CartesianCoordinate.ORIGIN;
 
 export abstract class Contour {
-    protected readonly coordinate: PolarCoordinatate;
+    protected coordinate: PolarCoordinatate;
     protected points: PolarPoint[] = [];
+    private saveStack: PolarPoint[][] = [];
     constructor(center: AnyPoint) {
-        const origin = center.toDevice(DEVICE_ORIGIN);
-        this.coordinate = new PolarCoordinatate(origin.getDeviceX(), origin.getDeviceY());
+        this.coordinate = PolarCoordinatate.by(center);
     }
-    public moveByVector(vector: Vector) {
-        this.coordinate.moveOriginByVector(vector);
+    public save() {
+        this.saveStack.push(this.points.slice(0));
     }
-    public move(x: number, y: number) {
-        this.coordinate.moveOrigin(x, y);
+    public restore() {
+        const last = this.saveStack.pop();
+        if (last) {
+            this.points = last;
+        }
+    }
+    public apply() {
+        this.saveStack.length = 0;
+    }
+    public move(vector: Vector) {
+        this.points = this.points.map(it => it.addVector(vector));
     }
     public moveTo(point: AnyPoint) {
-        const dpoint = point.toDevice(DEVICE_ORIGIN);
-        this.coordinate.moveOriginTo(dpoint.getDeviceX(), dpoint.getDeviceY());
+        const vector = this.getCenter().vector(point);
+        this.move(vector);
     }
     public addPoint(point: AnyPoint) {
         this.points.push(point.toPolar(this.coordinate));
@@ -71,4 +80,5 @@ export abstract class Contour {
         return new Boundary(left, top, right, bottom);
     }
     public abstract getCenter(): AnyPoint;
+    public abstract clone(): Contour;
 }

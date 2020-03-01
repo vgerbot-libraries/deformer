@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { hello } from '../../src/index';
-import { QuadrilateralDeformerEditor } from '../../src/editor/quadrilateral/QuadrilateralDeformerEditor';
+import QuadrilateralDeformerEditor from '../../src/editor/quadrilateral/QuadrilateralDeformerEditor';
 import { Quadrilateral } from '../../src/foundation/Quadrilateral';
 
 describe('quadrilateral test', () => {
@@ -17,9 +17,9 @@ describe('quadrilateral test', () => {
         document.body.appendChild(holder);
         const editor = new QuadrilateralDeformerEditor({
             contour: Quadrilateral.fromDOMElement(holder),
-            holder,
-            enableDiagonally: true,
-            enableRim: true
+            enableEdge: true,
+            enableVerticies: true,
+            rotatable: true
         });
         document.body.appendChild(editor.getDOM());
     });

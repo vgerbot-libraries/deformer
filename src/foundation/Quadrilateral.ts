@@ -1,11 +1,11 @@
 import { DeviceCoordinate } from './math/coordinate/DeviceCoordinate';
-import { Contour } from '../Contour';
+import { Contour } from './Contour';
 import { Vector } from './math/vector';
 import { CartesianCoordinate } from './math/coordinate/CartesianCoordinate';
-import { PolarPoint } from './math/coordinate/PolarCoordinate';
+import { PolarPoint, PolarCoordinatate } from './math/coordinate/PolarCoordinate';
 import { AnyPoint } from './math/coordinate/Coordinate';
 import { Lazy } from './lazy';
-import { Direction } from './Direction';
+import { Side } from './Direction';
 
 const DEVICE_ORIGIN = DeviceCoordinate.ORIGIN;
 
@@ -13,6 +13,7 @@ interface SidePointIndexes {
     horizontal: number[];
     vertical: number[];
 }
+
 const lazy = new Lazy<Quadrilateral>();
 export class Quadrilateral extends Contour {
     public static fromDOMElement(elm: Element) {
@@ -119,21 +120,32 @@ export class Quadrilateral extends Contour {
     @lazy.property(q => q.initBottomCenter())
     private bottomCenter!: PolarPoint;
     @lazy.detectFieldChange(
-        q => q.points,
-        q => q.points[0],
-        q => q.points[1],
-        q => q.points[2],
-        q => q.points[3]
+        q => q.getLeftTop(),
+        q => q.getRightTop(),
+        q => q.getRightBottom(),
+        q => q.getLeftBottom()
     )
     @lazy.property(q => q.initCenter())
     private center!: PolarPoint;
+
+    @lazy.detectFieldChange(
+        q => q.getLeftTop(),
+        q => q.getRightTop()
+    )
+    @lazy.property(q => q.initWidth())
+    private width!: number;
+    @lazy.detectFieldChange(
+        q => q.getLeftTop(),
+        q => q.getLeftBottom()
+    )
+    @lazy.property(q => q.initHeight())
+    private height!: number;
     protected constructor(point1: AnyPoint, point2: AnyPoint, point3: AnyPoint, point4: AnyPoint, center: AnyPoint) {
         super(center);
         super.addPoint(point1);
         super.addPoint(point2);
         super.addPoint(point3);
         super.addPoint(point4);
-        this.collate();
     }
     public getLeftCenter(): PolarPoint {
         return this.leftCenter;
@@ -159,12 +171,42 @@ export class Quadrilateral extends Contour {
     public getRightBottom(): PolarPoint {
         return this.points[this.rightBottomIndex];
     }
-    public addVector(vector: Vector, side: Direction) {
+    public getWidth() {
+        return this.width;
+    }
+    public getHeight() {
+        return this.height;
+    }
+    public getPointBySide(side: Side): PolarPoint {
         switch (side) {
-            case Direction.HORIZONTAL:
-            case Direction.VERTICAL:
-                return;
+            case Side.LEFT:
+                return this.getLeftCenter();
+            case Side.LEFT_BOTTOM:
+                return this.getLeftBottom();
+            case Side.RIGHT:
+                return this.getRightCenter();
+            case Side.RIGHT_BOTTOM:
+                return this.getRightBottom();
+            case Side.TOP:
+                return this.getTopCenter();
+            case Side.BOTTOM:
+                return this.getBottomCenter();
+            case Side.LEFT_TOP:
+                return this.getLeftTop();
+            case Side.RIGHT_TOP:
+                return this.getRightTop();
         }
+        throw new Error(`Incorrect side: ${side}`);
+    }
+    public rotate(radian: number, origin = this.getCenter()) {
+        // this.rotation += radian;
+        const coordinate = PolarCoordinatate.by(origin);
+        this.coordinate = coordinate;
+        this.points = this.points.map(p => p.toPolar(coordinate).rotate(radian));
+    }
+    public addVector(vector: Vector, side: Side): boolean {
+        const width = this.width;
+        const height = this.height;
         const indexes = this.getPointIndexArrayAt(side);
         if (Array.isArray(indexes)) {
             indexes.forEach(index => {
@@ -180,7 +222,10 @@ export class Quadrilateral extends Contour {
                 this.points[index] = this.points[index].addVector(verticalVector);
             });
         }
-        this.collate();
+        const points = this.points;
+        const newPoints = this.collate(vector, side, width, height);
+        this.points = newPoints;
+        return points !== newPoints;
     }
     public straighten() {
         const vec = this.getLeftTop().vector(this.getRightTop());
@@ -188,11 +233,7 @@ export class Quadrilateral extends Contour {
         this.rotate(-r);
     }
     public setPoint(index: number, point: AnyPoint) {
-        if (index > 3) {
-            throw new Error('Unsupported operation: index should be in range of 0 to 4');
-        }
-        super.setPoint(index, point);
-        this.collate();
+        throw new Error('Unsupported operation!');
     }
     public addPoint(point: AnyPoint): number {
         throw new Error('Unsupported operation!');
@@ -200,48 +241,78 @@ export class Quadrilateral extends Contour {
     public getCenter(): PolarPoint {
         return this.center;
     }
-    private getPointIndexArrayAt(side: Direction): SidePointIndexes | number[] {
+    public clone(): Quadrilateral {
+        return new Quadrilateral(this.points[0], this.points[1], this.points[2], this.points[3], this.center);
+    }
+    private collate(vec: Vector, side: Side, width: number, height: number): PolarPoint[] {
+        const leftTop = this.getLeftTop();
+        const leftBottom = this.getLeftBottom();
+        const rightTop = this.getRightTop();
+        const rightBottom = this.getRightBottom();
+        const offsetX = Math.abs(vec.x);
+        const offsetY = Math.abs(vec.y);
         switch (side) {
-            case Direction.LEFT:
+            case Side.LEFT:
+            case Side.RIGHT:
+                if (offsetX > width) {
+                    return [rightTop, leftTop, leftBottom, rightBottom];
+                }
+                break;
+            case Side.TOP:
+            case Side.BOTTOM:
+                if (offsetY > height) {
+                    return [leftBottom, rightBottom, rightTop, leftTop];
+                }
+                break;
+            case Side.LEFT_TOP:
+            case Side.RIGHT_TOP:
+            case Side.RIGHT_BOTTOM:
+            case Side.LEFT_BOTTOM:
+                if (offsetX > width && offsetY > height) {
+                    return [rightBottom, leftBottom, leftTop, rightTop];
+                } else if (offsetX > width) {
+                    return [rightTop, leftTop, leftBottom, rightBottom];
+                } else if (offsetY > height) {
+                    return [leftBottom, leftTop, rightBottom, rightTop];
+                }
+                break;
+        }
+        return this.points;
+    }
+    private getPointIndexArrayAt(side: Side): SidePointIndexes | number[] {
+        switch (side) {
+            case Side.LEFT:
                 return [this.leftTopIndex, this.leftBottomIndex];
-            case Direction.RIGHT:
+            case Side.RIGHT:
                 return [this.rightTopIndex, this.rightBottomIndex];
-            case Direction.TOP:
+            case Side.TOP:
                 return [this.leftTopIndex, this.rightTopIndex];
-            case Direction.BOTTOM:
+            case Side.BOTTOM:
                 return [this.leftBottomIndex, this.rightBottomIndex];
-            case Direction.LEFT_TOP:
+            case Side.LEFT_TOP:
                 return {
                     horizontal: [this.leftTopIndex, this.leftBottomIndex],
                     vertical: [this.leftTopIndex, this.rightTopIndex]
                 };
-            case Direction.RIGHT_TOP:
+            case Side.RIGHT_TOP:
                 return {
                     horizontal: [this.rightTopIndex, this.rightBottomIndex],
                     vertical: [this.leftTopIndex, this.rightTopIndex]
                 };
-            case Direction.LEFT_BOTTOM:
+            case Side.LEFT_BOTTOM:
                 return {
                     horizontal: [this.leftBottomIndex, this.leftTopIndex],
                     vertical: [this.leftBottomIndex, this.rightBottomIndex]
                 };
-            case Direction.RIGHT_BOTTOM:
+            case Side.RIGHT_BOTTOM:
                 return {
                     horizontal: [this.rightTopIndex, this.rightBottomIndex],
                     vertical: [this.leftBottomIndex, this.rightBottomIndex]
                 };
-            case Direction.ALL:
+            case Side.ALL:
                 return [this.leftTopIndex, this.rightTopIndex, this.rightBottomIndex, this.leftBottomIndex];
         }
         return [];
-    }
-    private collate() {
-        this.points = Quadrilateral.collatePoints(this.points).map(point => {
-            if (point.coord !== this.coordinate || !(point instanceof PolarPoint)) {
-                return point.toPolar(this.coordinate);
-            }
-            return point;
-        });
     }
     private initLeftCenter(): PolarPoint {
         const halfVector = this.getLeftTop()
@@ -271,5 +342,15 @@ export class Quadrilateral extends Contour {
         const leftTop = this.getLeftTop();
         const rightBottom = this.getRightBottom();
         return leftTop.addVector(leftTop.vector(rightBottom).multiply(0.5));
+    }
+    private initWidth(): number {
+        return this.getLeftTop()
+            .vector(this.getRightTop())
+            .length();
+    }
+    private initHeight(): number {
+        return this.getLeftTop()
+            .vector(this.getLeftBottom())
+            .length();
     }
 }

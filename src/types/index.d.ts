@@ -9,3 +9,20 @@ declare type DeformerHolderElement = HTMLElement | SVGElement;
 declare module '*.ejs' {
     export default function compilerTemplate(options: any): string;
 }
+
+type DevicePoint = import('../foundation/math/coordinate/DeviceCoordinate').DevicePoint;
+type Vector = import('../foundation/math/vector').Vector;
+type MouseOperationDirection = import('../event-input').MouseOperationDirection;
+
+declare interface MousePosition {
+    readonly client: DevicePoint;
+    readonly page: DevicePoint;
+    readonly screen: DevicePoint;
+    readonly offset: DevicePoint;
+}
+
+declare interface EditorEvent {
+    move: Vector;
+    position: MousePosition;
+    direction: MouseOperationDirection;
+}

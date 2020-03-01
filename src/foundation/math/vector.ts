@@ -19,11 +19,14 @@ export class Vector {
     public add(x: number, y: number) {
         return new Vector(this.x + x, this.y + y);
     }
-    public substractVector(other: Vector) {
-        return this.substract(other.x, other.y);
+    public substract(other: Vector) {
+        return new Vector(this.x - other.x, this.y - other.y);
     }
-    public substract(x: number, y: number) {
-        return new Vector(this.x - x, this.y - y);
+    public vecx() {
+        return new Vector(this.x, 0);
+    }
+    public vecy() {
+        return new Vector(0, this.y);
     }
     public negate() {
         return new Vector(-this.x, -this.y);

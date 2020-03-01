@@ -28,7 +28,6 @@ export abstract class Point<C extends Coordinate<any>> {
         return Math.abs(thisPoint.x - otherPoint.x) < ACCURACY && Math.abs(thisPoint.y - otherPoint.y) < ACCURACY;
     }
 }
-
 export abstract class Coordinate<P extends Point<any>> {
     public abstract origin: P;
     constructor(public originX: number, public originY: number) {}

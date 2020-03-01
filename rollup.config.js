@@ -36,7 +36,8 @@ module.exports = [
                 sourceMap: false
             }),
             plugins.strip(),
-            plugins.typescript()
+            plugins.typescript(),
+            plugins.del()
         ],
         external: ['txon']
     }

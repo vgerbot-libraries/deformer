@@ -1,6 +1,18 @@
 const plugins = require('./build/rollup.plugins');
+const copy = require('rollup-plugin-copy');
 
 const rollupPlugins = [
+    plugins.devServer({
+        open: true,
+        port: 9090,
+        contentBase: ['dist']
+    }),
+    copy({
+        targets: [{
+            src: 'src/debug/index.html',
+            dest: 'dist'
+        }]
+    }),
     plugins.postcss({
         extract: false,
         inject: true
@@ -22,15 +34,17 @@ const rollupPlugins = [
         namedExports: {
             chai: ['expect']
         }
-    })
+    }),
+    plugins.del()
 ];
 module.exports = {
     context: 'this',
     watch: true,
-    external: ['chai', 'sinon'],
+    input: 'src/debug/index.ts',
     output: {
+        file: 'dist/index.js',
         format: 'iife',
-        name: 'RMI',
+        name: 'Deformer',
         sourcemap: 'inline'
     },
     plugins: rollupPlugins,

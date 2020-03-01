@@ -66,6 +66,9 @@ export class JSEventEmitter implements IEventEmitter {
         this.removeListeners.push(remove);
         return remove;
     }
+    public emit(type: string, ...args: any[]) {
+        this.emitter.emit(type, ...args);
+    }
     public clear() {
         this.removeListeners.forEach(rm => rm());
     }

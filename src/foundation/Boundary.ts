@@ -5,4 +5,10 @@ export class Boundary {
         public readonly right: number,
         public readonly bottom: number
     ) {}
+    public getWidth() {
+        return this.right - this.left;
+    }
+    public getHeight() {
+        return this.bottom - this.top;
+    }
 }

@@ -1,0 +1,8 @@
+.deformer-editor {
+    padding: 0;
+    margin: 0;
+    position: fixed;
+    display: block;
+    outline: 1px solid green;
+    will-change: left,top,width,height;
+}
