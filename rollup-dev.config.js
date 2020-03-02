@@ -1,11 +1,16 @@
 const plugins = require('./build/rollup.plugins');
 const copy = require('rollup-plugin-copy');
+const livereload = require('rollup-plugin-livereload');
 
 const rollupPlugins = [
     plugins.devServer({
         open: true,
         port: 9090,
         contentBase: ['dist']
+    }),
+    livereload({
+        watch: 'dist',
+        verbose: false
     }),
     copy({
         targets: [{
@@ -39,7 +44,10 @@ const rollupPlugins = [
 ];
 module.exports = {
     context: 'this',
-    watch: true,
+    watch: {
+        chokidar: {},
+        exclude: ['node_modules/**']
+    },
     input: 'src/debug/index.ts',
     output: {
         file: 'dist/index.js',

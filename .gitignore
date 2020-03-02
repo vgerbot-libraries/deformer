@@ -8,3 +8,5 @@
 /dist
 package-lock.json
 yarn.lock
+/src/*.d.ts
+!/src/types/*.d.ts
