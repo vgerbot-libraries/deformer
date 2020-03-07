@@ -1,4 +1,4 @@
-import EventEmitter from 'events';
+import { EventEmitter } from 'events';
 
 export interface DOMEventListenerOptions {
     capture?: boolean;

@@ -1,7 +1,7 @@
-import { expect } from 'chai';
 import { hello } from '../../src/index';
 import QuadrilateralDeformerEditor from '../../src/editor/quadrilateral/QuadrilateralDeformerEditor';
 import { Quadrilateral } from '../../src/foundation/Quadrilateral';
+import { expect } from 'chai';
 
 describe('quadrilateral test', () => {
     before(() => {

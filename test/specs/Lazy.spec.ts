@@ -1,6 +1,6 @@
 import { Lazy } from '../../src/foundation/lazy';
-import { expect } from 'chai';
 import sinon from 'sinon';
+import { expect } from 'chai';
 
 describe('lazy', () => {
     it('should lazy property reset on change(watch by field name)', () => {

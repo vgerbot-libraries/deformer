@@ -252,6 +252,7 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
         });
     }
     private handleMouseMove(position: MousePosition) {
+        this.oprControllers = [];
         this.controllers.forEach(controller => {
             controller.handleMouseMove(position);
         });

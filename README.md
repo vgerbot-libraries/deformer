@@ -2,7 +2,7 @@
 
 Technology stacks:
 
-- typescript@3.0.1
+- typescript@3.7.4
 - rollup
 - karma
 - mocha + chai

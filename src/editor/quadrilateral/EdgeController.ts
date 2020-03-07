@@ -37,6 +37,11 @@ export class QuadrilateralEdgeController extends ContourController<Quadrilateral
         renderer.restore();
     }
     public handleMouseMove(position: MousePosition) {
+        const findController = this.editor.getOprControllers().find(it => it instanceof QuadrilateralEdgeController);
+        if (findController) {
+            this.isMouseOver = false;
+            return;
+        }
         this.isMouseOver =
             this.getPoint()
                 .vector(position.page)

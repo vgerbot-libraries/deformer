@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { Quadrilateral } from '../../src/foundation/Quadrilateral';
 import { DeviceCoordinate } from '../../src/foundation/math/coordinate/DeviceCoordinate';
 import { Vector } from '../../src/foundation/math/vector';
-import { Direction } from '../../src/foundation/Direction';
+import { Side } from '../../src/foundation/Direction';
 
 const MIN_ACCURACY = 0.001;
 
@@ -42,7 +42,7 @@ describe('Quadrilateral', () => {
         console.info(quad);
         const rect = dom.getBoundingClientRect();
         const offset = -10;
-        quad.addVector(new Vector(offset, 0), Direction.LEFT);
+        quad.addVector(new Vector(offset, 0), Side.LEFT);
 
         const leftTop = quad.getLeftTop().toDevice(DeviceCoordinate.ORIGIN);
         expect(leftTop.getDeviceX()).to.be.closeTo(rect.left + offset, MIN_ACCURACY);
@@ -63,7 +63,7 @@ describe('Quadrilateral', () => {
         const quad = Quadrilateral.fromDOMElement(dom);
         const rect = dom.getBoundingClientRect();
         const offset = 10;
-        quad.addVector(new Vector(offset, 0), Direction.RIGHT);
+        quad.addVector(new Vector(offset, 0), Side.RIGHT);
 
         const leftTop = quad.getLeftTop().toDevice(DeviceCoordinate.ORIGIN);
         expect(leftTop.getDeviceX()).to.be.closeTo(rect.left, MIN_ACCURACY);
