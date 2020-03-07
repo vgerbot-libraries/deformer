@@ -19,9 +19,13 @@ config.module
     .pre()
     .include.add(/src|node_modules/)
     .end()
-    .use('postcssLoader')
+    .use('style-laoder')
     .loader('style-loader')
+    .end()
+    .use('css-loader')
     .loader('css-loader')
+    .end()
+    .use('postcss-loader')
     .loader('postcss-loader')
     .options({
         plugins: [Autoprefixer()]

@@ -1,7 +1,6 @@
 import config from './webpack.base';
-import path from 'path';
 
-config.devtool('inline-source-map');
+config.devtool('cheap-module-eval-source-map');
 
 config.mode('development');
 config.module.rules.delete('compile');
@@ -20,21 +19,7 @@ config.module
         transpileOnly: true
     })
     .end() // end use: typescript
-    .end() // end rule: compule
-    .rule('coverage')
-    .test(/\.ts$/)
-    .enforce('post')
-    .exclude.add(/node_modules|\.spec\.ts$/)
-    .end()
-    .include.add(path.resolve(__dirname, '../../src'))
-    .end()
-    .use('istanbul')
-    .loader('coverage-istanbul-loader')
-    .options({
-        esModules: true
-    })
-    .end()
-    .end();
+    .end(); // end rule: compule
 
 export const configChain = config;
 
