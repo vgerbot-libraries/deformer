@@ -57,7 +57,8 @@ describe('Cartesian Coordinate system', () => {
     });
     it('convert to polar point', () => {
         const point = coordinate.point(1, 1);
-        const polar = point.toPolar(new PolarCoordinatate(coordinate.originX, coordinate.originY));
+        const polarCoordinate = PolarCoordinatate.by(coordinate.origin);
+        const polar = point.toPolar(polarCoordinate);
         expect(polar.sita).to.be.closeTo(Math.PI / 4, MIN_ACCURACY);
         expect(polar.r).to.be.closeTo(Math.sqrt(2), MIN_ACCURACY);
     });

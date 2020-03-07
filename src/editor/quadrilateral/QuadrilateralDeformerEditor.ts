@@ -26,25 +26,53 @@ export default class QuadrilateralDeformerEditor extends DeformerEditor<Quadrila
             this.attach(new QuadrilateralEdgeController(this, Side.TOP));
             this.attach(new QuadrilateralEdgeController(this, Side.BOTTOM));
         }
-        this.updateUI();
+        this.updateUIOnNodeInserted();
     }
     public updateUI() {
         const boundary = this.contour.getDeviceBoundary();
         const padding = 5;
-        const width = boundary.getWidth();
-        const height = boundary.getHeight();
-        const displayWidth = width + padding * 2;
-        const displayHeight = height + padding * 2;
+        const displayBoundary = boundary.expand(padding);
         this.getDOM().style.cssText += `
-            left: ${boundary.left - padding}px;
-            top: ${boundary.top - padding}px;
-            width: ${displayWidth}px;
-            height: ${displayHeight}px;
+            left: ${displayBoundary.left}px;
+            top: ${displayBoundary.top}px;
+            width: ${displayBoundary.getWidth()}px;
+            height: ${displayBoundary.getHeight()}px;
         `;
         this.renderer.setOffset(padding);
-        this.renderer.reset(displayWidth, displayHeight);
+        this.renderer.reset(displayBoundary, boundary);
         this.controllers.forEach(ctrl => {
             ctrl.render(this.renderer);
         });
+    }
+    private updateUIOnNodeInserted() {
+        if (typeof MutationObserver !== 'undefined') {
+            const observer = new MutationObserver(mutationList => {
+                const dom = this.getDOM();
+                const findMatch = mutationList.some(record => {
+                    const addedNodes = record.addedNodes;
+                    const len = addedNodes.length;
+                    for (let i = 0; i < len; i++) {
+                        if (addedNodes.item(i) === dom) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+                if (findMatch) {
+                    this.updateUI();
+                }
+            });
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+            this.addDestroyHook(() => {
+                observer.disconnect();
+            });
+        } else {
+            this.getDOM().addEventListener('DOMNodeInserted', () => {
+                this.updateUI();
+            });
+        }
     }
 }

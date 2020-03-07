@@ -1,6 +1,7 @@
 import { AnyPoint } from '../foundation/math/coordinate/Coordinate';
 import { DeviceCoordinate } from '../foundation/math/coordinate/DeviceCoordinate';
 import { Vector } from '../foundation/math/vector';
+import { Boundary } from '../foundation/Boundary';
 
 export interface RenderingConfig {
     fillStyle: string | CanvasGradient | CanvasPattern;
@@ -24,16 +25,27 @@ export default class DeformerEditorRenderer {
     private readonly canvas: HTMLCanvasElement;
     private readonly ctx: CanvasRenderingContext2D;
     private readonly coordinate: DeviceCoordinate = new DeviceCoordinate(0, 0);
+    private displayBoundary: Boundary;
+    private originBoundary: Boundary;
     constructor() {
         this.canvas = document.createElement('canvas');
         this.ctx = this.canvas.getContext('2d')!;
+        const domRect = this.canvas.getBoundingClientRect();
+        this.originBoundary = this.displayBoundary = new Boundary(
+            domRect.left,
+            domRect.top,
+            domRect.right,
+            domRect.bottom
+        );
     }
     public getDOM() {
         return this.canvas;
     }
-    public reset(width: number, height: number) {
-        this.canvas.width = width;
-        this.canvas.height = height;
+    public reset(displayBoundary: Boundary, originBoundary: Boundary) {
+        this.canvas.width = displayBoundary.getWidth();
+        this.canvas.height = displayBoundary.getHeight();
+        this.displayBoundary = displayBoundary;
+        this.originBoundary = originBoundary;
     }
     public clear() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -75,7 +87,8 @@ export default class DeformerEditorRenderer {
         this.ctx.rect(dLeftTop.x + width * 0.5, dLeftTop.y + height * 0.5, width, height);
     }
     private convertPoint(point: AnyPoint) {
-        const rect = this.canvas.getBoundingClientRect();
-        return point.toDevice(this.coordinate).addVector(new Vector(-rect.left, -rect.top));
+        return point
+            .toDevice(this.coordinate)
+            .addVector(new Vector(-this.displayBoundary.left, -this.displayBoundary.top));
     }
 }

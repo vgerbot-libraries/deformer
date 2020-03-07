@@ -11,4 +11,7 @@ export class Boundary {
     public getHeight() {
         return this.bottom - this.top;
     }
+    public expand(offset: number) {
+        return new Boundary(this.left - offset, this.top - offset, this.right + offset, this.bottom + offset);
+    }
 }
