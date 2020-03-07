@@ -3,6 +3,9 @@ import { Lazy } from '../lazy';
 const lazy = new Lazy<Vector>();
 export class Vector {
     public static ZERO = new Vector(0, 0);
+    public static NORMALIZE = new Vector(1, 1);
+    public static REVERSE_VERTICAL_DIRECTION = new Vector(1, -1);
+    public static REVERSE_HORIZONTAL_DIRECTION = new Vector(-1, 1);
     @lazy.property(vec => vec.x * vec.x)
     private $squareX!: number;
     @lazy.property(vec => vec.y * vec.y)
@@ -33,6 +36,9 @@ export class Vector {
     }
     public multiply(f: number) {
         return new Vector(this.x * f, this.y * f);
+    }
+    public multiplyVector(vec: Vector) {
+        return new Vector(this.x * vec.x, this.y * vec.y);
     }
     public dot(other: Vector) {
         return this.x * other.x + this.y * other.y;

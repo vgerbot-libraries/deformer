@@ -2,6 +2,7 @@ import DeformerEditor, { DeformerEditorOptions } from '../DeformerEditor';
 import { Quadrilateral } from '../../foundation/Quadrilateral';
 import { QuadrilateralEdgeController } from './EdgeController';
 import { Side } from '../../foundation/Direction';
+import MoveController from './MoveController';
 
 export interface QuadrilateralDeformerEditorOptions extends DeformerEditorOptions<Quadrilateral> {
     contour: Quadrilateral;
@@ -25,6 +26,9 @@ export default class QuadrilateralDeformerEditor extends DeformerEditor<Quadrila
             this.attach(new QuadrilateralEdgeController(this, Side.RIGHT));
             this.attach(new QuadrilateralEdgeController(this, Side.TOP));
             this.attach(new QuadrilateralEdgeController(this, Side.BOTTOM));
+        }
+        if (this.moveable) {
+            this.attach(new MoveController(this));
         }
         this.updateUIOnNodeInserted();
     }

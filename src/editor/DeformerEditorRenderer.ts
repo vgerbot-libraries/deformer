@@ -37,6 +37,7 @@ export default class DeformerEditorRenderer {
             domRect.right,
             domRect.bottom
         );
+        this.originBoundary.getHeight(); // suppress ts ERROR
     }
     public getDOM() {
         return this.canvas;

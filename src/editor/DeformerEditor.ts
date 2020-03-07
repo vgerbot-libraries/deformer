@@ -176,12 +176,14 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
             this.contour.save();
             if (this.rotationController?.isMouseOver) {
                 this.rotationController?.handlePanStart(editorEvent);
-                this.rotationController?.afterAllHandlePanStart([]);
             }
             const oprControllers = this.oprControllers.slice(0);
             oprControllers.forEach(controller => {
                 controller.handlePanStart(editorEvent);
             });
+            if (this.rotationController?.isMouseOver) {
+                this.rotationController?.afterAllHandlePanStart([]);
+            }
             oprControllers.forEach(ctrl => {
                 ctrl.afterAllHandlePanMove(this.oprControllers);
             });
@@ -199,12 +201,14 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
             this.contour.save();
             if (this.rotationController?.isMouseOver) {
                 this.rotationController?.handlePanMove(editorEvent);
-                this.rotationController?.afterAllHandlePanMove([]);
             }
             const oprControllers = this.oprControllers.slice(0);
             oprControllers.forEach(controller => {
                 controller.handlePanMove(editorEvent);
             });
+            if (this.rotationController?.isMouseOver) {
+                this.rotationController?.afterAllHandlePanMove([]);
+            }
             oprControllers.forEach(ctrl => {
                 ctrl.afterAllHandlePanMove(this.oprControllers);
             });
@@ -221,12 +225,14 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
             };
             if (this.rotationController?.isMouseOver) {
                 this.rotationController?.handlePanStop(editorEvent);
-                this.rotationController?.afterAllHandlePanStop([]);
             }
             const oprControllers = this.oprControllers.slice(0);
             oprControllers.forEach(controller => {
                 controller.handlePanStop(editorEvent);
             });
+            if (this.rotationController?.isMouseOver) {
+                this.rotationController?.afterAllHandlePanStop([]);
+            }
             oprControllers.forEach(ctrl => {
                 ctrl.afterAllHandlePanStop(this.oprControllers);
             });
