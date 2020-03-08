@@ -22,6 +22,9 @@ export class Vector {
     public add(x: number, y: number) {
         return new Vector(this.x + x, this.y + y);
     }
+    public extend(length: number) {
+        return this.addVector(this.normalize().multiply(length));
+    }
     public substract(other: Vector) {
         return new Vector(this.x - other.x, this.y - other.y);
     }
@@ -42,6 +45,10 @@ export class Vector {
     }
     public dot(other: Vector) {
         return this.x * other.x + this.y * other.y;
+    }
+    // z-axis
+    public cross(other: Vector) {
+        return this.x * other.y - other.x * this.y;
     }
     public length() {
         return this.$length;

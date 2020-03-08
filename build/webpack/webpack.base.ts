@@ -1,5 +1,5 @@
 import WebpackChain from 'webpack-chain';
-import Autoprefixer from 'autoprefixer';
+import LessPluginAutoprefixer from 'less-plugin-autoprefixer';
 
 const config = new WebpackChain();
 
@@ -14,21 +14,21 @@ config.module
     .loader('ts-loader')
     .end() // end typescript use
     .end() // end compile rule
-    .rule('postcss')
-    .test(/\.css$/i)
+    .rule('less')
+    .test(/\.less$/i)
     .pre()
-    .include.add(/src|node_modules/)
+    .include.add(/src/)
     .end()
-    .use('style-laoder')
+    .use('style-loader')
     .loader('style-loader')
     .end()
     .use('css-loader')
     .loader('css-loader')
     .end()
-    .use('postcss-loader')
-    .loader('postcss-loader')
+    .use('less-loader')
+    .loader('less-loader')
     .options({
-        plugins: [Autoprefixer()]
+        plugins: [new LessPluginAutoprefixer()]
     });
 
 export default config;

@@ -245,39 +245,63 @@ export class Quadrilateral extends Contour {
         return new Quadrilateral(this.points[0], this.points[1], this.points[2], this.points[3], this.center);
     }
     private collate(vec: Vector, side: Side, width: number, height: number): PolarPoint[] {
-        const leftTop = this.getLeftTop();
-        const leftBottom = this.getLeftBottom();
-        const rightTop = this.getRightTop();
-        const rightBottom = this.getRightBottom();
         const offsetX = Math.abs(vec.x);
         const offsetY = Math.abs(vec.y);
+        let switchHorizontal = false;
+        let switchVertical = false;
         switch (side) {
             case Side.LEFT:
-            case Side.RIGHT:
-                if (offsetX > width) {
-                    return [rightTop, leftTop, leftBottom, rightBottom];
-                }
-                break;
-            case Side.TOP:
-            case Side.BOTTOM:
-                if (offsetY > height) {
-                    return [leftBottom, rightBottom, rightTop, leftTop];
-                }
-                break;
             case Side.LEFT_TOP:
+            case Side.LEFT_BOTTOM:
+                switchHorizontal = offsetX > width && vec.x < 0;
+                break;
+            case Side.RIGHT:
             case Side.RIGHT_TOP:
             case Side.RIGHT_BOTTOM:
-            case Side.LEFT_BOTTOM:
-                if (offsetX > width && offsetY > height) {
-                    return [rightBottom, leftBottom, leftTop, rightTop];
-                } else if (offsetX > width) {
-                    return [rightTop, leftTop, leftBottom, rightBottom];
-                } else if (offsetY > height) {
-                    return [leftBottom, leftTop, rightBottom, rightTop];
-                }
+                switchHorizontal = offsetX > width && vec.x > 0;
                 break;
         }
-        return this.points;
+        switch (side) {
+            case Side.TOP:
+            case Side.LEFT_TOP:
+            case Side.RIGHT_TOP:
+                switchVertical = offsetY > height && vec.y < 0;
+                break;
+            case Side.BOTTOM:
+            case Side.LEFT_BOTTOM:
+            case Side.RIGHT_BOTTOM:
+                switchVertical = offsetY > height && vec.y > 0;
+                break;
+        }
+        let leftTopIndex = this.leftTopIndex;
+        let rightTopIndex = this.rightTopIndex;
+        let rightBottomIndex = this.rightBottomIndex;
+        let leftBottomIndex = this.leftBottomIndex;
+
+        if (switchHorizontal) {
+            leftTopIndex = this.rightTopIndex;
+            rightTopIndex = this.leftTopIndex;
+            rightBottomIndex = this.leftBottomIndex;
+            leftBottomIndex = this.rightBottomIndex;
+        }
+        if (switchVertical) {
+            let tmp = leftBottomIndex;
+            leftBottomIndex = leftTopIndex;
+            leftTopIndex = tmp;
+            tmp = rightBottomIndex;
+            rightBottomIndex = rightTopIndex;
+            rightTopIndex = tmp;
+        }
+        if (switchHorizontal || switchVertical) {
+            return [
+                this.points[leftTopIndex],
+                this.points[rightTopIndex],
+                this.points[rightBottomIndex],
+                this.points[leftBottomIndex]
+            ];
+        } else {
+            return this.points;
+        }
     }
     private getPointIndexArrayAt(side: Side): SidePointIndexes | number[] {
         switch (side) {

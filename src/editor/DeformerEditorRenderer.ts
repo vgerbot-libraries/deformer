@@ -38,6 +38,7 @@ export default class DeformerEditorRenderer {
             domRect.bottom
         );
         this.originBoundary.getHeight(); // suppress ts ERROR
+        this.displayBoundary.getHeight();
     }
     public getDOM() {
         return this.canvas;
@@ -63,7 +64,7 @@ export default class DeformerEditorRenderer {
         }
     }
     public setOffset(left: number, top: number = left) {
-        this.coordinate.moveOriginTo(left, top);
+        // this.coordinate.moveOriginTo(left, top);
     }
     public getContext() {
         return this.ctx;
@@ -80,12 +81,12 @@ export default class DeformerEditorRenderer {
         this.renderOpenPath(...points);
         this.ctx.closePath();
     }
-    public renderSquare(leftTop: AnyPoint, rightBottom: AnyPoint, fill: boolean = false) {
-        const dLeftTop = this.convertPoint(leftTop);
-        const dRightBottom = this.convertPoint(rightBottom);
-        const width = dRightBottom.x - dLeftTop.x;
-        const height = dRightBottom.y - dLeftTop.y;
-        this.ctx.rect(dLeftTop.x + width * 0.5, dLeftTop.y + height * 0.5, width, height);
+    public renderSquare(center: AnyPoint, size: number) {
+        const hsize = size * 0.5;
+        const dcenter = this.convertPoint(center);
+        const left = dcenter.x - hsize;
+        const top = dcenter.y - hsize;
+        this.ctx.rect(left, top, size, size);
     }
     private convertPoint(point: AnyPoint) {
         return point

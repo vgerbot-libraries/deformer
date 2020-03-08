@@ -3,6 +3,7 @@ import { Quadrilateral } from '../../foundation/Quadrilateral';
 import { QuadrilateralEdgeController } from './EdgeController';
 import { Side } from '../../foundation/Direction';
 import MoveController from './MoveController';
+import RotationController from './RotationController';
 
 export interface QuadrilateralDeformerEditorOptions extends DeformerEditorOptions<Quadrilateral> {
     contour: Quadrilateral;
@@ -21,20 +22,23 @@ export default class QuadrilateralDeformerEditor extends DeformerEditor<Quadrila
             },
             options
         );
+        if (this.moveable) {
+            this.attach(new MoveController(this));
+        }
         if ($options.enableEdge) {
             this.attach(new QuadrilateralEdgeController(this, Side.LEFT));
             this.attach(new QuadrilateralEdgeController(this, Side.RIGHT));
             this.attach(new QuadrilateralEdgeController(this, Side.TOP));
             this.attach(new QuadrilateralEdgeController(this, Side.BOTTOM));
         }
-        if (this.moveable) {
-            this.attach(new MoveController(this));
+        if (this.rotatable) {
+            this.attach(new RotationController(this));
         }
         this.updateUIOnNodeInserted();
     }
     public updateUI() {
         const boundary = this.contour.getDeviceBoundary();
-        const padding = 5;
+        const padding = this.getPadding();
         const displayBoundary = boundary.expand(padding);
         this.getDOM().style.cssText += `
             left: ${displayBoundary.left}px;

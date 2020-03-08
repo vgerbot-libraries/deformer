@@ -5,10 +5,9 @@ import Disposable from '../Disposable';
 import { mousePositionFromMouseEvent, mousePositionFromHammerInput } from '../event-input';
 import { isTouchDevice } from '../foundation/devices';
 import { Contour } from '../foundation/Contour';
-import RotationController from './RotationController';
 import { Vector } from '../foundation/math/vector';
 import DeformerEditorRenderer from './DeformerEditorRenderer';
-import './editor.css';
+import './editor.less';
 
 interface EventTypes {
     mousemove: MouseEvent;
@@ -20,7 +19,6 @@ interface EventTypes {
 }
 export interface DeformerEditorOptions<C extends Contour> {
     contour: C;
-    rotationController?: RotationController<C>;
     moveable?: boolean;
     rotatable?: boolean;
 }
@@ -34,12 +32,13 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
     protected rotatable: boolean;
     protected moveable: boolean;
     protected readonly controllers: Array<ContourController<C>> = [];
-    protected rotationController?: RotationController<C>;
     protected readonly renderer: DeformerEditorRenderer;
     private readonly emitter: JSEventEmitter = new JSEventEmitter();
     private readonly hammer: HammerManager;
-    private oprControllers: Array<ContourController<C>> = [];
+    private currentMouseOverController?: ContourController<C>;
     private dom: HTMLElement = this.getDOM();
+    private padding: number = 5;
+    private cursorClass: string = 'deformer-editor--cursor-default';
     constructor(options: DeformerEditorOptions<C>) {
         super();
         this.contour = options.contour;
@@ -47,9 +46,6 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
         this.moveable = options.moveable === undefined ? true : options.moveable;
         this.hammer = new Hammer(this.getDOM());
         this.renderer = this.createRenderer();
-        if (this.rotatable) {
-            this.rotationController = this.createRotationController();
-        }
         this.dom.appendChild(this.renderer.getDOM());
         this.prepare();
     }
@@ -67,7 +63,21 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
         if (index > -1) {
             return false;
         }
-        this.controllers.push(controller);
+        if (this.controllers.length === 0) {
+            this.controllers.push(controller);
+        } else {
+            let insertIndex = this.controllers.length - 1;
+            const zindex = controller.getZIndex();
+            this.controllers.some((ctrl, i) => {
+                if (ctrl.getZIndex() > zindex) {
+                    insertIndex = i;
+                    return true;
+                }
+                return false;
+            });
+            this.controllers.splice(insertIndex, 0, controller);
+        }
+        controller.attached(this);
         return true;
     }
     public detach(controller: ContourController<C>): boolean {
@@ -85,15 +95,27 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
         }
         return this.dom;
     }
+    public setPadding(padding: number) {
+        this.padding = padding;
+    }
+    public getPadding() {
+        return this.padding;
+    }
     public abstract updateUI();
     public getControllers() {
         return this.controllers;
     }
-    public getOprControllers() {
-        return this.oprControllers;
+    public getCurrentMouseOverController() {
+        return this.currentMouseOverController;
     }
-    protected createRotationController() {
-        return new RotationController(this, this.contour);
+    public setCursor(cursorClass: string) {
+        const dom = this.getDOM();
+        dom.classList.remove(this.cursorClass);
+        dom.classList.add(cursorClass);
+        this.cursorClass = cursorClass;
+    }
+    public getCursorClass() {
+        return this.cursorClass;
     }
     protected createRenderer() {
         return new DeformerEditorRenderer();
@@ -167,82 +189,51 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
             );
         }
         this.hammer.on('panstart', e => {
+            if (!this.currentMouseOverController) {
+                return;
+            }
             const position = mousePositionFromHammerInput(e);
             const editorEvent: EditorEvent = {
                 move: new Vector(e.deltaX, e.deltaY),
                 position,
                 direction: e.direction
             };
-            this.contour.save();
-            if (this.rotationController?.isMouseOver) {
-                this.rotationController?.handlePanStart(editorEvent);
-            }
-            const oprControllers = this.oprControllers.slice(0);
-            oprControllers.forEach(controller => {
-                controller.handlePanStart(editorEvent);
-            });
-            if (this.rotationController?.isMouseOver) {
-                this.rotationController?.afterAllHandlePanStart([]);
-            }
-            oprControllers.forEach(ctrl => {
-                ctrl.afterAllHandlePanMove(this.oprControllers);
-            });
+            this.currentMouseOverController.handlePanStart(editorEvent);
             this.emitter.emit('update', this.contour);
             this.updateUI();
-            this.contour.restore();
         });
         this.hammer.on('panmove', e => {
+            if (!this.currentMouseOverController) {
+                return;
+            }
             const position = mousePositionFromHammerInput(e);
             const editorEvent: EditorEvent = {
                 move: new Vector(e.deltaX, e.deltaY),
                 position,
                 direction: e.direction
             };
-            this.contour.save();
-            if (this.rotationController?.isMouseOver) {
-                this.rotationController?.handlePanMove(editorEvent);
-            }
-            const oprControllers = this.oprControllers.slice(0);
-            oprControllers.forEach(controller => {
-                controller.handlePanMove(editorEvent);
-            });
-            if (this.rotationController?.isMouseOver) {
-                this.rotationController?.afterAllHandlePanMove([]);
-            }
-            oprControllers.forEach(ctrl => {
-                ctrl.afterAllHandlePanMove(this.oprControllers);
-            });
+            this.currentMouseOverController.handlePanMove(editorEvent);
             this.emitter.emit('update', this.contour);
             this.updateUI();
             this.contour.restore();
         });
         this.hammer.on('panend', e => {
+            if (!this.currentMouseOverController) {
+                return;
+            }
             const position = mousePositionFromHammerInput(e);
             const editorEvent: EditorEvent = {
                 move: new Vector(e.deltaX, e.deltaY),
                 position,
                 direction: e.direction
             };
-            if (this.rotationController?.isMouseOver) {
-                this.rotationController?.handlePanStop(editorEvent);
-            }
-            const oprControllers = this.oprControllers.slice(0);
-            oprControllers.forEach(controller => {
-                controller.handlePanStop(editorEvent);
-            });
-            if (this.rotationController?.isMouseOver) {
-                this.rotationController?.afterAllHandlePanStop([]);
-            }
-            oprControllers.forEach(ctrl => {
-                ctrl.afterAllHandlePanStop(this.oprControllers);
-            });
-            this.contour.apply();
+            this.currentMouseOverController.handlePanStop(editorEvent);
             this.emitter.emit('update', this.contour);
             this.updateUI();
         });
         if (this.rotatable) {
             this.hammer.on('rotate', e => {
-                this.rotationController?.handleRotate(e.rotation);
+                // TODO: handle rotation controller
             });
         }
     }
@@ -258,15 +249,22 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
         });
     }
     private handleMouseMove(position: MousePosition) {
-        this.oprControllers = [];
+        if (this.currentMouseOverController) {
+            this.currentMouseOverController.isMouseOver = false;
+            this.currentMouseOverController = undefined;
+        }
+        this.setCursor('default');
         this.controllers.forEach(controller => {
             controller.handleMouseMove(position);
+            if (controller.isMouseOver) {
+                if (this.currentMouseOverController) {
+                    this.currentMouseOverController.isMouseOver = false;
+                }
+                this.currentMouseOverController = controller;
+            }
         });
         this.controllers.forEach(ctrl => {
-            ctrl.afterAllHandleMouseMove(this.controllers);
+            ctrl.afterAllHandleMouseMove();
         });
-        this.oprControllers = this.controllers.filter(it => it.isMouseOver);
-        this.rotationController?.handleMouseMove(position);
-        // this.rotationController?.afterAllHandleMouseMove(this.rotationController]);
     }
 }

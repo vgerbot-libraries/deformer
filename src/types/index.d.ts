@@ -9,8 +9,10 @@ declare type DeformerHolderElement = HTMLElement | SVGElement;
 declare module '*.ejs' {
     export default function compilerTemplate(options: any): string;
 }
+declare module '*.less';
 
 type DevicePoint = import('../foundation/math/coordinate/DeviceCoordinate').DevicePoint;
+type AnyPoint = import('../foundation/math/coordinate/Coordinate').AnyPoint;
 type Vector = import('../foundation/math/vector').Vector;
 type MouseOperationDirection = import('../event-input').MouseOperationDirection;
 

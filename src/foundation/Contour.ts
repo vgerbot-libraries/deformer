@@ -4,6 +4,7 @@ import { Vector } from './math/vector';
 import { Boundary } from './Boundary';
 import { CartesianCoordinate, CartesianPoint } from './math/coordinate/CartesianCoordinate';
 import { AnyPoint } from './math/coordinate/Coordinate';
+import LineSegment from './math/LineSegment';
 
 const DEVICE_ORIGIN = DeviceCoordinate.ORIGIN;
 const CARTESIAN_ORIGIN = CartesianCoordinate.ORIGIN;
@@ -58,6 +59,30 @@ export abstract class Contour {
     }
     public cartesianPoints(baseCoordinate: CartesianCoordinate = CARTESIAN_ORIGIN): CartesianPoint[] {
         return this.points.map(it => it.toCartesian(baseCoordinate));
+    }
+    public containsPoint(point: AnyPoint): boolean {
+        const rayFromcenterToTarget = new LineSegment(this.getCenter(), point);
+        const isOutsideContour = this.getEdgeLineSegments().some(segment => {
+            const isCross = rayFromcenterToTarget.isCross(segment);
+            console.info(isCross, rayFromcenterToTarget, segment);
+            return isCross;
+        });
+        return !isOutsideContour;
+    }
+    public getEdgeLineSegments() {
+        const pointCount = this.points.length;
+        if (pointCount < 2) {
+            return [];
+        } else if (pointCount === 2) {
+            return [new LineSegment(this.points[0], this.points[1])];
+        }
+        const segments: LineSegment[] = [];
+        let lastPoint = this.points[pointCount - 1];
+        this.points.forEach(point => {
+            segments.push(new LineSegment(lastPoint, point));
+            lastPoint = point;
+        });
+        return segments;
     }
     public getDeviceBoundary(coordinate: DeviceCoordinate = DEVICE_ORIGIN): Boundary {
         const points = this.devicePoints(coordinate);

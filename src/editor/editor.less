@@ -1,0 +1,15 @@
+.deformer-editor {
+    padding: 0;
+    margin: 0;
+    position: fixed;
+    display: block;
+    outline: 1px solid green;
+    will-change: left,top,width,height;
+}
+@cursor-list: default, move, e-resize,n-resize,s-resize,w-resize,row-resize,col-resize,ew-resize,ne-resize,nesw-resize,ns-resize,nw-resize,nwse-resize,se-resize,sw-resize;
+
+each(@cursor-list, {
+    .deformer-editor--cursor-@{value} {
+        cursor: @value;
+    }
+})

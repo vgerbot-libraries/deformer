@@ -5,6 +5,7 @@ import { Lazy } from '../../lazy';
 import { Vector } from '../vector';
 import { CoordinateConvertionTpl } from './CoordinateConversionTpl';
 import { fixAccuracy } from '../fixAccuracy';
+import { LinearEquation } from '../LinearEquation';
 
 const cartesianPointLazy = new Lazy<CartesianPoint>();
 
@@ -40,6 +41,14 @@ export class CartesianPoint extends Point<CartesianCoordinate> {
     }
     public rotate(radian: number, origin: AnyPoint = this.coord.origin): CartesianPoint {
         return this.toCartesian(CartesianCoordinate.by(origin)).rotateByOrigin(radian);
+    }
+    public solveEquation(point: Point<any>): LinearEquation {
+        const dpoint = point.toCartesian(this.coord);
+        const dx = dpoint.x - this.x;
+        const dy = dpoint.y - this.y;
+        const k = dy / dx;
+        const b = dpoint.y - k * dpoint.x;
+        return new LinearEquation(k, b);
     }
     private rotateByOrigin(radian: number) {
         const sita = this.sita + radian;
