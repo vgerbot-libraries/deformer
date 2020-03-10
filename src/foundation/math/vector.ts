@@ -46,6 +46,11 @@ export class Vector {
     public dot(other: Vector) {
         return this.x * other.x + this.y * other.y;
     }
+    public radian(other: Vector): number {
+        const thisRadian = Math.atan2(this.y, this.x);
+        const otherRadian = Math.atan2(other.y, other.x);
+        return Math.abs(thisRadian - otherRadian);
+    }
     // z-axis
     public cross(other: Vector) {
         return this.x * other.y - other.x * this.y;

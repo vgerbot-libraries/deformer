@@ -1,5 +1,5 @@
 import { DeviceCoordinate, DevicePoint } from './math/coordinate/DeviceCoordinate';
-import { PolarCoordinatate, PolarPoint } from './math/coordinate/PolarCoordinate';
+import { PolarPoint } from './math/coordinate/PolarCoordinate';
 import { Vector } from './math/vector';
 import { Boundary } from './Boundary';
 import { CartesianCoordinate, CartesianPoint } from './math/coordinate/CartesianCoordinate';
@@ -10,12 +10,8 @@ const DEVICE_ORIGIN = DeviceCoordinate.ORIGIN;
 const CARTESIAN_ORIGIN = CartesianCoordinate.ORIGIN;
 
 export abstract class Contour {
-    protected coordinate: PolarCoordinatate;
     protected points: PolarPoint[] = [];
     private saveStack: PolarPoint[][] = [];
-    constructor(center: AnyPoint) {
-        this.coordinate = PolarCoordinatate.by(center);
-    }
     public save() {
         this.saveStack.push(this.points.slice(0));
     }
@@ -36,11 +32,11 @@ export abstract class Contour {
         this.move(vector);
     }
     public addPoint(point: AnyPoint) {
-        this.points.push(point.toPolar(this.coordinate));
+        this.points.push(point.toPolar());
         return this.points.length - 1;
     }
     public setPoint(index: number, point: AnyPoint) {
-        this.points[index] = point.toPolar(this.coordinate);
+        this.points[index] = point.toPolar();
     }
     public removePoint(index: number): boolean {
         return this.points.splice(index, 1).length > 0;
@@ -63,9 +59,7 @@ export abstract class Contour {
     public containsPoint(point: AnyPoint): boolean {
         const rayFromcenterToTarget = new LineSegment(this.getCenter(), point);
         const isOutsideContour = this.getEdgeLineSegments().some(segment => {
-            const isCross = rayFromcenterToTarget.isCross(segment);
-            console.info(isCross, rayFromcenterToTarget, segment);
-            return isCross;
+            return rayFromcenterToTarget.isCross(segment);
         });
         return !isOutsideContour;
     }
@@ -106,4 +100,5 @@ export abstract class Contour {
     }
     public abstract getCenter(): AnyPoint;
     public abstract clone(): Contour;
+    public abstract getAcreage(): number;
 }

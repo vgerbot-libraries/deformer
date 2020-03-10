@@ -29,8 +29,7 @@ export class Quadrilateral extends Contour {
         const rightTop = coordinate.point(right, top);
         const leftBottom = coordinate.point(left, bottom);
         const rightBottom = coordinate.point(right, bottom);
-        const center = coordinate.point(0, 0);
-        return new Quadrilateral(leftTop, rightTop, rightBottom, leftBottom, center);
+        return new Quadrilateral(leftTop, rightTop, rightBottom, leftBottom);
     }
     public static fromCoordinate(
         coordinate: DeviceCoordinate | CartesianCoordinate,
@@ -43,8 +42,7 @@ export class Quadrilateral extends Contour {
         const rightTop = coordinate.point(right, top);
         const leftBottom = coordinate.point(left, bottom);
         const rightBottom = coordinate.point(right, bottom);
-        const center = leftTop.addVector(leftTop.vector(rightBottom).multiply(0.5));
-        return new Quadrilateral(leftTop, rightTop, rightBottom, leftBottom, center);
+        return new Quadrilateral(leftTop, rightTop, rightBottom, leftBottom);
     }
     public static fromPoints(point1: AnyPoint, point2: AnyPoint, point3: AnyPoint, point4: AnyPoint): Quadrilateral {
         const [leftTop, rightTop, rightBottom, leftBottom] = Quadrilateral.collatePoints([
@@ -53,11 +51,7 @@ export class Quadrilateral extends Contour {
             point3.toDevice(),
             point4.toDevice()
         ]);
-        const leLTRB = leftTop.solveEquation(rightBottom);
-        const leLBRT = leftBottom.solveEquation(rightTop);
-        const p = leLBRT.intersection(leLTRB);
-        const center = DEVICE_ORIGIN.point(p.x, p.y);
-        return new Quadrilateral(leftTop, rightTop, rightBottom, leftBottom, center);
+        return new Quadrilateral(leftTop, rightTop, rightBottom, leftBottom);
     }
     protected static collatePoints<T extends AnyPoint>(points: T[]): T[] {
         const devicePoints = points.map(point => point.toDevice(DEVICE_ORIGIN));
@@ -140,8 +134,8 @@ export class Quadrilateral extends Contour {
     )
     @lazy.property(q => q.initHeight())
     private height!: number;
-    protected constructor(point1: AnyPoint, point2: AnyPoint, point3: AnyPoint, point4: AnyPoint, center: AnyPoint) {
-        super(center);
+    protected constructor(point1: AnyPoint, point2: AnyPoint, point3: AnyPoint, point4: AnyPoint) {
+        super();
         super.addPoint(point1);
         super.addPoint(point2);
         super.addPoint(point3);
@@ -201,7 +195,6 @@ export class Quadrilateral extends Contour {
     public rotate(radian: number, origin = this.getCenter()) {
         // this.rotation += radian;
         const coordinate = PolarCoordinatate.by(origin);
-        this.coordinate = coordinate;
         this.points = this.points.map(p => p.toPolar(coordinate).rotate(radian));
     }
     public addVector(vector: Vector, side: Side): boolean {
@@ -242,7 +235,10 @@ export class Quadrilateral extends Contour {
         return this.center;
     }
     public clone(): Quadrilateral {
-        return new Quadrilateral(this.points[0], this.points[1], this.points[2], this.points[3], this.center);
+        return new Quadrilateral(this.points[0], this.points[1], this.points[2], this.points[3]);
+    }
+    public getAcreage(): number {
+        return 0;
     }
     private collate(vec: Vector, side: Side, width: number, height: number): PolarPoint[] {
         const offsetX = Math.abs(vec.x);

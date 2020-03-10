@@ -1,0 +1,17 @@
+{
+    "singleQuote": true,
+    "tabWidth": 4,
+    "bracketSpacing": true,
+    "printWidth": 120,
+    "overrides": [{
+        "files": "{src,test}/**/*.ts",
+        "options": {
+            "parser": "typescript"
+        }
+    }, {
+        "files": [".prettierrc", "*.json"],
+        "options": {
+            "parser": "json"
+        }
+    }]
+}

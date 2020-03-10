@@ -10,8 +10,7 @@ export default class Rectangle extends Quadrilateral {
         const rightTop = coord.point(right, top);
         const leftBottom = coord.point(left, bottom);
         const rightBottom = coord.point(right, bottom);
-        const center = coord.point(left + (right - left) * 0.5, top + (bottom - top) * 0.5);
-        return new Rectangle(leftTop, rightTop, rightBottom, leftBottom, center);
+        return new Rectangle(leftTop, rightTop, rightBottom, leftBottom);
     }
     public getLeft(coord?: AnyCoordinate) {
         if (coord) {

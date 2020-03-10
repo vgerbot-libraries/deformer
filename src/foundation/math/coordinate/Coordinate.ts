@@ -27,6 +27,9 @@ export abstract class Point<C extends Coordinate<any>> {
         const otherPoint = other.toDevice();
         return Math.abs(thisPoint.x - otherPoint.x) < ACCURACY && Math.abs(thisPoint.y - otherPoint.y) < ACCURACY;
     }
+    public distanceTo(other: AnyPoint) {
+        return this.vector(other).length();
+    }
 }
 export abstract class Coordinate<P extends Point<any>> {
     public abstract origin: P;
