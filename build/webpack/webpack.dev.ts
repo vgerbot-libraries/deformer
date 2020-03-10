@@ -13,7 +13,7 @@ config
 
 config.watch(true);
 
-config.mode('development').devtool('cheap-module-source-map');
+config.mode('development').devtool('inline-cheap-module-source-map' as any);
 config.output.filename('[name].js').path(path.resolve(__dirname, '../../dist'));
 
 config.devServer

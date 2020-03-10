@@ -1,6 +1,6 @@
 import config from './webpack.base';
 
-config.devtool('cheap-module-eval-source-map');
+config.devtool('inline-cheap-module-source-map' as any);
 
 config.mode('development');
 config.module.rules.delete('compile');
