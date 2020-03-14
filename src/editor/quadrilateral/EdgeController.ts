@@ -4,6 +4,7 @@ import { PolarPoint } from '../../foundation/math/coordinate/PolarCoordinate';
 import { Side, getOppositeSite } from '../../foundation/Direction';
 import DeformerEditor from '../DeformerEditor';
 import DeformerEditorRenderer from '../DeformerEditorRenderer';
+import { Vector } from '../../foundation/math/vector';
 
 export class QuadrilateralEdgeController extends ContourController<Quadrilateral> {
     constructor(
@@ -56,16 +57,7 @@ export class QuadrilateralEdgeController extends ContourController<Quadrilateral
         this.contour.apply();
     }
     public handlePanEvent(e: EditorEvent) {
-        switch (this.side) {
-            case Side.LEFT:
-            case Side.RIGHT:
-                this.contour.addVector(e.move.vecx(), this.side);
-                break;
-            case Side.TOP:
-            case Side.BOTTOM:
-                this.contour.addVector(e.move.vecy().negate(), this.side);
-                break;
-        }
+        this.contour.addVector(e.move.multiplyVector(Vector.REVERSE_VERTICAL_DIRECTION), this.side);
     }
     protected getCursorClassName() {
         let cursorName;
@@ -82,6 +74,14 @@ export class QuadrilateralEdgeController extends ContourController<Quadrilateral
             case Side.BOTTOM:
                 cursorName = 's-resize';
                 break;
+            case Side.LEFT_TOP:
+                cursorName = 'ne-resize';
+            case Side.RIGHT_TOP:
+                cursorName = 'nw-resize';
+            case Side.RIGHT_BOTTOM:
+                cursorName = 'se-resize';
+            case Side.LEFT_BOTTOM:
+                cursorName = 'ew-resize';
         }
         if (cursorName) {
             return 'deformer-editor--cursor-' + cursorName;

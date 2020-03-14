@@ -4,22 +4,30 @@ import { Quadrilateral } from '../../foundation/Quadrilateral';
 import DeformerEditorRenderer from '../DeformerEditorRenderer';
 
 export default class RotationController extends ContourController<Quadrilateral> {
+    private center!: DevicePoint;
+    private ctrlPoint!: DevicePoint;
     constructor(protected readonly editor: DeformerEditor<Quadrilateral>) {
         super(editor.contour);
     }
     public handleMouseMove(position: MousePosition) {
-        const topPoint = this.resolveTopPoint();
+        const topPoint = this.resolveCtrlPoint();
         this.isMouseOver = topPoint.vector(position.page).length() < 10;
     }
     public handlePanStart(e: EditorEvent) {
-        // throw new Error('Method not implemented.');
+        this.contour.save();
+        this.ctrlPoint = this.resolveCtrlPoint();
+        this.center = this.contour.getCenter().toDevice();
+        this.handleRotateByEvent(e);
     }
     public handlePanMove(e: EditorEvent) {
-        // throw new Error('Method not implemented.');
-        console.info('rotation', e);
+        this.contour.restore();
+        this.contour.save();
+        this.handleRotateByEvent(e);
     }
     public handlePanStop(e: EditorEvent) {
-        // throw new Error('Method not implemented.');
+        this.contour.restore();
+        this.handleRotateByEvent(e);
+        this.contour.apply();
     }
     public handleRotate(rotation: number) {
         //
@@ -30,7 +38,7 @@ export default class RotationController extends ContourController<Quadrilateral>
     public render(renderer: DeformerEditorRenderer) {
         renderer.save();
         const center = this.contour.getCenter();
-        const topPoint = this.resolveTopPoint();
+        const topPoint = this.resolveCtrlPoint();
         renderer.config({
             strokeStyle: '#00FFFF',
             fillStyle: '#00FFFF',
@@ -44,11 +52,17 @@ export default class RotationController extends ContourController<Quadrilateral>
         renderer.renderSquare(topPoint, 10);
         ctx.fill();
     }
-    private resolveTopPoint() {
+    private handleRotateByEvent(e: EditorEvent) {
+        const rv = this.center.vector(this.ctrlPoint);
+        const mv = this.center.vector(e.position.page);
+        const radian = rv.radian(mv);
+        this.contour.rotate(radian);
+    }
+    private resolveCtrlPoint() {
         const topCenter = this.contour.getTopCenter();
         const center = this.contour.getCenter();
         const centerToTopVector = center.vector(topCenter);
         const rotationVector = centerToTopVector.extend(20);
-        return center.addVector(rotationVector);
+        return center.addVector(rotationVector).toDevice();
     }
 }

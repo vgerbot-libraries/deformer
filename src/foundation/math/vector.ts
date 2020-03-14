@@ -1,5 +1,6 @@
 import { Lazy } from '../lazy';
 
+const TWO_PI = Math.PI * 2;
 const lazy = new Lazy<Vector>();
 export class Vector {
     public static ZERO = new Vector(0, 0);
@@ -49,7 +50,17 @@ export class Vector {
     public radian(other: Vector): number {
         const thisRadian = Math.atan2(this.y, this.x);
         const otherRadian = Math.atan2(other.y, other.x);
-        return Math.abs(thisRadian - otherRadian);
+        return (thisRadian - otherRadian + TWO_PI) % TWO_PI;
+    }
+    public rotate(radian: number): Vector {
+        if (radian === 0) {
+            return this.clone();
+        } else {
+            const length = this.$length;
+            const r = Math.atan2(this.y, this.x);
+            const sita = r + radian;
+            return new Vector(length * Math.cos(sita), length * Math.sin(sita));
+        }
     }
     // z-axis
     public cross(other: Vector) {

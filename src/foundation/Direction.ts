@@ -33,6 +33,17 @@ export enum Side {
     LEFT_BOTTOM = Direction.LEFT_BOTTOM,
     ALL = Direction.ALL
 }
+const directionName = {
+    [Direction.ALL]: 'all',
+    [Direction.LEFT]: 'left',
+    [Direction.TOP]: 'top',
+    [Direction.RIGHT]: 'right',
+    [Direction.BOTTOM]: 'bottom',
+    [Direction.LEFT_TOP]: 'left_top',
+    [Direction.RIGHT_TOP]: 'right_top',
+    [Direction.RIGHT_BOTTOM]: 'right_bottom',
+    [Direction.LEFT_BOTTOM]: 'left_bottom'
+};
 
 export function isOpposite(direction: Direction, otherDirection: Direction) {
     return (direction ^ otherDirection) === 0b100000;
@@ -56,4 +67,8 @@ export function getOppositeSite(side: Side): Side {
     } else {
         return 0b100000 | side;
     }
+}
+
+export function getSideName(side: Side) {
+    return directionName[side];
 }

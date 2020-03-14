@@ -1,5 +1,6 @@
 import { Quadrilateral } from '../foundation/Quadrilateral';
 import QuadrilateralDeformerEditor from '../editor/quadrilateral/QuadrilateralDeformerEditor';
+import { Vector } from '../foundation/math/vector';
 
 // tslint-ignore all
 
@@ -31,3 +32,6 @@ editor.on('update', contour => {
         height: ${boundary.getHeight()}px;
     `;
 });
+
+(window as any).Vector = Vector;
+(window as any).Quadrilateral = Quadrilateral;

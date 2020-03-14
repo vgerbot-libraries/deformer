@@ -31,6 +31,12 @@ export default class QuadrilateralDeformerEditor extends DeformerEditor<Quadrila
             this.attach(new QuadrilateralEdgeController(this, Side.TOP));
             this.attach(new QuadrilateralEdgeController(this, Side.BOTTOM));
         }
+        if ($options.enableVerticies) {
+            this.attach(new QuadrilateralEdgeController(this, Side.LEFT_TOP));
+            this.attach(new QuadrilateralEdgeController(this, Side.RIGHT_TOP));
+            this.attach(new QuadrilateralEdgeController(this, Side.RIGHT_BOTTOM));
+            this.attach(new QuadrilateralEdgeController(this, Side.LEFT_BOTTOM));
+        }
         if (this.rotatable) {
             this.attach(new RotationController(this));
         }
