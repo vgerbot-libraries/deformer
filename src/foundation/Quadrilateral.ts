@@ -8,6 +8,7 @@ import { Lazy } from './lazy';
 import { Side, getSideName } from './Direction';
 
 const DEVICE_ORIGIN = DeviceCoordinate.ORIGIN;
+const TWO_PI = Math.PI * 2;
 
 interface SidePointIndexes {
     left: number[];
@@ -196,9 +197,13 @@ export class Quadrilateral extends Contour {
         throw new Error(`Incorrect side: ${side}`);
     }
     public rotate(radian: number, origin = this.getCenter()) {
-        this.rotation = (this.rotation + radian) % (Math.PI * 2);
+        this.rotation = (this.rotation + radian + TWO_PI) % TWO_PI;
         const coordinate = PolarCoordinatate.by(origin);
         this.points = this.points.map(p => p.toPolar(coordinate).rotate(radian));
+    }
+    public getRotationBaseOnCenter() {
+        const c2tVec = this.getCenter().vector(this.getTopCenter());
+        return (Math.PI / 2 - Math.atan2(c2tVec.y, c2tVec.x)) % TWO_PI;
     }
     public addVector(vector: Vector, side: Side): boolean {
         const doAddVector = (points: PolarPoint[], theSide: Side) => {
@@ -208,10 +213,11 @@ export class Quadrilateral extends Contour {
             const sideName = getSideName(theSide);
             const width = this.getWidth();
             const height = this.getHeight();
+            const rotationBaseOnCenter = this.getRotationBaseOnCenter();
             sidePoints[sideName]?.map(pindex => {
                 points[pindex] = points[pindex].addVector(proj);
             });
-            return this.collate(points, proj, theSide, width, height);
+            return this.collate(points, proj, theSide, rotationBaseOnCenter, width, height);
         };
         const doAddMulSideVector = (hside: Side, vside: Side) => {
             const points = this.points;
@@ -298,34 +304,37 @@ export class Quadrilateral extends Contour {
         }
         return {};
     }
-    private collate(points: PolarPoint[], vec: Vector, side: Side, width: number, height: number): PolarPoint[] {
-        const offsetX = Math.abs(vec.x);
-        const offsetY = Math.abs(vec.y);
+    private collate(
+        points: PolarPoint[],
+        offset: Vector,
+        side: Side,
+        rotationBaseOnCenter,
+        width: number,
+        height: number
+    ): PolarPoint[] {
         let switchHorizontal = false;
         let switchVertical = false;
-        switch (side) {
-            case Side.LEFT:
-            case Side.LEFT_TOP:
-            case Side.LEFT_BOTTOM:
-                switchHorizontal = offsetX > width && vec.x < 0;
-                break;
-            case Side.RIGHT:
-            case Side.RIGHT_TOP:
-            case Side.RIGHT_BOTTOM:
-                switchHorizontal = offsetX > width && vec.x > 0;
-                break;
+        const offsetSize = offset.length();
+        const dir = offset.rotate(rotationBaseOnCenter);
+        if (offsetSize > width) {
+            switch (side) {
+                case Side.LEFT:
+                    switchHorizontal = dir.x > 0;
+                    break;
+                case Side.RIGHT:
+                    switchHorizontal = dir.x < 0;
+                    break;
+            }
         }
-        switch (side) {
-            case Side.TOP:
-            case Side.LEFT_TOP:
-            case Side.RIGHT_TOP:
-                switchVertical = offsetY > height && vec.y < 0;
-                break;
-            case Side.BOTTOM:
-            case Side.LEFT_BOTTOM:
-            case Side.RIGHT_BOTTOM:
-                switchVertical = offsetY > height && vec.y > 0;
-                break;
+        if (offsetSize > height) {
+            switch (side) {
+                case Side.TOP:
+                    switchVertical = dir.y < 0;
+                    break;
+                case Side.BOTTOM:
+                    switchVertical = dir.y > 0;
+                    break;
+            }
         }
         let leftTopIndex = this.leftTopIndex;
         let rightTopIndex = this.rightTopIndex;

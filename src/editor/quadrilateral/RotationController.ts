@@ -62,7 +62,7 @@ export default class RotationController extends ContourController<Quadrilateral>
         const topCenter = this.contour.getTopCenter();
         const center = this.contour.getCenter();
         const centerToTopVector = center.vector(topCenter);
-        const rotationVector = centerToTopVector.extend(20);
+        const rotationVector = centerToTopVector.extend(30);
         return center.addVector(rotationVector).toDevice();
     }
 }

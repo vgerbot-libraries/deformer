@@ -108,6 +108,9 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
     public getCurrentMouseOverController() {
         return this.currentMouseOverController;
     }
+    public setCurrentMouseOverController(ctrl: ContourController<C>) {
+        this.currentMouseOverController = ctrl;
+    }
     public setCursor(cursorClass: string) {
         const dom = this.getDOM();
         dom.classList.remove(this.cursorClass);

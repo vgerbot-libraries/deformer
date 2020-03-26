@@ -4,6 +4,7 @@ import DeformerEditor from './DeformerEditor';
 
 export default abstract class ContourController<C extends Contour> {
     public isMouseOver: boolean = false;
+    public isVisible: boolean = true;
     constructor(public contour: C) {}
     public getZIndex() {
         return 0;
@@ -27,5 +28,11 @@ export default abstract class ContourController<C extends Contour> {
     public abstract render(renderer: DeformerEditorRenderer);
     public attached(editor: DeformerEditor<C>) {
         //
+    }
+    public hide() {
+        this.isVisible = false;
+    }
+    public show() {
+        this.isVisible = true;
     }
 }

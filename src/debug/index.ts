@@ -1,5 +1,5 @@
 import { Quadrilateral } from '../foundation/Quadrilateral';
-import QuadrilateralDeformerEditor from '../editor/quadrilateral/QuadrilateralDeformerEditor';
+import { QuadrilateralDeformerEditor } from '../editor/quadrilateral/QuadrilateralDeformerEditor';
 import { Vector } from '../foundation/math/vector';
 
 // tslint-ignore all
@@ -19,10 +19,10 @@ const editor = new QuadrilateralDeformerEditor({
     contour: Quadrilateral.fromDOMElement(holder),
     enableEdge: true,
     enableVerticies: true,
-    rotatable: true
+    rotatable: true,
+    maxWidth: 200
 });
 document.body.appendChild(editor.getDOM());
-editor.updateUI();
 editor.on('update', contour => {
     const boundary = contour.getDeviceBoundary();
     holder.style.cssText += `

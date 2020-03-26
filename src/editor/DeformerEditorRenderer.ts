@@ -88,6 +88,10 @@ export default class DeformerEditorRenderer {
         const top = dcenter.y - hsize;
         this.ctx.rect(left, top, size, size);
     }
+    public renderText(point: AnyPoint, text: string) {
+        const p = this.convertPoint(point);
+        this.ctx.strokeText(text, p.x, p.y);
+    }
     private convertPoint(point: AnyPoint) {
         return point
             .toDevice(this.coordinate)

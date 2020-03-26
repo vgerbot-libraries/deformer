@@ -1,7 +1,5 @@
-import { hello } from '../../src/index';
-import QuadrilateralDeformerEditor from '../../src/editor/quadrilateral/QuadrilateralDeformerEditor';
+import { QuadrilateralDeformerEditor } from '../../src/editor/quadrilateral/QuadrilateralDeformerEditor';
 import { Quadrilateral } from '../../src/foundation/Quadrilateral';
-import { expect } from 'chai';
 
 describe('quadrilateral test', () => {
     before(() => {
@@ -22,8 +20,5 @@ describe('quadrilateral test', () => {
             rotatable: true
         });
         document.body.appendChild(editor.getDOM());
-    });
-    it("should hello() returns 'world'", () => {
-        expect(hello()).to.be.eq('world');
     });
 });
