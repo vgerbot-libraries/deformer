@@ -24,6 +24,12 @@ export abstract class Contour {
     public apply() {
         this.saveStack.length = 0;
     }
+    public resetAllPoints(points: PolarPoint[]) {
+        this.points = points;
+    }
+    public getAllPoints() {
+        return this.points.slice(0);
+    }
     public move(vector: Vector) {
         this.points = this.points.map(it => it.addVector(vector));
     }

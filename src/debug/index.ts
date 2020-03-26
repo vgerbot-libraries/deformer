@@ -1,6 +1,8 @@
 import { Quadrilateral } from '../foundation/Quadrilateral';
 import { QuadrilateralDeformerEditor } from '../editor/quadrilateral/QuadrilateralDeformerEditor';
 import { Vector } from '../foundation/math/vector';
+import { SizeLimitation } from '../editor/quadrilateral/SizeLimitation';
+import { AvoidSwitchSideLimitation } from '../editor/quadrilateral/SwitchSideLimitation';
 
 // tslint-ignore all
 
@@ -20,7 +22,15 @@ const editor = new QuadrilateralDeformerEditor({
     enableEdge: true,
     enableVerticies: true,
     rotatable: true,
-    maxWidth: 200
+    limitations: [
+        new SizeLimitation({
+            minWidth: 50,
+            maxWidth: 500,
+            minHeight: 50,
+            maxHeight: 300
+        }),
+        new AvoidSwitchSideLimitation()
+    ]
 });
 document.body.appendChild(editor.getDOM());
 editor.on('update', contour => {

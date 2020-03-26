@@ -23,7 +23,7 @@ export class Interval {
     ) {}
     public contains(num: number) {
         const left = this.includeLeft ? num >= this.min : num > this.min;
-        const right = this.includeRight ? num >= this.max : num > this.max;
+        const right = this.includeRight ? num <= this.max : num < this.max;
         return left && right;
     }
     public notContains(num: number) {

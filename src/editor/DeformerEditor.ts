@@ -8,6 +8,8 @@ import { Contour } from '../foundation/Contour';
 import { Vector } from '../foundation/math/vector';
 import DeformerEditorRenderer from './DeformerEditorRenderer';
 import './editor.less';
+import { DeformerLimitation } from './DeformerLimitation';
+import { PolarPoint } from '../foundation/math/coordinate/PolarCoordinate';
 
 interface EventTypes {
     mousemove: MouseEvent;
@@ -21,6 +23,7 @@ export interface DeformerEditorOptions<C extends Contour> {
     contour: C;
     moveable?: boolean;
     rotatable?: boolean;
+    limitations?: Array<DeformerLimitation<C>>;
 }
 
 interface DeformerEventMap {
@@ -39,11 +42,17 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
     private dom: HTMLElement = this.getDOM();
     private padding: number = 5;
     private cursorClass: string = 'deformer-editor--cursor-default';
+    private limitations: Array<DeformerLimitation<C>> = [];
+    private lastContourPoints: AnyPoint[];
     constructor(options: DeformerEditorOptions<C>) {
         super();
         this.contour = options.contour;
+        this.lastContourPoints = this.contour.getAllPoints();
         this.rotatable = options.rotatable === true;
         this.moveable = options.moveable === undefined ? true : options.moveable;
+        if (options.limitations) {
+            this.limitations.push(...options.limitations);
+        }
         this.hammer = new Hammer(this.getDOM());
         this.renderer = this.createRenderer();
         this.dom.appendChild(this.renderer.getDOM());
@@ -112,6 +121,9 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
         this.currentMouseOverController = ctrl;
     }
     public setCursor(cursorClass: string) {
+        if (this.cursorClass === cursorClass) {
+            return;
+        }
         const dom = this.getDOM();
         dom.classList.remove(this.cursorClass);
         dom.classList.add(cursorClass);
@@ -201,7 +213,12 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
                 position,
                 direction: e.direction
             };
-            this.currentMouseOverController.handlePanStart(editorEvent);
+            if (!this.continueHandle(editorEvent)) {
+                return;
+            }
+            const handleResult = this.currentMouseOverController.handlePanStart(editorEvent);
+            this.handleAfterLimitation(handleResult);
+
             this.emitter.emit('update', this.contour);
             this.updateUI();
         });
@@ -215,7 +232,12 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
                 position,
                 direction: e.direction
             };
-            this.currentMouseOverController.handlePanMove(editorEvent);
+            if (!this.continueHandle(editorEvent)) {
+                return;
+            }
+            const handleResult = this.currentMouseOverController.handlePanMove(editorEvent);
+            this.handleAfterLimitation(handleResult);
+
             this.emitter.emit('update', this.contour);
             this.updateUI();
             this.contour.restore();
@@ -230,7 +252,11 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
                 position,
                 direction: e.direction
             };
-            this.currentMouseOverController.handlePanStop(editorEvent);
+            if (!this.continueHandle(editorEvent)) {
+                return;
+            }
+            const handleResult = this.currentMouseOverController.handlePanStop(editorEvent);
+            this.handleAfterLimitation(handleResult);
             this.emitter.emit('update', this.contour);
             this.updateUI();
         });
@@ -238,6 +264,21 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
             this.hammer.on('rotate', e => {
                 // TODO: handle rotation controller
             });
+        }
+    }
+    private continueHandle(event: EditorEvent) {
+        return !this.limitations
+            .filter(limit => limit.handleIt(this.currentMouseOverController!))
+            .some(limit => !limit.continueHandle(event, this.contour));
+    }
+    private handleAfterLimitation(result: ContourControllerHandleResult) {
+        const anyOneNotAccept = this.limitations
+            .filter(limit => limit.handleIt(this.currentMouseOverController!))
+            .some(limit => !limit.accept(this.contour, result));
+        if (anyOneNotAccept) {
+            this.contour.resetAllPoints(this.lastContourPoints as PolarPoint[]);
+        } else {
+            this.lastContourPoints = this.contour.getAllPoints();
         }
     }
     private attachDOMEvent<T extends keyof EventTypes>(
@@ -256,7 +297,7 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
             this.currentMouseOverController.isMouseOver = false;
             this.currentMouseOverController = undefined;
         }
-        this.setCursor('default');
+
         this.controllers.forEach(controller => {
             controller.handleMouseMove(position);
             if (controller.isMouseOver) {
@@ -266,6 +307,11 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
                 this.currentMouseOverController = controller;
             }
         });
+        if (this.currentMouseOverController) {
+            this.setCursor(this.currentMouseOverController!.getCursorClass());
+        } else {
+            this.setCursor('default');
+        }
         this.controllers.forEach(ctrl => {
             ctrl.afterAllHandleMouseMove();
         });

@@ -9,19 +9,22 @@ export default abstract class ContourController<C extends Contour> {
     public getZIndex() {
         return 0;
     }
-    public abstract handleMouseMove(position: MousePosition);
+    public getCursorClass() {
+        return 'default';
+    }
+    public abstract handleMouseMove(position: MousePosition): ContourControllerHandleResult;
     public afterAllHandleMouseMove() {
         //
     }
-    public abstract handlePanStart(e: EditorEvent);
+    public abstract handlePanStart(e: EditorEvent): ContourControllerHandleResult;
     public afterAllHandlePanStart() {
         //
     }
-    public abstract handlePanMove(e: EditorEvent);
+    public abstract handlePanMove(e: EditorEvent): ContourControllerHandleResult;
     public afterAllHandlePanMove() {
         //
     }
-    public abstract handlePanStop(e: EditorEvent);
+    public abstract handlePanStop(e: EditorEvent): ContourControllerHandleResult;
     public afterAllHandlePanStop() {
         //
     }

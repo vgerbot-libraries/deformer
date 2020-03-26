@@ -15,31 +15,36 @@ export default class MoveController extends ContourController<Quadrilateral> {
     public handleMouseMove(position: MousePosition) {
         const currentMOController = this.editor.getCurrentMouseOverController();
         if (currentMOController) {
-            return;
+            return { isMouseOver: false };
         }
         this.isMouseOver = this.contour.containsPoint(position.page);
-        if (this.isMouseOver) {
-            this.editor.setCursor('deformer-editor--cursor-move');
-        }
+        return {
+            isMouseOver: this.isMouseOver
+        };
+    }
+    public getCursorClass() {
+        return 'deformer-editor--cursor-move';
     }
     public handlePanStart(e: EditorEvent) {
         this.contour.save();
-        this.handleMove(e);
+        return this.handleMove(e);
     }
     public handlePanMove(e: EditorEvent) {
         this.contour.restore();
         this.contour.save();
-        this.handleMove(e);
+        return this.handleMove(e);
     }
     public handlePanStop(e: EditorEvent) {
         this.contour.restore();
-        this.handleMove(e);
+        const result = this.handleMove(e);
         this.contour.apply();
+        return result;
     }
     public render(renderer: DeformerEditorRenderer) {
         //
     }
-    private handleMove(e: EditorEvent) {
+    private handleMove(e: EditorEvent): ContourControllerHandleResult {
         this.editor.contour.addVector(e.move.multiplyVector(Vector.REVERSE_VERTICAL_DIRECTION), Side.ALL);
+        return {};
     }
 }

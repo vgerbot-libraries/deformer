@@ -28,3 +28,14 @@ declare interface EditorEvent {
     position: MousePosition;
     direction: MouseOperationDirection;
 }
+
+declare interface SizeLimitationOptions {
+    minWidth: number;
+    maxWidth: number;
+    minHeight: number;
+    maxHeight: number;
+}
+
+declare interface ContourControllerHandleResult {
+    [key: string]: any;
+}

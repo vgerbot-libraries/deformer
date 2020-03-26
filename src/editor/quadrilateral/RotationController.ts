@@ -12,22 +12,26 @@ export default class RotationController extends ContourController<Quadrilateral>
     public handleMouseMove(position: MousePosition) {
         const topPoint = this.resolveCtrlPoint();
         this.isMouseOver = topPoint.vector(position.page).length() < 10;
+        return {
+            isMouseOver: this.isMouseOver
+        };
     }
     public handlePanStart(e: EditorEvent) {
         this.contour.save();
         this.ctrlPoint = this.resolveCtrlPoint();
         this.center = this.contour.getCenter().toDevice();
-        this.handleRotateByEvent(e);
+        return this.handleRotateByEvent(e);
     }
     public handlePanMove(e: EditorEvent) {
         this.contour.restore();
         this.contour.save();
-        this.handleRotateByEvent(e);
+        return this.handleRotateByEvent(e);
     }
     public handlePanStop(e: EditorEvent) {
         this.contour.restore();
-        this.handleRotateByEvent(e);
+        const result = this.handleRotateByEvent(e);
         this.contour.apply();
+        return result;
     }
     public handleRotate(rotation: number) {
         //
@@ -52,11 +56,12 @@ export default class RotationController extends ContourController<Quadrilateral>
         renderer.renderSquare(topPoint, 10);
         ctx.fill();
     }
-    private handleRotateByEvent(e: EditorEvent) {
+    private handleRotateByEvent(e: EditorEvent): ContourControllerHandleResult {
         const rv = this.center.vector(this.ctrlPoint);
         const mv = this.center.vector(e.position.page);
         const radian = rv.radian(mv);
         this.contour.rotate(radian);
+        return {};
     }
     private resolveCtrlPoint() {
         const topCenter = this.contour.getTopCenter();
