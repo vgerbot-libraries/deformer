@@ -5,7 +5,10 @@ import DeformerEditor from './DeformerEditor';
 export default abstract class ContourController<C extends Contour> {
     public isMouseOver: boolean = false;
     public isVisible: boolean = true;
-    constructor(public contour: C) {}
+    public contour: C;
+    constructor(public readonly editor: DeformerEditor<C>) {
+        this.contour = editor.contour;
+    }
     public getZIndex() {
         return 0;
     }
@@ -29,7 +32,7 @@ export default abstract class ContourController<C extends Contour> {
         //
     }
     public abstract render(renderer: DeformerEditorRenderer);
-    public attached(editor: DeformerEditor<C>) {
+    public attached(editor: DeformerEditor<C>, hammer: HammerManager) {
         //
     }
     public hide() {
@@ -37,5 +40,8 @@ export default abstract class ContourController<C extends Contour> {
     }
     public show() {
         this.isVisible = true;
+    }
+    public handleLimitationBySelf() {
+        return false;
     }
 }

@@ -87,4 +87,7 @@ export class Vector {
     public clone() {
         return new Vector(this.x, this.y);
     }
+    public equals(other: Vector) {
+        return this.x === other.x && this.y === other.y;
+    }
 }

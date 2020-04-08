@@ -6,8 +6,8 @@ import DeformerEditorRenderer from '../DeformerEditorRenderer';
 export default class RotationController extends ContourController<Quadrilateral> {
     private center!: DevicePoint;
     private ctrlPoint!: DevicePoint;
-    constructor(protected readonly editor: DeformerEditor<Quadrilateral>) {
-        super(editor.contour);
+    constructor(editor: DeformerEditor<Quadrilateral>) {
+        super(editor);
     }
     public handleMouseMove(position: MousePosition) {
         const topPoint = this.resolveCtrlPoint();
@@ -28,10 +28,8 @@ export default class RotationController extends ContourController<Quadrilateral>
         return this.handleRotateByEvent(e);
     }
     public handlePanStop(e: EditorEvent) {
-        this.contour.restore();
-        const result = this.handleRotateByEvent(e);
         this.contour.apply();
-        return result;
+        return {};
     }
     public handleRotate(rotation: number) {
         //

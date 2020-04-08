@@ -21,6 +21,9 @@ export abstract class Contour {
             this.points = last;
         }
     }
+    public pop() {
+        this.saveStack.pop();
+    }
     public apply() {
         this.saveStack.length = 0;
     }

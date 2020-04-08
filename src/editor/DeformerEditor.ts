@@ -44,6 +44,7 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
     private cursorClass: string = 'deformer-editor--cursor-default';
     private limitations: Array<DeformerLimitation<C>> = [];
     private lastContourPoints: AnyPoint[];
+    private tempVariables = {};
     constructor(options: DeformerEditorOptions<C>) {
         super();
         this.contour = options.contour;
@@ -57,6 +58,12 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
         this.renderer = this.createRenderer();
         this.dom.appendChild(this.renderer.getDOM());
         this.prepare();
+    }
+    public setTempVar(name: string, value: any) {
+        this.tempVariables[name] = value;
+    }
+    public getTempVar<T>(name: string): T {
+        return this.tempVariables[name] as T;
     }
     public on<K extends keyof DeformerEventMap>(type: K, callback: DeformerEventMap[K]) {
         return this.emitter.on(type, callback);
@@ -86,7 +93,7 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
             });
             this.controllers.splice(insertIndex, 0, controller);
         }
-        controller.attached(this);
+        controller.attached(this, this.hammer);
         return true;
     }
     public detach(controller: ContourController<C>): boolean {
@@ -132,11 +139,27 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
     public getCursorClass() {
         return this.cursorClass;
     }
+    public validateHandleResult(result: ContourControllerHandleResult) {
+        return !this.limitations
+            .filter(limit => limit.handleIt(this.currentMouseOverController!))
+            .some(limit => !limit.accept(this.contour, result));
+    }
+    public handleLimitation(result: ContourControllerHandleResult) {
+        const accepted = this.validateHandleResult(result);
+        if (accepted) {
+            this.lastContourPoints = this.contour.getAllPoints();
+            return false;
+        } else {
+            this.contour.resetAllPoints(this.lastContourPoints as PolarPoint[]);
+            return true;
+        }
+    }
     protected createRenderer() {
         return new DeformerEditorRenderer();
     }
     protected prepare() {
         this.addDestroyHook(() => this.hammer.destroy());
+        this.addDestroyHook(() => (this.tempVariables = {}));
         this.hammer.add(
             new Hammer.Pan({
                 direction: Hammer.DIRECTION_ALL
@@ -204,7 +227,8 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
             );
         }
         this.hammer.on('panstart', e => {
-            if (!this.currentMouseOverController) {
+            const currentMouseOverController = this.currentMouseOverController;
+            if (!currentMouseOverController) {
                 return;
             }
             const position = mousePositionFromHammerInput(e);
@@ -216,14 +240,17 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
             if (!this.continueHandle(editorEvent)) {
                 return;
             }
-            const handleResult = this.currentMouseOverController.handlePanStart(editorEvent);
-            this.handleAfterLimitation(handleResult);
+            const result = currentMouseOverController.handlePanStart(editorEvent);
+            if (!currentMouseOverController.handleLimitationBySelf()) {
+                this.handleLimitation(result);
+            }
 
             this.emitter.emit('update', this.contour);
             this.updateUI();
         });
         this.hammer.on('panmove', e => {
-            if (!this.currentMouseOverController) {
+            const currentMouseOverController = this.currentMouseOverController;
+            if (!currentMouseOverController) {
                 return;
             }
             const position = mousePositionFromHammerInput(e);
@@ -235,15 +262,16 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
             if (!this.continueHandle(editorEvent)) {
                 return;
             }
-            const handleResult = this.currentMouseOverController.handlePanMove(editorEvent);
-            this.handleAfterLimitation(handleResult);
-
+            const result = currentMouseOverController.handlePanMove(editorEvent);
+            if (!currentMouseOverController.handleLimitationBySelf()) {
+                this.handleLimitation(result);
+            }
             this.emitter.emit('update', this.contour);
             this.updateUI();
-            this.contour.restore();
         });
         this.hammer.on('panend', e => {
-            if (!this.currentMouseOverController) {
+            const currentMouseOverController = this.currentMouseOverController;
+            if (!currentMouseOverController) {
                 return;
             }
             const position = mousePositionFromHammerInput(e);
@@ -255,8 +283,10 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
             if (!this.continueHandle(editorEvent)) {
                 return;
             }
-            const handleResult = this.currentMouseOverController.handlePanStop(editorEvent);
-            this.handleAfterLimitation(handleResult);
+            const result = currentMouseOverController.handlePanStop(editorEvent);
+            if (!currentMouseOverController.handleLimitationBySelf()) {
+                this.handleLimitation(result);
+            }
             this.emitter.emit('update', this.contour);
             this.updateUI();
         });
@@ -270,16 +300,6 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
         return !this.limitations
             .filter(limit => limit.handleIt(this.currentMouseOverController!))
             .some(limit => !limit.continueHandle(event, this.contour));
-    }
-    private handleAfterLimitation(result: ContourControllerHandleResult) {
-        const anyOneNotAccept = this.limitations
-            .filter(limit => limit.handleIt(this.currentMouseOverController!))
-            .some(limit => !limit.accept(this.contour, result));
-        if (anyOneNotAccept) {
-            this.contour.resetAllPoints(this.lastContourPoints as PolarPoint[]);
-        } else {
-            this.lastContourPoints = this.contour.getAllPoints();
-        }
     }
     private attachDOMEvent<T extends keyof EventTypes>(
         type: T,

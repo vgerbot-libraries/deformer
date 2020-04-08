@@ -7,7 +7,7 @@ import { Vector } from '../../foundation/math/vector';
 
 export default class MoveController extends ContourController<Quadrilateral> {
     constructor(public readonly editor: DeformerEditor<Quadrilateral>) {
-        super(editor.contour);
+        super(editor);
     }
     public getZIndex() {
         return Infinity;
