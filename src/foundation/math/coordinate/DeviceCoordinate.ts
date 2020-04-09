@@ -28,8 +28,8 @@ export class DevicePoint extends Point<DeviceCoordinate> {
         return coord.point(this.getDeviceX() - coord.originX, this.getDeviceY() - coord.originY);
     }
     public toPolar(coord: PolarCoordinatate = PolarCoordinatate.ORIGIN): PolarPoint {
-        const disX = this.getDeviceX() - coord.originX;
-        const disY = this.getDeviceY() - coord.originY;
+        const disX = this.x - (coord.originX - this.coord.originX);
+        const disY = coord.originY - this.getDeviceY();
         const sita = Math.atan2(disY, disX);
         const r = Math.sqrt(disX * disX + disY * disY);
         return coord.point(sita, r);

@@ -5,13 +5,14 @@ import { Boundary } from './Boundary';
 import { CartesianCoordinate, CartesianPoint } from './math/coordinate/CartesianCoordinate';
 import { AnyPoint } from './math/coordinate/Coordinate';
 import LineSegment from './math/LineSegment';
+import IndexOutOfBoundsError from './error/IndexOutOfBoundsError';
 
 const DEVICE_ORIGIN = DeviceCoordinate.ORIGIN;
 const CARTESIAN_ORIGIN = CartesianCoordinate.ORIGIN;
 
 export abstract class Contour {
     protected points: PolarPoint[] = [];
-    private saveStack: PolarPoint[][] = [];
+    protected saveStack: any[] = [];
     public save() {
         this.saveStack.push(this.points.slice(0));
     }
@@ -47,6 +48,12 @@ export abstract class Contour {
     public setPoint(index: number, point: AnyPoint) {
         this.points[index] = point.toPolar();
     }
+    public getPointAt(index: number): AnyPoint {
+        if (index < 0 || index >= this.points.length) {
+            throw new IndexOutOfBoundsError(index, this.points.length);
+        }
+        return this.points[index];
+    }
     public removePoint(index: number): boolean {
         return this.points.splice(index, 1).length > 0;
     }
@@ -73,15 +80,16 @@ export abstract class Contour {
         return !isOutsideContour;
     }
     public getEdgeLineSegments() {
-        const pointCount = this.points.length;
+        const points = this.getAllPoints();
+        const pointCount = points.length;
         if (pointCount < 2) {
             return [];
         } else if (pointCount === 2) {
-            return [new LineSegment(this.points[0], this.points[1])];
+            return [new LineSegment(points[0], points[1])];
         }
         const segments: LineSegment[] = [];
-        let lastPoint = this.points[pointCount - 1];
-        this.points.forEach(point => {
+        let lastPoint = points[pointCount - 1];
+        points.forEach(point => {
             segments.push(new LineSegment(lastPoint, point));
             lastPoint = point;
         });

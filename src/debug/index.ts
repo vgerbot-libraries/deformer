@@ -3,6 +3,9 @@ import { QuadrilateralDeformerEditor } from '../editor/quadrilateral/Quadrilater
 import { Vector } from '../foundation/math/vector';
 import { SizeLimitation } from '../editor/quadrilateral/SizeLimitation';
 import { AvoidSwitchSideLimitation } from '../editor/quadrilateral/SwitchSideLimitation';
+import { RegularPolygonDeformerEditor } from '../editor/polygon/RegularPolygonDeformerEditor';
+import { RegularPolygon } from '../foundation/Polygon';
+import { DeviceCoordinate } from '../foundation/math/coordinate/DeviceCoordinate';
 
 // tslint-ignore all
 
@@ -45,3 +48,13 @@ editor.on('update', contour => {
 
 (window as any).Vector = Vector;
 (window as any).Quadrilateral = Quadrilateral;
+
+const regularPolygonEditor = new RegularPolygonDeformerEditor({
+    contour: new RegularPolygon(DeviceCoordinate.ORIGIN.point(400, 400), 100, 6),
+    rotatable: true,
+    moveable: true
+});
+
+console.info(regularPolygonEditor);
+
+document.body.appendChild(regularPolygonEditor.getDOM());

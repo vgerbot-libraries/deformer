@@ -58,6 +58,7 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
         this.renderer = this.createRenderer();
         this.dom.appendChild(this.renderer.getDOM());
         this.prepare();
+        this.attachUpdateUIEvents();
     }
     public setTempVar(name: string, value: any) {
         this.tempVariables[name] = value;
@@ -117,7 +118,22 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
     public getPadding() {
         return this.padding;
     }
-    public abstract updateUI();
+    public updateUI() {
+        const boundary = this.contour.getDeviceBoundary();
+        const padding = this.getPadding();
+        const displayBoundary = boundary.expand(padding);
+        this.getDOM().style.cssText += `
+            left: ${displayBoundary.left}px;
+            top: ${displayBoundary.top}px;
+            width: ${displayBoundary.getWidth()}px;
+            height: ${displayBoundary.getHeight()}px;
+        `;
+        this.renderer.setOffset(padding);
+        this.renderer.reset(displayBoundary, boundary);
+        this.controllers.forEach(ctrl => {
+            ctrl.render(this.renderer);
+        });
+    }
     public getControllers() {
         return this.controllers;
     }
@@ -153,6 +169,12 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
             this.contour.resetAllPoints(this.lastContourPoints as PolarPoint[]);
             return true;
         }
+    }
+    public isRotatable() {
+        return this.rotatable;
+    }
+    public isMoveable() {
+        return this.moveable;
     }
     protected createRenderer() {
         return new DeformerEditorRenderer();
@@ -294,6 +316,30 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
             this.hammer.on('rotate', e => {
                 // TODO: handle rotation controller
             });
+        }
+    }
+    protected attachUpdateUIEvents() {
+        if (typeof MutationObserver !== 'undefined') {
+            const observer = new MutationObserver(() => {
+                const dom = this.getDOM();
+                if (dom.parentElement) {
+                    this.updateUI();
+                    observer.disconnect();
+                }
+            });
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+            this.addDestroyHook(() => {
+                observer.disconnect();
+            });
+        } else {
+            const eventListener = () => {
+                this.updateUI();
+                this.getDOM().removeEventListener('DOMNodeInserted', eventListener);
+            };
+            this.getDOM().addEventListener('DOMNodeInserted', eventListener);
         }
     }
     private continueHandle(event: EditorEvent) {
