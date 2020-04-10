@@ -6,6 +6,8 @@ import { AvoidSwitchSideLimitation } from '../editor/quadrilateral/SwitchSideLim
 import { RegularPolygonDeformerEditor } from '../editor/polygon/RegularPolygonDeformerEditor';
 import { RegularPolygon } from '../foundation/Polygon';
 import { DeviceCoordinate } from '../foundation/math/coordinate/DeviceCoordinate';
+import EdgeLengthLimitation from '../editor/polygon/EdgeLengthLimitation';
+import { Interval } from '../foundation/Interval';
 
 // tslint-ignore all
 
@@ -52,7 +54,8 @@ editor.on('update', contour => {
 const regularPolygonEditor = new RegularPolygonDeformerEditor({
     contour: new RegularPolygon(DeviceCoordinate.ORIGIN.point(400, 400), 100, 6),
     rotatable: true,
-    moveable: true
+    moveable: true,
+    limitations: [new EdgeLengthLimitation(Interval.closed(10, 100))]
 });
 
 console.info(regularPolygonEditor);
