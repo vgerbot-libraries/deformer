@@ -1,9 +1,10 @@
-import { Contour } from './Contour';
+import { Contour, ContourState } from './Contour';
 import UnsupportedError from './error/UnsupportedError';
 import { Lazy } from './lazy';
 import { PolarPoint } from './math/coordinate/PolarCoordinate';
 import { Vector } from './math/vector';
 import IllegalArgumentError from './error/IllegalArgumentError';
+import IllegalOperationError from './error/IllegalOperationError';
 
 export class IrregularPolygon extends Contour {
     public getCenter(): AnyPoint {
@@ -18,37 +19,43 @@ export class IrregularPolygon extends Contour {
 }
 const regularLazy = new Lazy<RegularPolygon>();
 
+export interface RegularPolygonState extends ContourState {
+    center: PolarPoint;
+    r: number;
+    sides: number;
+    radian: number;
+}
+
 export class RegularPolygon extends Contour {
     @regularLazy.property(p => p.resolvePoints(), false)
     @regularLazy.detectFieldChange('radian', 'sides', 'r', 'center')
     protected points: PolarPoint[] = [];
     private radian = 0;
-    constructor(private center: AnyPoint, private r: number, private sides: number = 2) {
+    private center: PolarPoint;
+    constructor(center: AnyPoint, private r: number, private sides: number = 2) {
         super();
         this.center = center.toPolar();
     }
-    public save() {
-        this.saveStack.push({
+    public getSavableState(): RegularPolygonState {
+        return {
             center: this.center,
             r: this.r,
             radian: this.radian,
-            sides: this.sides
-        });
+            sides: this.sides,
+            points: this.points
+        };
     }
-    public restore() {
-        const last = this.saveStack.pop();
-        if (last) {
-            this.center = last.center;
-            this.r = last.r;
-            this.radian = last.radian;
-            this.sides = last.sides;
-        }
+    public resetState(state: RegularPolygonState) {
+        this.center = state.center;
+        this.r = state.r;
+        this.radian = state.radian;
+        this.sides = state.sides;
     }
     public getAllPoints() {
         return this.points.slice(0);
     }
     public resetAllPoints() {
-        //
+        throw new IllegalOperationError();
     }
     public move(vector: Vector) {
         this.center = this.center.addVector(vector);
@@ -86,10 +93,12 @@ export class RegularPolygon extends Contour {
         }
         this.sides = Math.floor(sides);
     }
+    public getEdgeLength() {
+        return this.points[0].vector(this.points[1]).length();
+    }
     private resolvePoints() {
         const avgRadian = (Math.PI * 2) / this.sides;
         const vector = new Vector(0, this.r);
-        console.info((this.radian / Math.PI) * 180);
         return Array(this.sides)
             .fill(0)
             .map((_, s) => {

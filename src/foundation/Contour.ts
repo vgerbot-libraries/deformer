@@ -10,16 +10,20 @@ import IndexOutOfBoundsError from './error/IndexOutOfBoundsError';
 const DEVICE_ORIGIN = DeviceCoordinate.ORIGIN;
 const CARTESIAN_ORIGIN = CartesianCoordinate.ORIGIN;
 
+export interface ContourState {
+    points: PolarPoint[];
+}
+
 export abstract class Contour {
     protected points: PolarPoint[] = [];
     protected saveStack: any[] = [];
     public save() {
-        this.saveStack.push(this.points.slice(0));
+        this.saveStack.push(this.getSavableState());
     }
     public restore() {
         const last = this.saveStack.pop();
         if (last) {
-            this.points = last;
+            this.resetState(last);
         }
     }
     public pop() {
@@ -27,6 +31,14 @@ export abstract class Contour {
     }
     public apply() {
         this.saveStack.length = 0;
+    }
+    public getSavableState(): ContourState {
+        return {
+            points: this.points.slice(0)
+        };
+    }
+    public resetState(state: ContourState) {
+        this.points = state.points;
     }
     public resetAllPoints(points: PolarPoint[]) {
         this.points = points;

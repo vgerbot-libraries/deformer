@@ -4,12 +4,11 @@ import ContourController from '../editor/ContourController';
 import Disposable from '../Disposable';
 import { mousePositionFromMouseEvent, mousePositionFromHammerInput } from '../event-input';
 import { isTouchDevice } from '../foundation/devices';
-import { Contour } from '../foundation/Contour';
+import { Contour, ContourState } from '../foundation/Contour';
 import { Vector } from '../foundation/math/vector';
 import DeformerEditorRenderer from './DeformerEditorRenderer';
 import './editor.less';
 import { DeformerLimitation } from './DeformerLimitation';
-import { PolarPoint } from '../foundation/math/coordinate/PolarCoordinate';
 
 interface EventTypes {
     mousemove: MouseEvent;
@@ -43,12 +42,12 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
     private padding: number = 5;
     private cursorClass: string = 'deformer-editor--cursor-default';
     private limitations: Array<DeformerLimitation<C>> = [];
-    private lastContourPoints: AnyPoint[];
+    private lastContourState: ContourState;
     private tempVariables = {};
     constructor(options: DeformerEditorOptions<C>) {
         super();
         this.contour = options.contour;
-        this.lastContourPoints = this.contour.getAllPoints();
+        this.lastContourState = this.contour.getSavableState();
         this.rotatable = options.rotatable === true;
         this.moveable = options.moveable === undefined ? true : options.moveable;
         if (options.limitations) {
@@ -163,10 +162,10 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
     public handleLimitation(result: ContourControllerHandleResult) {
         const accepted = this.validateHandleResult(result);
         if (accepted) {
-            this.lastContourPoints = this.contour.getAllPoints();
+            this.lastContourState = this.contour.getSavableState();
             return false;
         } else {
-            this.contour.resetAllPoints(this.lastContourPoints as PolarPoint[]);
+            this.contour.resetState(this.lastContourState);
             return true;
         }
     }
