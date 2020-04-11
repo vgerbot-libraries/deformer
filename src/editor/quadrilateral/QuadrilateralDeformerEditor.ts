@@ -1,5 +1,5 @@
 import DeformerEditor, { DeformerEditorOptions } from '../DeformerEditor';
-import { Quadrilateral } from '../../foundation/Quadrilateral';
+import { Quadrilateral } from '../../foundation/shapes/Quadrilateral';
 import { QuadrilateralEdgeController } from './EdgeController';
 import { QuadrilateralVertexController } from './VertexController';
 import { Side } from '../../foundation/Direction';

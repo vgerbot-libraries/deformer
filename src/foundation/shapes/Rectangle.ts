@@ -1,6 +1,6 @@
 import { Quadrilateral } from './Quadrilateral';
-import { DeviceCoordinate } from './math/coordinate/DeviceCoordinate';
-import { CartesianCoordinate } from './math/coordinate/CartesianCoordinate';
+import { DeviceCoordinate } from '../math/coordinate/DeviceCoordinate';
+import { CartesianCoordinate } from '../math/coordinate/CartesianCoordinate';
 
 type AnyCoordinate = DeviceCoordinate | CartesianCoordinate;
 

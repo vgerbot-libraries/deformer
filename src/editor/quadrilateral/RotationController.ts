@@ -1,4 +1,4 @@
-import { Quadrilateral } from '../../foundation/Quadrilateral';
+import { Quadrilateral } from '../../foundation/shapes/Quadrilateral';
 import RotationController from '../common/RotationController';
 
 export default class QuadrilateralRotationController extends RotationController<Quadrilateral> {

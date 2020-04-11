@@ -1,5 +1,5 @@
 import { DeformerLimitation } from '../DeformerLimitation';
-import { Quadrilateral } from '../../foundation/Quadrilateral';
+import { Quadrilateral } from '../../foundation/shapes/Quadrilateral';
 import { Interval } from '../../foundation/Interval';
 import ContourController from '../ContourController';
 import { QuadrilateralEdgeController } from './EdgeController';

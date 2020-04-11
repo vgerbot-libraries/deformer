@@ -78,7 +78,7 @@ export default class LineSegment {
         this.endPoint = this.endPoint.addVector(vector);
     }
     public triangle(point: AnyPoint) {
-        const Triangle = require('../Triangle'); // circular dependency
+        const Triangle = require('../shapes/Triangle'); // circular dependency
         return Triangle.create(this.startPoint, this.endPoint, point);
     }
     public getStartPoint() {

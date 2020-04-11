@@ -1,11 +1,11 @@
-import { DeviceCoordinate } from './math/coordinate/DeviceCoordinate';
-import { Contour } from './Contour';
-import { Vector } from './math/vector';
-import { CartesianCoordinate } from './math/coordinate/CartesianCoordinate';
-import { PolarPoint, PolarCoordinatate } from './math/coordinate/PolarCoordinate';
-import { AnyPoint } from './math/coordinate/Coordinate';
-import { Lazy } from './lazy';
-import { Side, getSideName } from './Direction';
+import { DeviceCoordinate } from '../math/coordinate/DeviceCoordinate';
+import { Contour } from '../Contour';
+import { Vector } from '../math/vector';
+import { CartesianCoordinate } from '../math/coordinate/CartesianCoordinate';
+import { PolarPoint, PolarCoordinatate } from '../math/coordinate/PolarCoordinate';
+import { AnyPoint } from '../math/coordinate/Coordinate';
+import { Lazy } from '../lazy';
+import { Side, getSideName } from '../Direction';
 
 const DEVICE_ORIGIN = DeviceCoordinate.ORIGIN;
 const TWO_PI = Math.PI * 2;

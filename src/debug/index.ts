@@ -1,10 +1,10 @@
-import { Quadrilateral } from '../foundation/Quadrilateral';
+import { Quadrilateral } from '../foundation/shapes/Quadrilateral';
 import { QuadrilateralDeformerEditor } from '../editor/quadrilateral/QuadrilateralDeformerEditor';
 import { Vector } from '../foundation/math/vector';
 import { SizeLimitation } from '../editor/quadrilateral/SizeLimitation';
 import { AvoidSwitchSideLimitation } from '../editor/quadrilateral/SwitchSideLimitation';
 import { RegularPolygonDeformerEditor } from '../editor/polygon/RegularPolygonDeformerEditor';
-import { RegularPolygon } from '../foundation/Polygon';
+import { RegularPolygon } from '../foundation/shapes/RegularPolygon';
 import { DeviceCoordinate } from '../foundation/math/coordinate/DeviceCoordinate';
 import EdgeLengthLimitation from '../editor/polygon/EdgeLengthLimitation';
 import { Interval } from '../foundation/Interval';

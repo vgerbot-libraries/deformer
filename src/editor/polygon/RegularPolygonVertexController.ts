@@ -1,5 +1,5 @@
 import ContourController from '../ContourController';
-import { RegularPolygon } from '../../foundation/Polygon';
+import { RegularPolygon } from '../../foundation/shapes/RegularPolygon';
 import DeformerEditorRenderer from '../DeformerEditorRenderer';
 import DeformerEditor from '../DeformerEditor';
 

@@ -1,22 +1,11 @@
-import { Contour, ContourState } from './Contour';
-import UnsupportedError from './error/UnsupportedError';
-import { Lazy } from './lazy';
-import { PolarPoint } from './math/coordinate/PolarCoordinate';
-import { Vector } from './math/vector';
-import IllegalArgumentError from './error/IllegalArgumentError';
-import IllegalOperationError from './error/IllegalOperationError';
+import { Contour, ContourState } from '../Contour';
+import UnsupportedError from '../error/UnsupportedError';
+import { Lazy } from '../lazy';
+import { PolarPoint } from '../math/coordinate/PolarCoordinate';
+import { Vector } from '../math/vector';
+import IllegalArgumentError from '../error/IllegalArgumentError';
+import IllegalOperationError from '../error/IllegalOperationError';
 
-export class IrregularPolygon extends Contour {
-    public getCenter(): AnyPoint {
-        throw new Error('Method not implemented.');
-    }
-    public clone(): Contour {
-        throw new Error('Method not implemented.');
-    }
-    public getAcreage(): number {
-        throw new Error('Method not implemented.');
-    }
-}
 const regularLazy = new Lazy<RegularPolygon>();
 
 export interface RegularPolygonState extends ContourState {

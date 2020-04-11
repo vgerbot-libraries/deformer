@@ -1,6 +1,6 @@
-import { Contour } from './Contour';
-import { Lazy } from './lazy';
-import { DeviceCoordinate } from './math/coordinate/DeviceCoordinate';
+import { Contour } from '../Contour';
+import { Lazy } from '../lazy';
+import { DeviceCoordinate } from '../math/coordinate/DeviceCoordinate';
 
 const lazy = new Lazy<Triangle>();
 export default class Triangle extends Contour {

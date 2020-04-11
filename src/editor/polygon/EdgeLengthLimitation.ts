@@ -1,5 +1,5 @@
 import { DeformerLimitation } from '../DeformerLimitation';
-import { RegularPolygon } from '../../foundation/Polygon';
+import { RegularPolygon } from '../../foundation/shapes/RegularPolygon';
 import ContourController from '../ContourController';
 import { RegularPolygonVertexController } from './RegularPolygonVertexController';
 import { Interval } from '../../foundation/Interval';

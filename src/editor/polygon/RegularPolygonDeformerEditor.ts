@@ -1,5 +1,5 @@
 import DeformerEditor, { DeformerEditorOptions } from '../DeformerEditor';
-import { RegularPolygon } from '../../foundation/Polygon';
+import { RegularPolygon } from '../../foundation/shapes/RegularPolygon';
 import { RegularPolygonVertexController } from './RegularPolygonVertexController';
 import RegularPolygonMoveController from './MoveController';
 import RegularPolygonRotationController from './RotationController';

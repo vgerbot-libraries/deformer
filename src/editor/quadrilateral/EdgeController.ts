@@ -1,5 +1,5 @@
 import ContourController from '../ContourController';
-import { Quadrilateral } from '../../foundation/Quadrilateral';
+import { Quadrilateral } from '../../foundation/shapes/Quadrilateral';
 import { PolarPoint } from '../../foundation/math/coordinate/PolarCoordinate';
 import { Side, getOppositeSite } from '../../foundation/Direction';
 import DeformerEditor from '../DeformerEditor';

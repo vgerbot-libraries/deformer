@@ -1,4 +1,4 @@
-import { Quadrilateral } from '../../foundation/Quadrilateral';
+import { Quadrilateral } from '../../foundation/shapes/Quadrilateral';
 import { Side } from '../../foundation/Direction';
 import DeformerEditor from '../DeformerEditor';
 import { Vector } from '../../foundation/math/vector';
