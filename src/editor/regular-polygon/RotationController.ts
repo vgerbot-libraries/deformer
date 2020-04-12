@@ -1,8 +1,7 @@
 import RotationController from '../common/RotationController';
 import { RegularPolygon } from '../../foundation/shapes/RegularPolygon';
-import { IrregularPolygon } from '../../foundation/shapes/IrregularPolygon';
 
-export default class RegularPolygonRotationController extends RotationController<RegularPolygon & IrregularPolygon> {
+export default class RegularPolygonRotationController extends RotationController<RegularPolygon> {
     protected resolveCtrlPoint(): DevicePoint {
         const center = this.contour.getCenter();
         const top = this.contour.getAllPoints()[0];

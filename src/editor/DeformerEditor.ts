@@ -8,7 +8,7 @@ import { Contour, ContourState } from '../foundation/Contour';
 import { Vector } from '../foundation/math/vector';
 import DeformerEditorRenderer from './DeformerEditorRenderer';
 import './editor.less';
-import { DeformerLimitation } from './DeformerLimitation';
+import { DeformerLimitator } from './DeformerLimitator';
 
 interface EventTypes {
     mousemove: MouseEvent;
@@ -22,7 +22,7 @@ export interface DeformerEditorOptions<C extends Contour> {
     contour: C;
     moveable?: boolean;
     rotatable?: boolean;
-    limitations?: Array<DeformerLimitation<C>>;
+    limitations?: Array<DeformerLimitator<C>>;
 }
 
 interface DeformerEventMap {
@@ -41,7 +41,7 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
     private dom: HTMLElement = this.getDOM();
     private padding: number = 5;
     private cursorClass: string = 'deformer-editor--cursor-default';
-    private limitations: Array<DeformerLimitation<C>> = [];
+    private limitations: Array<DeformerLimitator<C>> = [];
     private lastContourState: ContourState;
     private tempVariables = {};
     constructor(options: DeformerEditorOptions<C>) {
@@ -159,7 +159,7 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
             .filter(limit => limit.handleIt(this.currentMouseOverController!))
             .some(limit => !limit.accept(this.contour, result));
     }
-    public handleLimitation(result: ContourControllerHandleResult) {
+    public handleLimitator(result: ContourControllerHandleResult) {
         const accepted = this.validateHandleResult(result);
         if (accepted) {
             this.lastContourState = this.contour.getSavableState();
@@ -262,8 +262,8 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
                 return;
             }
             const result = currentMouseOverController.handlePanStart(editorEvent);
-            if (!currentMouseOverController.handleLimitationBySelf()) {
-                this.handleLimitation(result);
+            if (!currentMouseOverController.handleLimitatorBySelf()) {
+                this.handleLimitator(result);
             }
 
             this.emitter.emit('update', this.contour);
@@ -284,8 +284,8 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
                 return;
             }
             const result = currentMouseOverController.handlePanMove(editorEvent);
-            if (!currentMouseOverController.handleLimitationBySelf()) {
-                this.handleLimitation(result);
+            if (!currentMouseOverController.handleLimitatorBySelf()) {
+                this.handleLimitator(result);
             }
             this.emitter.emit('update', this.contour);
             this.updateUI();
@@ -305,8 +305,8 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
                 return;
             }
             const result = currentMouseOverController.handlePanStop(editorEvent);
-            if (!currentMouseOverController.handleLimitationBySelf()) {
-                this.handleLimitation(result);
+            if (!currentMouseOverController.handleLimitatorBySelf()) {
+                this.handleLimitator(result);
             }
             this.emitter.emit('update', this.contour);
             this.updateUI();

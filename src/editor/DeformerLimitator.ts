@@ -1,7 +1,7 @@
 import { Contour } from '../foundation/Contour';
 import ContourController from './ContourController';
 
-export abstract class DeformerLimitation<C extends Contour> {
+export abstract class DeformerLimitator<C extends Contour> {
     public abstract handleIt(controller: ContourController<C>): boolean;
     public continueHandle(event: EditorEvent, contour: C): boolean {
         return true;

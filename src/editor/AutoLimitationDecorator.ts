@@ -11,7 +11,7 @@ export function AutoLimitation(
     const fn = descriptor.value as Function;
     descriptor.value = function(...args: any[]) {
         const result = fn.call(this, ...args);
-        target.editor.handleLimitation(result);
+        target.editor.handleLimitator(result);
         return result;
     };
 }

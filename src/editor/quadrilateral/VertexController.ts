@@ -8,7 +8,7 @@ export class QuadrilateralVertexController extends QuadrilateralEdgeController {
     constructor(editor: DeformerEditor<Quadrilateral>, public side: Side, public readonly size: number = 10) {
         super(editor, side, size);
     }
-    public handleLimitationBySelf() {
+    public handleLimitatorBySelf() {
         return true;
     }
     public handlePanStart(e: EditorEvent) {

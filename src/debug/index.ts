@@ -1,12 +1,12 @@
 import { Quadrilateral } from '../foundation/shapes/Quadrilateral';
 import { QuadrilateralDeformerEditor } from '../editor/quadrilateral/QuadrilateralDeformerEditor';
 import { Vector } from '../foundation/math/vector';
-import { SizeLimitation } from '../editor/quadrilateral/SizeLimitation';
-import { AvoidSwitchSideLimitation } from '../editor/quadrilateral/SwitchSideLimitation';
+import { SizeLimitator } from '../editor/quadrilateral/SizeLimitator';
+import { AvoidSwitchSideLimitator } from '../editor/quadrilateral/SwitchSideLimitator';
 import { RegularPolygonDeformerEditor } from '../editor/regular-polygon/RegularPolygonDeformerEditor';
 import { RegularPolygon } from '../foundation/shapes/RegularPolygon';
 import { DeviceCoordinate } from '../foundation/math/coordinate/DeviceCoordinate';
-import EdgeLengthLimitation from '../editor/regular-polygon/EdgeLengthLimitation';
+import EdgeLengthLimitator from '../editor/regular-polygon/EdgeLengthLimitator';
 import { Interval } from '../foundation/Interval';
 
 // tslint-ignore all
@@ -28,13 +28,13 @@ const editor = new QuadrilateralDeformerEditor({
     enableVerticies: true,
     rotatable: true,
     limitations: [
-        new SizeLimitation({
+        new SizeLimitator({
             minWidth: 50,
             maxWidth: 500,
             minHeight: 50,
             maxHeight: 300
         }),
-        new AvoidSwitchSideLimitation()
+        new AvoidSwitchSideLimitator()
     ]
 });
 document.body.appendChild(editor.getDOM());
@@ -55,7 +55,7 @@ const regularPolygonEditor = new RegularPolygonDeformerEditor({
     contour: new RegularPolygon(DeviceCoordinate.ORIGIN.point(400, 400), 100, 6),
     rotatable: true,
     moveable: true,
-    limitations: [new EdgeLengthLimitation(Interval.closed(10, 100))]
+    limitations: [new EdgeLengthLimitator(Interval.closed(10, 100))]
 });
 
 console.info(regularPolygonEditor);

@@ -41,7 +41,7 @@ export default abstract class ContourController<C extends Contour> {
     public show() {
         this.isVisible = true;
     }
-    public handleLimitationBySelf() {
+    public handleLimitatorBySelf() {
         return false;
     }
 }

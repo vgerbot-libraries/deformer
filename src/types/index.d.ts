@@ -29,7 +29,7 @@ declare interface EditorEvent {
     direction: MouseOperationDirection;
 }
 
-declare interface SizeLimitationOptions {
+declare interface SizeLimitatorOptions {
     minWidth: number;
     maxWidth: number;
     minHeight: number;

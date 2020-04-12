@@ -4,9 +4,10 @@ import { Lazy } from '../lazy';
 
 const lazy = new Lazy<IrregularPolygon>();
 export class IrregularPolygon extends Contour {
+    /** FIXME: private */
     @lazy.resetBy('points')
     @lazy.property(it => it.resolveNonSelfIntersectingPoints())
-    private nonSelfIntersectingPoints!: PolarPoint[];
+    public nonSelfIntersectingPoints!: PolarPoint[];
     public getCenter(): AnyPoint {
         throw new Error('Method not implemented.');
     }
@@ -16,7 +17,8 @@ export class IrregularPolygon extends Contour {
     public getAcreage(): number {
         throw new Error('Method not implemented.');
     }
-    private isSelfIntersecting(): boolean {
+    /** FIXME: private */
+    public isSelfIntersecting(): boolean {
         return false;
     }
     private resolveNonSelfIntersectingPoints(): PolarPoint[] {
