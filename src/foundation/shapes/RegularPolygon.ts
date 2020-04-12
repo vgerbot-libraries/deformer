@@ -70,11 +70,14 @@ export class RegularPolygon extends Contour {
     public getCenter(): AnyPoint {
         return this.center;
     }
-    public clone(): Contour {
-        throw new Error('Method not implemented.');
+    public clone(): RegularPolygon {
+        return new RegularPolygon(this.center, this.r, this.sides);
     }
     public getAcreage(): number {
-        throw new Error('Method not implemented.');
+        const perRadian = Math.PI / this.sides;
+        const h = Math.cos(perRadian) * this.r;
+        const w = Math.sin(perRadian) * this.r;
+        return ((w * h) / 2) * this.sides;
     }
     public setSideNumber(sides: number) {
         if (sides < 3) {

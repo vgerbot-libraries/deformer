@@ -15,6 +15,17 @@ export class Lazy<Class> {
             cachedDetectorFactories.push(...detectorFactories);
         };
     }
+    /**
+     * @alias detectFieldChange
+     * @param watchFields
+     */
+    public resetBy(...watchFields: Array<string | FieldWatcher<Class>>): PropertyDecorator {
+        return this.detectFieldChange(...watchFields);
+    }
+    /**
+     * @deprecated
+     * @param watchFields
+     */
     public detectFieldChange(...watchFields: Array<string | FieldWatcher<Class>>): PropertyDecorator {
         return (targetPrototype: object, propertyKey: string | symbol) => {
             const detectorFactories = watchFields.map((watchField: string | FieldWatcher<Class>) => {
