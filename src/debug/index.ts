@@ -3,10 +3,10 @@ import { QuadrilateralDeformerEditor } from '../editor/quadrilateral/Quadrilater
 import { Vector } from '../foundation/math/vector';
 import { SizeLimitation } from '../editor/quadrilateral/SizeLimitation';
 import { AvoidSwitchSideLimitation } from '../editor/quadrilateral/SwitchSideLimitation';
-import { RegularPolygonDeformerEditor } from '../editor/polygon/RegularPolygonDeformerEditor';
+import { RegularPolygonDeformerEditor } from '../editor/regular-polygon/RegularPolygonDeformerEditor';
 import { RegularPolygon } from '../foundation/shapes/RegularPolygon';
 import { DeviceCoordinate } from '../foundation/math/coordinate/DeviceCoordinate';
-import EdgeLengthLimitation from '../editor/polygon/EdgeLengthLimitation';
+import EdgeLengthLimitation from '../editor/regular-polygon/EdgeLengthLimitation';
 import { Interval } from '../foundation/Interval';
 
 // tslint-ignore all
