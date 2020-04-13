@@ -8,6 +8,7 @@ import { RegularPolygon } from '../foundation/shapes/RegularPolygon';
 import { DeviceCoordinate } from '../foundation/math/coordinate/DeviceCoordinate';
 import EdgeLengthLimitator from '../editor/regular-polygon/EdgeLengthLimitator';
 import { Interval } from '../foundation/Interval';
+import BoxLimitator from '../editor/common/BoxLimitator';
 
 // tslint-ignore all
 
@@ -34,7 +35,11 @@ const editor = new QuadrilateralDeformerEditor({
             minHeight: 50,
             maxHeight: 300
         }),
-        new AvoidSwitchSideLimitator()
+        new AvoidSwitchSideLimitator(),
+        new BoxLimitator({
+            left: 0,
+            right: 500
+        })
     ]
 });
 document.body.appendChild(editor.getDOM());
