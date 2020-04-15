@@ -94,7 +94,7 @@ export default class LineSegment {
         const vf = this.startPoint.vector(other.startPoint);
         const vt = this.startPoint.vector(other.endPoint);
         const vm = this.getSEVector();
-        return vf.cross(vm) * vt.cross(vm) <= 0;
+        return vf.cross(vm) * vt.cross(vm) < 0;
     }
     private calcLength() {
         return this.startPoint.vector(this.endPoint).length();
