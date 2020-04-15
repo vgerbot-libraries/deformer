@@ -76,7 +76,7 @@
         "@types/yargs": "^15.0.4",
         "autoprefixer": "^9.7.4",
         "chai": "^4.2.0",
-        "codecov": "3.6.1",
+        "codecov": "3.6.5",
         "commitizen": "^4.0.3",
         "commitlint": "8.3.4",
         "coverage-istanbul-loader": "^3.0.0",
