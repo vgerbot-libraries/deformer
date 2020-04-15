@@ -3,6 +3,7 @@
     "tabWidth": 4,
     "bracketSpacing": true,
     "printWidth": 120,
+    "endOfLine": "lf",
     "overrides": [{
         "files": "{src,test}/**/*.ts",
         "options": {
