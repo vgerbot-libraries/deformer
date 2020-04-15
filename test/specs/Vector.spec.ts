@@ -14,7 +14,8 @@ describe('Vector', () => {
         const vcd = c.vector(d);
         const vcb = c.vector(b);
         const cross_ca_cd = vca.cross(vcd);
-        const cross_ca_cdx = vca.length() * vcd.length() * Math.sin(vca.radian(vcd));
+        const radian_vca_vcd = vca.radian(vcd);
+        const cross_ca_cdx = vca.length() * vcd.length() * Math.sin(Math.PI * 2 - radian_vca_vcd);
         expect(cross_ca_cd).to.be.closeTo(cross_ca_cdx, 1e-8);
         const cross_cd_ca = vcd.cross(vca);
         expect(cross_ca_cd).to.be.eql(-cross_cd_ca);
