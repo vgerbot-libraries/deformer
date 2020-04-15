@@ -1,5 +1,5 @@
 import { QuadrilateralDeformerEditor } from '../../src/editor/quadrilateral/QuadrilateralDeformerEditor';
-import { Quadrilateral } from '../../src/foundation/Quadrilateral';
+import { Quadrilateral } from '../../src/foundation/shapes/Quadrilateral';
 
 describe('quadrilateral test', () => {
     before(() => {

@@ -1,8 +1,8 @@
 import { expect } from 'chai';
-import { Quadrilateral } from '../../src/foundation/Quadrilateral';
 import { DeviceCoordinate } from '../../src/foundation/math/coordinate/DeviceCoordinate';
 import { Vector } from '../../src/foundation/math/vector';
 import { Side } from '../../src/foundation/Direction';
+import { Quadrilateral } from '../../src/foundation/shapes/Quadrilateral';
 
 const MIN_ACCURACY = 0.001;
 
