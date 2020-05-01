@@ -1,4 +1,4 @@
-import { QuadrilateralDeformerEditor } from '../../src/editor/quadrilateral/QuadrilateralDeformerEditor';
+import { QuadrilateralDeformer } from '../../src/editor/quadrilateral/QuadrilateralDeformer';
 import { Quadrilateral } from '../../src/foundation/shapes/Quadrilateral';
 
 describe('quadrilateral test', () => {
@@ -13,7 +13,7 @@ describe('quadrilateral test', () => {
             height: 200px;
         `;
         document.body.appendChild(holder);
-        const editor = new QuadrilateralDeformerEditor({
+        const editor = new QuadrilateralDeformer({
             contour: Quadrilateral.fromDOMElement(holder),
             enableEdge: true,
             enableVerticies: true,

@@ -1,10 +1,10 @@
 import ContourController from '../ContourController';
-import DeformerEditorRenderer from '../DeformerEditorRenderer';
-import DeformerEditor from '../DeformerEditor';
+import DeformerRenderer from '../DeformerRenderer';
+import ContourDeformer from '../Deformer';
 import { Contour } from '../../foundation/Contour';
 
 export default abstract class MoveController<C extends Contour> extends ContourController<C> {
-    constructor(public readonly editor: DeformerEditor<C>) {
+    constructor(public readonly editor: ContourDeformer<C>) {
         super(editor);
     }
     public getZIndex() {
@@ -38,7 +38,7 @@ export default abstract class MoveController<C extends Contour> extends ContourC
         this.contour.apply();
         return result;
     }
-    public render(renderer: DeformerEditorRenderer) {
+    public render(renderer: DeformerRenderer) {
         //
     }
     protected abstract handleMove(e: EditorEvent): ContourControllerHandleResult;

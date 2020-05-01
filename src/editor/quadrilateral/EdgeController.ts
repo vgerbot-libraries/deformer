@@ -1,13 +1,13 @@
 import ContourController from '../ContourController';
 import { PolarPoint } from '../../foundation/math/coordinate/PolarCoordinate';
 import { Side, getOppositeSite } from '../../foundation/Direction';
-import DeformerEditor from '../DeformerEditor';
-import DeformerEditorRenderer from '../DeformerEditorRenderer';
+import ContourDeformer from '../Deformer';
+import DeformerRenderer from '../DeformerRenderer';
 import { Vector } from '../../foundation/math/vector';
 import { Quadrilateral } from '../../foundation/shapes/Quadrilateral';
 
 export class QuadrilateralEdgeController extends ContourController<Quadrilateral> {
-    constructor(editor: DeformerEditor<Quadrilateral>, public side: Side, public readonly size: number = 10) {
+    constructor(editor: ContourDeformer<Quadrilateral>, public side: Side, public readonly size: number = 10) {
         super(editor);
     }
     public reverseDirection() {
@@ -19,7 +19,7 @@ export class QuadrilateralEdgeController extends ContourController<Quadrilateral
     public getPoint(): PolarPoint {
         return this.contour.getPointBySide(this.side);
     }
-    public render(renderer: DeformerEditorRenderer) {
+    public render(renderer: DeformerRenderer) {
         renderer.save();
         const point = this.getPoint();
         renderer.config({

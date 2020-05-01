@@ -1,3 +1,3 @@
-export { QuadrilateralDeformerEditor } from './editor/quadrilateral/QuadrilateralDeformerEditor';
+export { QuadrilateralDeformer } from './editor/quadrilateral/QuadrilateralDeformer';
 
 export { Interval } from './foundation/Interval';

@@ -1,12 +1,12 @@
-import DeformerEditor from '../DeformerEditor';
+import ContourDeformer from '../Deformer';
 import ContourController from '../ContourController';
-import DeformerEditorRenderer from '../DeformerEditorRenderer';
+import DeformerRenderer from '../DeformerRenderer';
 import { Contour } from '../../foundation/Contour';
 
 export default abstract class RotationController<C extends Contour> extends ContourController<C> {
     private center!: DevicePoint;
     private ctrlPoint!: DevicePoint;
-    constructor(editor: DeformerEditor<C>) {
+    constructor(editor: ContourDeformer<C>) {
         super(editor);
     }
     public handleMouseMove(position: MousePosition) {
@@ -34,10 +34,10 @@ export default abstract class RotationController<C extends Contour> extends Cont
     public handleRotate(rotation: number) {
         //
     }
-    public attached(editor: DeformerEditor<C>) {
+    public attached(editor: ContourDeformer<C>) {
         editor.setPadding(40);
     }
-    public render(renderer: DeformerEditorRenderer) {
+    public render(renderer: DeformerRenderer) {
         renderer.save();
         const center = this.contour.getCenter();
         const topPoint = this.resolveCtrlPoint();

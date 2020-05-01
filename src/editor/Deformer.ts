@@ -1,12 +1,12 @@
 import { JSEventEmitter, DOMEventListenerOptions } from '../EventEmitter';
 import Hammer from 'hammerjs';
-import ContourController from '../editor/ContourController';
+import ContourController from './ContourController';
 import Disposable from '../Disposable';
 import { mousePositionFromMouseEvent, mousePositionFromHammerInput } from '../event-input';
 import { isTouchDevice } from '../foundation/devices';
 import { Contour, ContourState } from '../foundation/Contour';
 import { Vector } from '../foundation/math/vector';
-import DeformerEditorRenderer from './DeformerEditorRenderer';
+import DeformerRenderer from './DeformerRenderer';
 import './editor.less';
 import { DeformerLimitator } from './DeformerLimitator';
 
@@ -18,7 +18,7 @@ interface EventTypes {
     touchstart: TouchEvent;
     touchend: TouchEvent;
 }
-export interface DeformerEditorOptions<C extends Contour> {
+export interface ContourDeformerOptions<C extends Contour> {
     contour: C;
     moveable?: boolean;
     rotatable?: boolean;
@@ -29,12 +29,12 @@ interface DeformerEventMap {
     update: (contour: Contour) => void;
 }
 
-export default abstract class DeformerEditor<C extends Contour> extends Disposable {
+export default abstract class ContourDeformer<C extends Contour> extends Disposable {
     public readonly contour: C;
     protected rotatable: boolean;
     protected moveable: boolean;
     protected readonly controllers: Array<ContourController<C>> = [];
-    protected readonly renderer: DeformerEditorRenderer;
+    protected readonly renderer: DeformerRenderer;
     private readonly emitter: JSEventEmitter = new JSEventEmitter();
     private readonly hammer: HammerManager;
     private currentMouseOverController?: ContourController<C>;
@@ -44,7 +44,7 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
     private limitations: Array<DeformerLimitator<C>> = [];
     private lastContourState: ContourState;
     private tempVariables = {};
-    constructor(options: DeformerEditorOptions<C>) {
+    constructor(options: ContourDeformerOptions<C>) {
         super();
         this.contour = options.contour;
         this.lastContourState = this.contour.getSavableState();
@@ -176,7 +176,7 @@ export default abstract class DeformerEditor<C extends Contour> extends Disposab
         return this.moveable;
     }
     protected createRenderer() {
-        return new DeformerEditorRenderer();
+        return new DeformerRenderer();
     }
     protected prepare() {
         this.addDestroyHook(() => this.hammer.destroy());

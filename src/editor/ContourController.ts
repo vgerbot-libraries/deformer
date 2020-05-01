@@ -1,12 +1,12 @@
 import { Contour } from '../foundation/Contour';
-import DeformerEditorRenderer from './DeformerEditorRenderer';
-import DeformerEditor from './DeformerEditor';
+import DeformerRenderer from './DeformerRenderer';
+import ContourDeformer from './Deformer';
 
 export default abstract class ContourController<C extends Contour> {
     public isMouseOver: boolean = false;
     public isVisible: boolean = true;
     public contour: C;
-    constructor(public readonly editor: DeformerEditor<C>) {
+    constructor(public readonly editor: ContourDeformer<C>) {
         this.contour = editor.contour;
     }
     public getZIndex() {
@@ -31,8 +31,8 @@ export default abstract class ContourController<C extends Contour> {
     public afterAllHandlePanStop() {
         //
     }
-    public abstract render(renderer: DeformerEditorRenderer);
-    public attached(editor: DeformerEditor<C>, hammer: HammerManager) {
+    public abstract render(renderer: DeformerRenderer);
+    public attached(editor: ContourDeformer<C>, hammer: HammerManager) {
         //
     }
     public hide() {

@@ -21,7 +21,7 @@ export interface RenderingConfig {
     lineDashOffset: number;
 }
 
-export default class DeformerEditorRenderer {
+export default class DeformerRenderer {
     private readonly canvas: HTMLCanvasElement;
     private readonly ctx: CanvasRenderingContext2D;
     private readonly coordinate: DeviceCoordinate = new DeviceCoordinate(0, 0);

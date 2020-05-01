@@ -1,5 +1,5 @@
 import { Quadrilateral } from '../foundation/shapes/Quadrilateral';
-import { QuadrilateralDeformerEditor } from '../editor/quadrilateral/QuadrilateralDeformerEditor';
+import { QuadrilateralDeformer } from '../editor/quadrilateral/QuadrilateralDeformer';
 import { Vector } from '../foundation/math/vector';
 import { SizeLimitator } from '../editor/quadrilateral/SizeLimitator';
 import { AvoidSwitchSideLimitator } from '../editor/quadrilateral/SwitchSideLimitator';
@@ -23,7 +23,7 @@ holder.style.cssText = `
     outline: 1px red inset;
 `;
 document.body.appendChild(holder);
-const editor = new QuadrilateralDeformerEditor({
+const editor = new QuadrilateralDeformer({
     contour: Quadrilateral.fromDOMElement(holder),
     enableEdge: true,
     enableVerticies: true,
@@ -56,13 +56,13 @@ editor.on('update', contour => {
 (window as any).Vector = Vector;
 (window as any).Quadrilateral = Quadrilateral;
 
-const regularPolygonEditor = new RegularPolygonDeformerEditor({
+const regularPolygonDeformer = new RegularPolygonDeformer({
     contour: new RegularPolygon(DeviceCoordinate.ORIGIN.point(400, 400), 100, 6),
     rotatable: true,
     moveable: true,
     limitations: [new EdgeLengthLimitator(Interval.closed(10, 100))]
 });
 
-console.info(regularPolygonEditor);
+console.info(regularPolygonDeformer);
 
-document.body.appendChild(regularPolygonEditor.getDOM());
+document.body.appendChild(regularPolygonDeformer.getDOM());

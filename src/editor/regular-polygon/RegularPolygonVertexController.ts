@@ -1,11 +1,11 @@
 import ContourController from '../ContourController';
 import { RegularPolygon } from '../../foundation/shapes/RegularPolygon';
-import DeformerEditorRenderer from '../DeformerEditorRenderer';
-import DeformerEditor from '../DeformerEditor';
+import DeformerRenderer from '../DeformerRenderer';
+import ContourDeformer from '../Deformer';
 
 export class RegularPolygonVertexController extends ContourController<RegularPolygon> {
     constructor(
-        editor: DeformerEditor<RegularPolygon>,
+        editor: ContourDeformer<RegularPolygon>,
         public index: number,
         public readonly size: number,
         private rotatable: boolean
@@ -34,7 +34,7 @@ export class RegularPolygonVertexController extends ContourController<RegularPol
         this.contour.apply();
         return {};
     }
-    public render(renderer: DeformerEditorRenderer) {
+    public render(renderer: DeformerRenderer) {
         renderer.save();
         const point = this.getPoint();
         renderer.config({

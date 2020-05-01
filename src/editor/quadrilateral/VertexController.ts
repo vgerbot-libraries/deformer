@@ -1,11 +1,11 @@
 import { Quadrilateral } from '../../foundation/shapes/Quadrilateral';
 import { Side } from '../../foundation/Direction';
-import DeformerEditor from '../DeformerEditor';
+import ContourDeformer from '../Deformer';
 import { Vector } from '../../foundation/math/vector';
 import { QuadrilateralEdgeController } from './EdgeController';
 
 export class QuadrilateralVertexController extends QuadrilateralEdgeController {
-    constructor(editor: DeformerEditor<Quadrilateral>, public side: Side, public readonly size: number = 10) {
+    constructor(editor: ContourDeformer<Quadrilateral>, public side: Side, public readonly size: number = 10) {
         super(editor, side, size);
     }
     public handleLimitatorBySelf() {

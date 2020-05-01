@@ -1,11 +1,11 @@
 import { Quadrilateral } from '../../foundation/shapes/Quadrilateral';
-import DeformerEditor from '../DeformerEditor';
+import ContourDeformer from '../Deformer';
 import { Side } from '../../foundation/Direction';
 import { Vector } from '../../foundation/math/vector';
 import MoveController from '../common/MoveController';
 
 export default class QuadrilateralMoveController extends MoveController<Quadrilateral> {
-    constructor(public readonly editor: DeformerEditor<Quadrilateral>) {
+    constructor(public readonly editor: ContourDeformer<Quadrilateral>) {
         super(editor);
     }
     protected handleMove(e: EditorEvent): ContourControllerHandleResult {

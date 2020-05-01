@@ -1,4 +1,4 @@
-import DeformerEditor, { DeformerEditorOptions } from '../DeformerEditor';
+import ContourDeformer, { ContourDeformerOptions } from '../Deformer';
 import { Quadrilateral } from '../../foundation/shapes/Quadrilateral';
 import { QuadrilateralEdgeController } from './EdgeController';
 import { QuadrilateralVertexController } from './VertexController';
@@ -6,15 +6,15 @@ import { Side } from '../../foundation/Direction';
 import MoveController from './MoveController';
 import RotationController from './RotationController';
 
-export interface QuadrilateralDeformerEditorOptions extends DeformerEditorOptions<Quadrilateral> {
+export interface QuadrilateralDeformerOptions extends ContourDeformerOptions<Quadrilateral> {
     contour: Quadrilateral;
     enableVerticies?: boolean; // 启用所有顶点控制点
     enableEdge?: boolean; // 启用所有边控制点
 }
-export class QuadrilateralDeformerEditor extends DeformerEditor<Quadrilateral> {
+export class QuadrilateralDeformer extends ContourDeformer<Quadrilateral> {
     private enableEdge: boolean;
     private enableVerticies: boolean;
-    constructor(options: QuadrilateralDeformerEditorOptions) {
+    constructor(options: QuadrilateralDeformerOptions) {
         super(options);
         this.enableEdge = options.enableEdge === true;
         this.enableVerticies = options.enableVerticies !== false;
