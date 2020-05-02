@@ -1,6 +1,6 @@
-import { DeformerLimitator } from '../DeformerLimitator';
 import { Contour } from '../../foundation/Contour';
 import ContourController from '../ContourController';
+import { DeformerLimitator } from '../DeformerLimitator';
 import MoveController from './MoveController';
 
 export interface BoxLimiatorOptions {
@@ -22,7 +22,7 @@ export default class BoxLimitator extends DeformerLimitator<Contour> {
         this.bottom = this.getOptionValue(options, 'bottom', Infinity);
     }
     public handleIt(controller: ContourController<Contour>): boolean {
-        return controller instanceof MoveController;
+        return controller instanceof MoveController || controller.supportLimitator(this);
     }
     public accept(contour: Contour): boolean {
         const boundary = contour.getDeviceBoundary();

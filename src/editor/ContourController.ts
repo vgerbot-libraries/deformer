@@ -1,6 +1,7 @@
 import { Contour } from '../foundation/Contour';
 import DeformerRenderer from './DeformerRenderer';
 import ContourDeformer from './Deformer';
+import { DeformerLimitator } from './DeformerLimitator';
 
 export default abstract class ContourController<C extends Contour> {
     public isMouseOver: boolean = false;
@@ -42,6 +43,9 @@ export default abstract class ContourController<C extends Contour> {
         this.isVisible = true;
     }
     public handleLimitatorBySelf() {
+        return false;
+    }
+    public supportLimitator(limitator: DeformerLimitator<any>) {
         return false;
     }
 }

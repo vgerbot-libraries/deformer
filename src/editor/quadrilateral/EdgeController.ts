@@ -1,10 +1,14 @@
-import ContourController from '../ContourController';
+import { getOppositeSite, Side } from '../../foundation/Direction';
 import { PolarPoint } from '../../foundation/math/coordinate/PolarCoordinate';
-import { Side, getOppositeSite } from '../../foundation/Direction';
-import ContourDeformer from '../Deformer';
-import DeformerRenderer from '../DeformerRenderer';
 import { Vector } from '../../foundation/math/vector';
 import { Quadrilateral } from '../../foundation/shapes/Quadrilateral';
+import ContourController from '../ContourController';
+import ContourDeformer from '../Deformer';
+import DeformerRenderer from '../DeformerRenderer';
+import { DeformerLimitator } from '../DeformerLimitator';
+import BoxLimitator from '../common/BoxLimitator';
+import { SizeLimitator } from './SizeLimitator';
+import { AvoidSwitchSideLimitator } from './SwitchSideLimitator';
 
 export class QuadrilateralEdgeController extends ContourController<Quadrilateral> {
     constructor(editor: ContourDeformer<Quadrilateral>, public side: Side, public readonly size: number = 10) {
@@ -58,6 +62,16 @@ export class QuadrilateralEdgeController extends ContourController<Quadrilateral
     }
     public handleLimitationBySelf() {
         return true;
+    }
+    public supportLimitator(limitator: DeformerLimitator<any>) {
+        if (
+            limitator instanceof BoxLimitator ||
+            limitator instanceof SizeLimitator ||
+            limitator instanceof AvoidSwitchSideLimitator
+        ) {
+            return true;
+        }
+        return false;
     }
     protected getCursorClassName() {
         let cursorName;
