@@ -1,27 +1,35 @@
 import { Contour } from '../Contour';
 import { PolarPoint } from '../math/coordinate/PolarCoordinate';
 import { Lazy } from '../lazy';
+import { DeviceCoordinate } from '../math/coordinate/DeviceCoordinate';
+import UnsupportedError from '../error/UnsupportedError';
 
 const lazy = new Lazy<IrregularPolygon>();
 export class IrregularPolygon extends Contour {
-    /** FIXME: private */
     @lazy.resetBy('points')
-    @lazy.property(it => it.resolveNonSelfIntersectingPoints())
-    public nonSelfIntersectingPoints!: PolarPoint[];
+    @lazy.property(it => it.computeCenterPoint())
+    private center!: PolarPoint;
     public getCenter(): AnyPoint {
-        throw new Error('Method not implemented.');
+        return this.center;
     }
-    public clone(): Contour {
-        throw new Error('Method not implemented.');
+    public clone(): IrregularPolygon {
+        const polygon = new IrregularPolygon();
+        polygon.resetAllPoints(this.points.slice(0));
+        return polygon;
     }
     public getAcreage(): number {
-        throw new Error('Method not implemented.');
+        throw new UnsupportedError();
     }
-    /** FIXME: private */
-    public isSelfIntersecting(): boolean {
-        return false;
-    }
-    private resolveNonSelfIntersectingPoints(): PolarPoint[] {
-        return [];
+    private computeCenterPoint(): PolarPoint {
+        let sumX: number = 0;
+        let sumY: number = 0;
+        this.points.forEach(point => {
+            const p = point.toDevice();
+            sumX += p.x;
+            sumY += p.y;
+        });
+        const centerX = sumX / this.points.length;
+        const centerY = sumY / this.points.length;
+        return DeviceCoordinate.ORIGIN.point(centerX, centerY).toPolar();
     }
 }

@@ -90,4 +90,7 @@ export class Vector {
     public equals(other: Vector) {
         return this.x === other.x && this.y === other.y;
     }
+    public take(length: number) {
+        return this.normalize().multiply(length);
+    }
 }

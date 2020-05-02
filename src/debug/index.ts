@@ -3,12 +3,14 @@ import { QuadrilateralDeformer } from '../editor/quadrilateral/QuadrilateralDefo
 import { Vector } from '../foundation/math/vector';
 import { SizeLimitator } from '../editor/quadrilateral/SizeLimitator';
 import { AvoidSwitchSideLimitator } from '../editor/quadrilateral/SwitchSideLimitator';
-import { RegularPolygonDeformerEditor } from '../editor/regular-polygon/RegularPolygonDeformerEditor';
+import { RegularPolygonDeformer } from '../editor/regular-polygon/RegularPolygonDeformer';
 import { RegularPolygon } from '../foundation/shapes/RegularPolygon';
 import { DeviceCoordinate } from '../foundation/math/coordinate/DeviceCoordinate';
 import EdgeLengthLimitator from '../editor/regular-polygon/EdgeLengthLimitator';
 import { Interval } from '../foundation/Interval';
 import BoxLimitator from '../editor/common/BoxLimitator';
+import { IrregularPolygonDeformer } from '../editor/irregular-polygon/IrregularPolygonDeformer';
+import { IrregularPolygon } from '../foundation/shapes/IrregularPolygon';
 
 // tslint-ignore all
 
@@ -66,3 +68,14 @@ const regularPolygonDeformer = new RegularPolygonDeformer({
 console.info(regularPolygonDeformer);
 
 document.body.appendChild(regularPolygonDeformer.getDOM());
+
+const irregularPolygonDeformer = new IrregularPolygonDeformer({
+    contour: new IrregularPolygon(),
+    rotatable: true,
+    moveable: true
+});
+irregularPolygonDeformer.addPoint(DeviceCoordinate.ORIGIN.point(500, 300));
+irregularPolygonDeformer.addPoint(DeviceCoordinate.ORIGIN.point(600, 350));
+irregularPolygonDeformer.addPoint(DeviceCoordinate.ORIGIN.point(700, 600));
+irregularPolygonDeformer.addPoint(DeviceCoordinate.ORIGIN.point(650, 400));
+document.body.appendChild(irregularPolygonDeformer.getDOM());

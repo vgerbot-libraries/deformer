@@ -49,9 +49,9 @@ export default abstract class RotationController<C extends Contour> extends Cont
         const ctx = renderer.getContext();
         renderer.renderOpenPath(center, topPoint);
         ctx.stroke();
-        renderer.renderSquare(center, 10);
+        renderer.renderCircle(center, 5);
         ctx.fill();
-        renderer.renderSquare(topPoint, 10);
+        renderer.renderCircle(topPoint, 10);
         ctx.fill();
     }
     protected abstract resolveCtrlPoint(): DevicePoint;

@@ -88,6 +88,13 @@ export default class DeformerRenderer {
         const top = dcenter.y - hsize;
         this.ctx.rect(left, top, size, size);
     }
+    public renderCircle(center: AnyPoint, size: number) {
+        const r = size * 0.5;
+        const dcenter = this.convertPoint(center);
+        this.ctx.beginPath();
+        this.ctx.arc(dcenter.x, dcenter.y, r, 0, Math.PI * 2);
+        this.ctx.closePath();
+    }
     public renderText(point: AnyPoint, text: string) {
         const p = this.convertPoint(point);
         this.ctx.strokeText(text, p.x, p.y);
