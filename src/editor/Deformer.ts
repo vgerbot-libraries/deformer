@@ -44,6 +44,7 @@ export default abstract class ContourDeformer<C extends Contour> extends Disposa
     private limitations: Array<DeformerLimitator<C>> = [];
     private lastContourState: ContourState;
     private tempVariables = {};
+    private currentLimitators: Array<DeformerLimitator<C>> = [];
     constructor(options: ContourDeformerOptions<C>) {
         super();
         this.contour = options.contour;
@@ -155,9 +156,7 @@ export default abstract class ContourDeformer<C extends Contour> extends Disposa
         return this.cursorClass;
     }
     public validateHandleResult(result: DeformerHandlerResult<unknown>) {
-        return !this.limitations
-            .filter(limit => limit.handleIt(this.currentMouseOverController!))
-            .some(limit => !limit.accept(this.contour, result));
+        return !this.currentLimitators.some(limit => !limit.accept(this.contour, result));
     }
     public handleLimitator(result: DeformerHandlerResult<unknown>) {
         const accepted = this.validateHandleResult(result);
@@ -263,6 +262,7 @@ export default abstract class ContourDeformer<C extends Contour> extends Disposa
             }
             this.contour.save();
             this.handleContoller(editorEvent, HandlingType.START);
+            this.emitter.emit('start-update', this.contour);
             this.emitter.emit('update', this.contour);
             this.updateUI();
         });
@@ -303,7 +303,9 @@ export default abstract class ContourDeformer<C extends Contour> extends Disposa
             this.contour.restore();
             this.contour.save();
             this.handleContoller(editorEvent, HandlingType.END);
+            this.contour.apply();
             this.emitter.emit('update', this.contour);
+            this.emitter.emit('update-end', this.contour);
             this.updateUI();
         });
         if (this.rotatable) {
@@ -343,18 +345,24 @@ export default abstract class ContourDeformer<C extends Contour> extends Disposa
             const lastResult = this.getTempVar(handler.cacheResultKey);
             const result = handler.handle();
             if (!this.validateHandleResult(result)) {
-                this.contour.restore();
-                handler.undo(lastResult);
+                const someOneAdjustSuccess = this.currentLimitators.some(limitator =>
+                    limitator.adjust(this.contour, editorEvent, this.currentMouseOverController!, result)
+                );
+                if (someOneAdjustSuccess) {
+                    this.contour.pop();
+                } else {
+                    this.contour.restore();
+                    handler.undo(lastResult);
+                }
             } else {
                 this.setTempVar(handler.cacheResultKey, result.cacheData);
                 this.contour.pop();
             }
         });
+        return true;
     }
     private continueHandle(event: EditorEvent) {
-        return !this.limitations
-            .filter(limit => limit.handleIt(this.currentMouseOverController!))
-            .some(limit => !limit.continueHandle(event, this.contour));
+        return !this.currentLimitators.some(limit => !limit.continueHandle(event, this.contour));
     }
     private attachDOMEvent<T extends keyof EventTypes>(
         type: T,
@@ -384,8 +392,10 @@ export default abstract class ContourDeformer<C extends Contour> extends Disposa
         });
         if (this.currentMouseOverController) {
             this.setCursor(this.currentMouseOverController!.getCursorClass());
+            this.currentLimitators = this.limitations.filter(limit => limit.handleIt(this.currentMouseOverController!));
         } else {
             this.setCursor('default');
+            this.currentLimitators = [];
         }
         this.controllers.forEach(ctrl => {
             ctrl.afterAllHandleMouseMove();

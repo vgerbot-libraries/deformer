@@ -10,6 +10,7 @@ import { Interval } from '../foundation/Interval';
 import EdgeLengthLimitator from '../editor/regular-polygon/EdgeLengthLimitator';
 import { IrregularPolygonDeformer } from '../editor/irregular-polygon/IrregularPolygonDeformer';
 import { IrregularPolygon } from '../foundation/shapes/IrregularPolygon';
+import BoxLimitator from '../editor/common/BoxLimitator';
 
 // tslint-ignore all
 
@@ -36,11 +37,13 @@ const editor = new QuadrilateralDeformer({
             minHeight: 50,
             maxHeight: 300
         }),
-        new AvoidSwitchSideLimitator()
-        // new BoxLimitator({
-        //     left: 0,
-        //     right: 500
-        // })
+        new AvoidSwitchSideLimitator(),
+        BoxLimitator.createStaticBox({
+            left: 100,
+            right: 1200,
+            top: 100,
+            bottom: 800
+        })
     ]
 });
 document.body.appendChild(editor.getDOM());
