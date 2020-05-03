@@ -1,4 +1,4 @@
-import ContourController from '../ContourController';
+import ContourController, { DeformerHandler } from '../ContourController';
 import { IrregularPolygon } from '../../foundation/shapes/IrregularPolygon';
 import DeformerRenderer from '../DeformerRenderer';
 import { IrregularPolygonDeformer } from './IrregularPolygonDeformer';
@@ -20,16 +20,6 @@ export default class IrregularPolygonVertexController extends ContourController<
             isMouseOver: this.isMouseOver
         };
     }
-    public handlePanStart(e: EditorEvent): ContourControllerHandleResult {
-        return this.handlePanEvent(e);
-    }
-    public handlePanMove(e: EditorEvent): ContourControllerHandleResult {
-        return this.handlePanEvent(e);
-    }
-    public handlePanStop(e: EditorEvent): ContourControllerHandleResult {
-        this.contour.apply();
-        return {};
-    }
     public render(renderer: DeformerRenderer) {
         renderer.save();
         const point = this.getPoint();
@@ -43,12 +33,25 @@ export default class IrregularPolygonVertexController extends ContourController<
         renderer.getContext().fill();
         renderer.restore();
     }
-    private handlePanEvent(e: EditorEvent): ContourControllerHandleResult {
-        this.contour.restore();
-        this.contour.save();
-        const newPoint = this.getPoint().addVector(e.move.multiplyVector(Vector.REVERSE_VERTICAL_DIRECTION));
-        this.contour.setPoint(this.index, newPoint);
-        return {};
+    public deformerHandlers(e: EditorEvent): Array<DeformerHandler<AnyPoint>> {
+        return [
+            {
+                cacheResultKey: 'irregular-vertex-point',
+                handle: () => {
+                    const move = e.move.multiplyVector(Vector.REVERSE_VERTICAL_DIRECTION);
+                    const newPoint = this.getPoint().addVector(move);
+                    this.contour.setPoint(this.index, newPoint);
+                    return {
+                        cacheData: newPoint
+                    };
+                },
+                undo: (lastPoint?: AnyPoint) => {
+                    if (lastPoint) {
+                        this.contour.setPoint(this.index, lastPoint);
+                    }
+                }
+            }
+        ];
     }
     private getPoint() {
         return this.contour.getPointAt(this.index);
