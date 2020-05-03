@@ -76,14 +76,15 @@ export class QuadrilateralEdgeController extends ContourController<Quadrilateral
                 verticalSide = Side.BOTTOM;
                 break;
         }
+        const move = e.move.multiplyVector(Vector.REVERSE_VERTICAL_DIRECTION);
         if (horizontalSide !== undefined) {
             const hside = horizontalSide;
             handlers.push({
                 cacheResultKey: 'quadrilateral-edge-horizontal',
                 handle: () => {
-                    const switchedSide = this.contour.addVector(e.move, hside);
+                    const switchedSide = this.contour.addVector(move, hside);
                     return {
-                        cacheData: e.move,
+                        cacheData: move,
                         switchedSide
                     };
                 },
@@ -99,7 +100,6 @@ export class QuadrilateralEdgeController extends ContourController<Quadrilateral
             handlers.push({
                 cacheResultKey: 'quadrilateral-edge-vertical',
                 handle: () => {
-                    const move = e.move.multiplyVector(Vector.REVERSE_VERTICAL_DIRECTION);
                     const switchedSide = this.contour.addVector(move, vside);
                     return {
                         cacheData: move,
