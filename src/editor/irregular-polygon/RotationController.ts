@@ -1,20 +1,13 @@
 import RotationController from '../common/RotationController';
 import { IrregularPolygon } from '../../foundation/shapes/IrregularPolygon';
 import { Vector } from '../../foundation/math/vector';
+import { HandlingType } from '../ContourController';
 
 export default class IrregularPolygonRotationController extends RotationController<IrregularPolygon> {
     private lastEditorEvent?: EditorEvent;
-    public handlePanStart(e: EditorEvent) {
+    public deformerHandlers(e: EditorEvent, type: HandlingType) {
         this.lastEditorEvent = e;
-        return super.handlePanStart(e);
-    }
-    public handlePanMove(e: EditorEvent) {
-        this.lastEditorEvent = e;
-        return super.handlePanMove(e);
-    }
-    public handlePanStop(e: EditorEvent) {
-        this.lastEditorEvent = e;
-        return super.handlePanStop(e);
+        return super.deformerHandlers(e, type);
     }
     protected resolveCtrlPoint(): DevicePoint {
         const center = this.contour.getCenter().toDevice();

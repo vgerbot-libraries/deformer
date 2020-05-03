@@ -1,6 +1,6 @@
 import { JSEventEmitter, DOMEventListenerOptions } from '../EventEmitter';
 import Hammer from 'hammerjs';
-import ContourController from './ContourController';
+import ContourController, { HandlingType, DeformerHandlerResult } from './ContourController';
 import Disposable from '../Disposable';
 import { mousePositionFromMouseEvent, mousePositionFromHammerInput } from '../event-input';
 import { isTouchDevice } from '../foundation/devices';
@@ -154,12 +154,12 @@ export default abstract class ContourDeformer<C extends Contour> extends Disposa
     public getCursorClass() {
         return this.cursorClass;
     }
-    public validateHandleResult(result: ContourControllerHandleResult) {
+    public validateHandleResult(result: DeformerHandlerResult<unknown>) {
         return !this.limitations
             .filter(limit => limit.handleIt(this.currentMouseOverController!))
             .some(limit => !limit.accept(this.contour, result));
     }
-    public handleLimitator(result: ContourControllerHandleResult) {
+    public handleLimitator(result: DeformerHandlerResult<unknown>) {
         const accepted = this.validateHandleResult(result);
         if (accepted) {
             this.lastContourState = this.contour.getSavableState();
@@ -261,11 +261,8 @@ export default abstract class ContourDeformer<C extends Contour> extends Disposa
             if (!this.continueHandle(editorEvent)) {
                 return;
             }
-            const result = currentMouseOverController.handlePanStart(editorEvent);
-            if (!currentMouseOverController.handleLimitatorBySelf()) {
-                this.handleLimitator(result);
-            }
-
+            this.contour.save();
+            this.handleContoller(editorEvent, HandlingType.START);
             this.emitter.emit('update', this.contour);
             this.updateUI();
         });
@@ -283,10 +280,9 @@ export default abstract class ContourDeformer<C extends Contour> extends Disposa
             if (!this.continueHandle(editorEvent)) {
                 return;
             }
-            const result = currentMouseOverController.handlePanMove(editorEvent);
-            if (!currentMouseOverController.handleLimitatorBySelf()) {
-                this.handleLimitator(result);
-            }
+            this.contour.restore();
+            this.contour.save();
+            this.handleContoller(editorEvent, HandlingType.MOVE);
             this.emitter.emit('update', this.contour);
             this.updateUI();
         });
@@ -304,10 +300,9 @@ export default abstract class ContourDeformer<C extends Contour> extends Disposa
             if (!this.continueHandle(editorEvent)) {
                 return;
             }
-            const result = currentMouseOverController.handlePanStop(editorEvent);
-            if (!currentMouseOverController.handleLimitatorBySelf()) {
-                this.handleLimitator(result);
-            }
+            this.contour.restore();
+            this.contour.save();
+            this.handleContoller(editorEvent, HandlingType.END);
             this.emitter.emit('update', this.contour);
             this.updateUI();
         });
@@ -340,6 +335,21 @@ export default abstract class ContourDeformer<C extends Contour> extends Disposa
             };
             this.getDOM().addEventListener('DOMNodeInserted', eventListener);
         }
+    }
+    private handleContoller(editorEvent: EditorEvent, type: HandlingType) {
+        const handlers = this.currentMouseOverController!.deformerHandlers(editorEvent, type);
+        handlers.forEach(handler => {
+            this.contour.save();
+            const lastResult = this.getTempVar(handler.cacheResultKey);
+            const result = handler.handle();
+            if (!this.validateHandleResult(result)) {
+                this.contour.restore();
+                handler.undo(lastResult);
+            } else {
+                this.setTempVar(handler.cacheResultKey, result.cacheData);
+                this.contour.pop();
+            }
+        });
     }
     private continueHandle(event: EditorEvent) {
         return !this.limitations

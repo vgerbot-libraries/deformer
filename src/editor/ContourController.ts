@@ -3,6 +3,23 @@ import DeformerRenderer from './DeformerRenderer';
 import ContourDeformer from './Deformer';
 import { DeformerLimitator } from './DeformerLimitator';
 
+export enum HandlingType {
+    START,
+    MOVE,
+    END
+}
+
+export interface DeformerHandlerResult<T> {
+    cacheData?: T;
+    [key: string]: any;
+}
+
+export interface DeformerHandler<T> {
+    cacheResultKey: string;
+    handle(): DeformerHandlerResult<T>;
+    undo(last: T);
+}
+
 export default abstract class ContourController<C extends Contour> {
     public isMouseOver: boolean = false;
     public isVisible: boolean = true;
@@ -16,20 +33,9 @@ export default abstract class ContourController<C extends Contour> {
     public getCursorClass() {
         return 'default';
     }
+    public abstract deformerHandlers(e: EditorEvent, type: HandlingType): Array<DeformerHandler<unknown>>;
     public abstract handleMouseMove(position: MousePosition): ContourControllerHandleResult;
     public afterAllHandleMouseMove() {
-        //
-    }
-    public abstract handlePanStart(e: EditorEvent): ContourControllerHandleResult;
-    public afterAllHandlePanStart() {
-        //
-    }
-    public abstract handlePanMove(e: EditorEvent): ContourControllerHandleResult;
-    public afterAllHandlePanMove() {
-        //
-    }
-    public abstract handlePanStop(e: EditorEvent): ContourControllerHandleResult;
-    public afterAllHandlePanStop() {
         //
     }
     public abstract render(renderer: DeformerRenderer);

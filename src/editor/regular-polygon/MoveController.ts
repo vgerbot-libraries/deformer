@@ -1,10 +1,13 @@
 import MoveController from '../common/MoveController';
 import { RegularPolygon } from '../../foundation/shapes/RegularPolygon';
 import { Vector } from '../../foundation/math/vector';
+import { DeformerHandlerResult } from '../ContourController';
 
 export default class RegularPolygonMoveController extends MoveController<RegularPolygon> {
-    protected handleMove(e: EditorEvent): ContourControllerHandleResult {
-        this.contour.move(e.move.multiplyVector(Vector.REVERSE_VERTICAL_DIRECTION));
-        return {};
+    protected handleMove(move: Vector): DeformerHandlerResult<Vector> {
+        this.contour.move(move);
+        return {
+            cacheData: move
+        };
     }
 }

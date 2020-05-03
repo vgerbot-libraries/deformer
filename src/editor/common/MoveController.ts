@@ -1,7 +1,8 @@
-import ContourController from '../ContourController';
+import ContourController, { DeformerHandlerResult, DeformerHandler } from '../ContourController';
 import DeformerRenderer from '../DeformerRenderer';
 import ContourDeformer from '../Deformer';
 import { Contour } from '../../foundation/Contour';
+import { Vector } from '../../foundation/math/vector';
 
 export default abstract class MoveController<C extends Contour> extends ContourController<C> {
     constructor(public readonly editor: ContourDeformer<C>) {
@@ -23,23 +24,34 @@ export default abstract class MoveController<C extends Contour> extends ContourC
     public getCursorClass() {
         return 'deformer-editor--cursor-move';
     }
-    public handlePanStart(e: EditorEvent) {
-        this.contour.save();
-        return this.handleMove(e);
-    }
-    public handlePanMove(e: EditorEvent) {
-        this.contour.restore();
-        this.contour.save();
-        return this.handleMove(e);
-    }
-    public handlePanStop(e: EditorEvent) {
-        this.contour.restore();
-        const result = this.handleMove(e);
-        this.contour.apply();
-        return result;
+    public deformerHandlers(e: EditorEvent): Array<DeformerHandler<Vector>> {
+        return [
+            {
+                cacheResultKey: 'move-x',
+                handle: () => {
+                    return this.handleMove(new Vector(e.move.x, 0));
+                },
+                undo: (v?: Vector) => {
+                    if (v) {
+                        this.handleMove(v);
+                    }
+                }
+            },
+            {
+                cacheResultKey: 'move-y',
+                handle: () => {
+                    return this.handleMove(new Vector(0, -e.move.y));
+                },
+                undo: (vector?: Vector) => {
+                    if (vector) {
+                        this.handleMove(vector);
+                    }
+                }
+            }
+        ];
     }
     public render(renderer: DeformerRenderer) {
         //
     }
-    protected abstract handleMove(e: EditorEvent): ContourControllerHandleResult;
+    protected abstract handleMove(v: Vector): DeformerHandlerResult<Vector>;
 }

@@ -4,6 +4,10 @@ import ContourDeformer from '../Deformer';
 import { Vector } from '../../foundation/math/vector';
 import { QuadrilateralEdgeController } from './EdgeController';
 
+/**
+ * @private
+ * @deprecated
+ */
 export class QuadrilateralVertexController extends QuadrilateralEdgeController {
     constructor(editor: ContourDeformer<Quadrilateral>, public side: Side, public readonly size: number = 10) {
         super(editor, side, size);
