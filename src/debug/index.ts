@@ -1,8 +1,15 @@
 import { QuadrilateralDeformer } from '../editor/quadrilateral/QuadrilateralDeformer';
 import { SizeLimitator } from '../editor/quadrilateral/SizeLimitator';
 import { AvoidSwitchSideLimitator } from '../editor/quadrilateral/SwitchSideLimitator';
+import { RegularPolygonDeformer } from '../editor/regular-polygon/RegularPolygonDeformer';
+import { DeviceCoordinate } from '../foundation/math/coordinate/DeviceCoordinate';
 import { Vector } from '../foundation/math/vector';
 import { Quadrilateral } from '../foundation/shapes/Quadrilateral';
+import { RegularPolygon } from '../foundation/shapes/RegularPolygon';
+import { Interval } from '../foundation/Interval';
+import EdgeLengthLimitator from '../editor/regular-polygon/EdgeLengthLimitator';
+import { IrregularPolygonDeformer } from '../editor/irregular-polygon/IrregularPolygonDeformer';
+import { IrregularPolygon } from '../foundation/shapes/IrregularPolygon';
 
 // tslint-ignore all
 
@@ -50,24 +57,24 @@ editor.on('update', contour => {
 (window as any).Vector = Vector;
 (window as any).Quadrilateral = Quadrilateral;
 
-// const regularPolygonDeformer = new RegularPolygonDeformer({
-//     contour: new RegularPolygon(DeviceCoordinate.ORIGIN.point(400, 400), 100, 6),
-//     rotatable: true,
-//     moveable: true,
-//     limitations: [new EdgeLengthLimitator(Interval.closed(10, 100))]
-// });
+const regularPolygonDeformer = new RegularPolygonDeformer({
+    contour: new RegularPolygon(DeviceCoordinate.ORIGIN.point(400, 400), 100, 6),
+    rotatable: true,
+    moveable: true,
+    limitations: [new EdgeLengthLimitator(Interval.closed(10, 100))]
+});
 
-// console.info(regularPolygonDeformer);
+console.info(regularPolygonDeformer);
 
-// document.body.appendChild(regularPolygonDeformer.getDOM());
+document.body.appendChild(regularPolygonDeformer.getDOM());
 
-// const irregularPolygonDeformer = new IrregularPolygonDeformer({
-//     contour: new IrregularPolygon(),
-//     rotatable: true,
-//     moveable: true
-// });
-// irregularPolygonDeformer.addPoint(DeviceCoordinate.ORIGIN.point(500, 300));
-// irregularPolygonDeformer.addPoint(DeviceCoordinate.ORIGIN.point(600, 350));
-// irregularPolygonDeformer.addPoint(DeviceCoordinate.ORIGIN.point(700, 600));
-// irregularPolygonDeformer.addPoint(DeviceCoordinate.ORIGIN.point(650, 400));
-// document.body.appendChild(irregularPolygonDeformer.getDOM());
+const irregularPolygonDeformer = new IrregularPolygonDeformer({
+    contour: new IrregularPolygon(),
+    rotatable: true,
+    moveable: true
+});
+irregularPolygonDeformer.addPoint(DeviceCoordinate.ORIGIN.point(500, 300));
+irregularPolygonDeformer.addPoint(DeviceCoordinate.ORIGIN.point(600, 350));
+irregularPolygonDeformer.addPoint(DeviceCoordinate.ORIGIN.point(700, 600));
+irregularPolygonDeformer.addPoint(DeviceCoordinate.ORIGIN.point(650, 400));
+document.body.appendChild(irregularPolygonDeformer.getDOM());
