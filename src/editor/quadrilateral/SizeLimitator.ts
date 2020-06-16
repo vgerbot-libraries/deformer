@@ -1,7 +1,8 @@
-import { DeformerLimitator } from '../DeformerLimitator';
-import { Quadrilateral } from '../../foundation/shapes/Quadrilateral';
+import { Side } from '../../foundation/Direction';
 import { Interval } from '../../foundation/Interval';
+import { Quadrilateral } from '../../foundation/shapes/Quadrilateral';
 import ContourController from '../ContourController';
+import { DeformerLimitator } from '../DeformerLimitator';
 import { QuadrilateralEdgeController } from './EdgeController';
 
 export class SizeLimitator extends DeformerLimitator<Quadrilateral> {
@@ -17,5 +18,40 @@ export class SizeLimitator extends DeformerLimitator<Quadrilateral> {
     }
     public accept(contour: Quadrilateral): boolean {
         return this.widthInterval.contains(contour.getWidth()) && this.heightInterval.contains(contour.getHeight());
+    }
+}
+export class WidthLimitator extends DeformerLimitator<Quadrilateral> {
+    private widthInterval: Interval = Interval.NATURAL_NUMBER;
+    constructor(minWidth: number = 0, maxWidth: number = Infinity) {
+        super();
+        this.widthInterval = Interval.closed(minWidth, maxWidth);
+    }
+    public handleIt(controller: ContourController<Quadrilateral>) {
+        return (
+            controller instanceof QuadrilateralEdgeController &&
+            controller.side !== Side.TOP &&
+            controller.side !== Side.BOTTOM
+        );
+    }
+    public accept(contour: Quadrilateral): boolean {
+        return this.widthInterval.contains(contour.getWidth());
+    }
+}
+
+export class HeightLimitator extends DeformerLimitator<Quadrilateral> {
+    private heightInterval: Interval = Interval.NATURAL_NUMBER;
+    constructor(minWidth: number = 0, maxWidth: number = Infinity) {
+        super();
+        this.heightInterval = Interval.closed(minWidth, maxWidth);
+    }
+    public handleIt(controller: ContourController<Quadrilateral>) {
+        return (
+            controller instanceof QuadrilateralEdgeController &&
+            controller.side !== Side.LEFT &&
+            controller.side !== Side.RIGHT
+        );
+    }
+    public accept(contour: Quadrilateral): boolean {
+        return this.heightInterval.contains(contour.getHeight());
     }
 }

@@ -1,5 +1,5 @@
 import { QuadrilateralDeformer } from '../editor/quadrilateral/QuadrilateralDeformer';
-import { SizeLimitator } from '../editor/quadrilateral/SizeLimitator';
+import { WidthLimitator, HeightLimitator } from '../editor/quadrilateral/SizeLimitator';
 import { AvoidSwitchSideLimitator } from '../editor/quadrilateral/SwitchSideLimitator';
 import { RegularPolygonDeformer } from '../editor/regular-polygon/RegularPolygonDeformer';
 import { DeviceCoordinate } from '../foundation/math/coordinate/DeviceCoordinate';
@@ -31,12 +31,14 @@ const editor = new QuadrilateralDeformer({
     enableVerticies: true,
     rotatable: true,
     limitations: [
-        new SizeLimitator({
-            minWidth: 50,
-            maxWidth: 500,
-            minHeight: 50,
-            maxHeight: 300
-        }),
+        // new SizeLimitator({
+        //     minWidth: 50,
+        //     maxWidth: 500,
+        //     minHeight: 50,
+        //     maxHeight: 300
+        // }),O
+        new WidthLimitator(50, 500),
+        new HeightLimitator(50, 500),
         new AvoidSwitchSideLimitator(),
         BoxLimitator.createStaticBox({
             left: 100,
