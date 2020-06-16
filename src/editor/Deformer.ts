@@ -9,6 +9,7 @@ import { Vector } from '../foundation/math/vector';
 import DeformerRenderer from './DeformerRenderer';
 import './editor.less';
 import { DeformerLimitator } from './DeformerLimitator';
+import noop from '../foundation/noop';
 
 interface EventTypes {
     mousemove: MouseEvent;
@@ -65,6 +66,9 @@ export default abstract class ContourDeformer<C extends Contour> extends Disposa
     }
     public getTempVar<T>(name: string): T {
         return this.tempVariables[name] as T;
+    }
+    public removeTempVar(name: string) {
+        delete this.tempVariables[name];
     }
     public on<K extends keyof DeformerEventMap>(type: K, callback: DeformerEventMap[K]) {
         return this.emitter.on(type, callback);
@@ -302,11 +306,12 @@ export default abstract class ContourDeformer<C extends Contour> extends Disposa
             }
             this.contour.restore();
             this.contour.save();
-            this.handleContoller(editorEvent, HandlingType.END);
+            const clearMethod = this.handleContoller(editorEvent, HandlingType.END);
             this.contour.apply();
             this.emitter.emit('update', this.contour);
             this.emitter.emit('update-end', this.contour);
             this.updateUI();
+            clearMethod();
         });
         if (this.rotatable) {
             this.hammer.on('rotate', e => {
@@ -339,15 +344,27 @@ export default abstract class ContourDeformer<C extends Contour> extends Disposa
         }
     }
     private handleContoller(editorEvent: EditorEvent, type: HandlingType) {
-        const handlers = this.currentMouseOverController!.deformerHandlers(editorEvent, type);
+        if (!this.currentMouseOverController) {
+            return noop;
+        }
+        const handlers = this.currentMouseOverController.deformerHandlers(editorEvent, type);
         handlers.forEach(handler => {
             this.contour.save();
             const lastResult = this.getTempVar(handler.cacheResultKey);
             const result = handler.handle();
             if (!this.validateHandleResult(result)) {
-                const someOneAdjustSuccess = this.currentLimitators.some(limitator =>
-                    limitator.adjust(this.contour, editorEvent, this.currentMouseOverController!, result)
-                );
+                let someOneAdjustSuccess = false;
+                this.currentLimitators.forEach(limitator => {
+                    const adjusted = limitator.adjust(
+                        this.contour,
+                        editorEvent,
+                        this.currentMouseOverController!,
+                        result
+                    );
+                    if (adjusted) {
+                        someOneAdjustSuccess = adjusted;
+                    }
+                });
                 if (someOneAdjustSuccess) {
                     this.contour.pop();
                 } else {
@@ -359,7 +376,12 @@ export default abstract class ContourDeformer<C extends Contour> extends Disposa
                 this.contour.pop();
             }
         });
-        return true;
+        return () => {
+            handlers.forEach(handler => {
+                const key = handler.cacheResultKey;
+                this.removeTempVar(key);
+            });
+        };
     }
     private continueHandle(event: EditorEvent) {
         return !this.currentLimitators.some(limit => !limit.continueHandle(event, this.contour));
