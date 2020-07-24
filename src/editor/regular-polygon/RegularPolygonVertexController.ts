@@ -1,16 +1,16 @@
 import { RegularPolygon } from '../../foundation/shapes/RegularPolygon';
 import ContourController, { DeformerHandler } from '../ContourController';
-import ContourDeformer from '../Deformer';
 import DeformerRenderer from '../DeformerRenderer';
+import { DeformerInteraction } from '../DeformerInteraction';
 
 export class RegularPolygonVertexController extends ContourController<RegularPolygon> {
     constructor(
-        editor: ContourDeformer<RegularPolygon>,
+        public readonly interaction: DeformerInteraction<RegularPolygon>,
         public index: number,
         public readonly size: number,
         private rotatable: boolean
     ) {
-        super(editor);
+        super(interaction);
     }
     public getCursorClass() {
         return 'deformer-editor--cursor-pointer';

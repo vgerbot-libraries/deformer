@@ -1,12 +1,16 @@
 import ContourController, { DeformerHandler } from '../ContourController';
 import { IrregularPolygon } from '../../foundation/shapes/IrregularPolygon';
 import DeformerRenderer from '../DeformerRenderer';
-import { IrregularPolygonDeformer } from './IrregularPolygonDeformer';
 import { Vector } from '../../foundation/math/vector';
+import { DeformerInteraction } from '../DeformerInteraction';
 
 export default class IrregularPolygonVertexController extends ContourController<IrregularPolygon> {
-    constructor(editor: IrregularPolygonDeformer, private index: number, private readonly size: number) {
-        super(editor);
+    constructor(
+        public readonly interaction: DeformerInteraction<IrregularPolygon>,
+        private index: number,
+        private readonly size: number
+    ) {
+        super(interaction);
     }
     public getCursorClass() {
         return 'deformer-editor--cursor-pointer';

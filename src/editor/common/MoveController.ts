@@ -1,18 +1,14 @@
 import ContourController, { DeformerHandlerResult, DeformerHandler } from '../ContourController';
 import DeformerRenderer from '../DeformerRenderer';
-import ContourDeformer from '../Deformer';
 import { Contour } from '../../foundation/Contour';
 import { Vector } from '../../foundation/math/vector';
 
 export default abstract class MoveController<C extends Contour> extends ContourController<C> {
-    constructor(public readonly editor: ContourDeformer<C>) {
-        super(editor);
-    }
     public getZIndex() {
         return Infinity;
     }
     public handleMouseMove(position: MousePosition) {
-        const currentMOController = this.editor.getCurrentMouseOverController();
+        const currentMOController = this.interaction.getCurrentMouseOverController();
         if (currentMOController) {
             return { isMouseOver: false };
         }

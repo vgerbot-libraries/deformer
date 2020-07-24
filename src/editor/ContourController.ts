@@ -2,6 +2,7 @@ import { Contour } from '../foundation/Contour';
 import DeformerRenderer from './DeformerRenderer';
 import ContourDeformer from './Deformer';
 import { DeformerLimitator } from './DeformerLimitator';
+import { DeformerInteraction } from './DeformerInteraction';
 
 export enum HandlingType {
     START,
@@ -23,9 +24,12 @@ export interface DeformerHandler<T> {
 export default abstract class ContourController<C extends Contour> {
     public isMouseOver: boolean = false;
     public isVisible: boolean = true;
-    public contour: C;
-    constructor(public readonly editor: ContourDeformer<C>) {
-        this.contour = editor.contour;
+    public editor: ContourDeformer<C>;
+    constructor(
+        public readonly interaction: DeformerInteraction<C>,
+        public readonly contour: C = interaction.getDeformer().contour
+    ) {
+        this.editor = interaction.getDeformer();
     }
     public getZIndex() {
         return 0;
@@ -39,7 +43,7 @@ export default abstract class ContourController<C extends Contour> {
         //
     }
     public abstract render(renderer: DeformerRenderer);
-    public attached(editor: ContourDeformer<C>, hammer: HammerManager) {
+    public attached(hammer: HammerManager = this.editor.getHammerInstance()) {
         //
     }
     public hide() {

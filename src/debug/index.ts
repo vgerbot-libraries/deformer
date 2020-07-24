@@ -27,6 +27,7 @@ holder.style.cssText = `
 document.body.appendChild(holder);
 const editor = new QuadrilateralDeformer({
     contour: Quadrilateral.fromDOMElement(holder),
+    // operationMode: QuadrilateralOperationMode.SQUARE,
     enableEdge: true,
     enableVerticies: true,
     rotatable: true,
@@ -48,6 +49,9 @@ const editor = new QuadrilateralDeformer({
         })
     ]
 });
+
+// editor.switchOperationMode(QuadrilateralOperationMode.SQUARE);
+
 document.body.appendChild(editor.getDOM());
 editor.on('update', contour => {
     const boundary = contour.getDeviceBoundary();
