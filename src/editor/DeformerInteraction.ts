@@ -91,7 +91,8 @@ export class DeformerInteraction<C extends Contour> {
 
         if (isMouseOnController) {
             this.deformer.setCursor(this.currentMouseOverController!.getCursorClass());
-            this.currentLimitators = this.limitations.filter(limit => limit.handleIt(this.currentMouseOverController!));
+            const allLimitators = this.limitations.concat(this.deformer.getLimitators());
+            this.currentLimitators = allLimitators.filter(limit => limit.handleIt(this.currentMouseOverController!));
         } else {
             this.deformer.setCursor('default');
             this.currentLimitators = [];

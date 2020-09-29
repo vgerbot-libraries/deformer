@@ -104,6 +104,9 @@ export default class ContourDeformer<C extends Contour> extends Disposable {
     public getHammerInstance() {
         return this.hammer;
     }
+    public getLimitators() {
+        return this.limitations;
+    }
     public setPadding(padding: number) {
         this.padding = padding;
     }
