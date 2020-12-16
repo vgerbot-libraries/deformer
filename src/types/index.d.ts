@@ -7,7 +7,7 @@ declare interface EquationSolution {
 declare type DeformerHolderElement = HTMLElement | SVGElement;
 
 declare module '*.ejs' {
-    export default function compilerTemplate(options: any): string;
+    export default function compilerTemplate(options: unknown): string;
 }
 declare module '*.less';
 
@@ -37,5 +37,5 @@ declare interface SizeLimitatorOptions {
 }
 
 declare interface ContourControllerHandleResult {
-    [key: string]: any;
+    [key: string]: unknown;
 }

@@ -78,6 +78,7 @@ export default class LineSegment {
         this.endPoint = this.endPoint.addVector(vector);
     }
     public triangle(point: AnyPoint) {
+        // eslint-disable-next-line
         const Triangle = require('../shapes/Triangle'); // circular dependency
         return Triangle.create(this.startPoint, this.endPoint, point);
     }

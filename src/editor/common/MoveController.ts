@@ -1,4 +1,4 @@
-import ContourController, { DeformerHandlerResult, DeformerHandler } from '../ContourController';
+import ContourController, { DeformerHandler, DeformerHandlerResult } from '../ContourController';
 import DeformerRenderer from '../DeformerRenderer';
 import ContourDeformer from '../Deformer';
 import { Contour } from '../../foundation/Contour';

@@ -1,4 +1,4 @@
-import { Point, AnyPoint } from './Coordinate';
+import { AnyPoint, Point } from './Coordinate';
 import { Lazy } from '../../lazy';
 import { Vector } from '../vector';
 import { PolarCoordinatate, PolarPoint } from './PolarCoordinate';

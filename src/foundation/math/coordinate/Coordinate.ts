@@ -1,5 +1,5 @@
 import { Vector } from '../vector';
-import { DevicePoint, DeviceCoordinate } from './DeviceCoordinate';
+import { DeviceCoordinate, DevicePoint } from './DeviceCoordinate';
 import { PolarCoordinatate, PolarPoint } from './PolarCoordinate';
 import { CartesianCoordinate, CartesianPoint } from './CartesianCoordinate';
 import { LinearEquation } from '../LinearEquation';

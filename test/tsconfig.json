@@ -5,8 +5,9 @@
         "inlineSourceMap": false,
         "sourceMap": true,
         "typeRoots": [
-            "../src/types",
-            "../node_modules/@types"
+            "../src/typings",
+            "../node_modules/@types",
+            "./typings"
         ],
         "types": [
             "mocha",

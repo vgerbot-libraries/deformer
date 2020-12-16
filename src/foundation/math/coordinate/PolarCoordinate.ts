@@ -1,5 +1,5 @@
-import { Point, AnyPoint } from './Coordinate';
-import { DevicePoint, DeviceCoordinate } from './DeviceCoordinate';
+import { AnyPoint, Point } from './Coordinate';
+import { DeviceCoordinate, DevicePoint } from './DeviceCoordinate';
 import { Lazy } from '../../lazy';
 import { Vector } from '../vector';
 import { CartesianCoordinate, CartesianPoint } from './CartesianCoordinate';

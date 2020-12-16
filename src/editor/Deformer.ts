@@ -1,8 +1,8 @@
-import { JSEventEmitter, DOMEventListenerOptions } from '../EventEmitter';
+import { DOMEventListenerOptions, JSEventEmitter } from '../EventEmitter';
 import Hammer from 'hammerjs';
-import ContourController, { HandlingType, DeformerHandlerResult } from './ContourController';
+import ContourController, { DeformerHandlerResult, HandlingType } from './ContourController';
 import Disposable from '../Disposable';
-import { mousePositionFromMouseEvent, mousePositionFromHammerInput } from '../event-input';
+import { mousePositionFromHammerInput, mousePositionFromMouseEvent } from '../event-input';
 import { isTouchDevice } from '../foundation/devices';
 import { Contour, ContourState } from '../foundation/Contour';
 import { Vector } from '../foundation/math/vector';

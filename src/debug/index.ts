@@ -1,5 +1,5 @@
 import { QuadrilateralDeformer } from '../editor/quadrilateral/QuadrilateralDeformer';
-import { WidthLimitator, HeightLimitator } from '../editor/quadrilateral/SizeLimitator';
+import { HeightLimitator, WidthLimitator } from '../editor/quadrilateral/SizeLimitator';
 import { AvoidSwitchSideLimitator } from '../editor/quadrilateral/SwitchSideLimitator';
 import { RegularPolygonDeformer } from '../editor/regular-polygon/RegularPolygonDeformer';
 import { DeviceCoordinate } from '../foundation/math/coordinate/DeviceCoordinate';

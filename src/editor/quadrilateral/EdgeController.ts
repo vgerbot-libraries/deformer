@@ -1,8 +1,8 @@
-import { getOppositeSite, Side } from '../../foundation/Direction';
+import { Side, getOppositeSite } from '../../foundation/Direction';
 import { PolarPoint } from '../../foundation/math/coordinate/PolarCoordinate';
 import { Vector } from '../../foundation/math/vector';
 import { Quadrilateral } from '../../foundation/shapes/Quadrilateral';
-import ContourController, { HandlingType, DeformerHandler } from '../ContourController';
+import ContourController, { DeformerHandler, HandlingType } from '../ContourController';
 import ContourDeformer from '../Deformer';
 import DeformerRenderer from '../DeformerRenderer';
 import { DeformerLimitator } from '../DeformerLimitator';

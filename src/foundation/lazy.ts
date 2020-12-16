@@ -1,12 +1,15 @@
 import { uniqId } from './unique';
 type FieldWatcher<T> = (obj: T) => any;
 
-type FieldDetector<T> = () => boolean;
-type FieldDetectorFactory<T> = (obj: T) => FieldDetector<T> | Array<FieldDetector<T>>;
+type FieldDetector = () => boolean;
+type FieldDetectorFactory<T> = (obj: T) => FieldDetector | Array<FieldDetector>;
+
+type Prototype = typeof Object.prototype;
+
 export class Lazy<Class> {
     private detectorFactories = {};
     public detectChangeFactories(...detectorFactories: Array<FieldDetectorFactory<Class>>): PropertyDecorator {
-        return (targetPrototype: object, propertyKey: string | symbol) => {
+        return (targetPrototype: Prototype, propertyKey: string | symbol) => {
             let cachedDetectorFactories = this.detectorFactories[propertyKey];
             if (!cachedDetectorFactories) {
                 cachedDetectorFactories = [];
@@ -27,7 +30,7 @@ export class Lazy<Class> {
      * @param watchFields
      */
     public detectFieldChange(...watchFields: Array<string | FieldWatcher<Class>>): PropertyDecorator {
-        return (targetPrototype: object, propertyKey: string | symbol) => {
+        return (targetPrototype: Prototype, propertyKey: string | symbol) => {
             const detectorFactories = watchFields.map((watchField: string | FieldWatcher<Class>) => {
                 if (typeof watchField === 'string') {
                     const CACHE_VALUE_KEY = uniqId(`__cache_value_${propertyKey.toString()}-${watchField}`);
@@ -67,16 +70,17 @@ export class Lazy<Class> {
         readony: boolean = true
     ): PropertyDecorator {
         const key = uniqId('__lazy__');
-        return (targetPrototype: object, propertyKey: string | symbol) => {
+        return (targetPrototype: Prototype, propertyKey: string | symbol) => {
             const detectorsKey = uniqId('__lazy__detectors-' + propertyKey.toString());
             const ownDesciptor = Object.getOwnPropertyDescriptor(targetPrototype, propertyKey);
             if (ownDesciptor && !ownDesciptor.configurable) {
                 delete targetPrototype[propertyKey];
             }
             const descriptor: PropertyDescriptor = {};
+            // eslint-disable-next-line
             const lazyThis$ = this;
             descriptor.get = function() {
-                let detectors: Array<FieldDetector<Class>> = this[detectorsKey];
+                let detectors: Array<FieldDetector> = this[detectorsKey];
                 if (!detectors) {
                     const detectorFactories = lazyThis$.detectorFactories[propertyKey];
                     if (detectorFactories) {

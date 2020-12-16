@@ -4,7 +4,7 @@ import IrregularPolygonVertexController from './IrregularVertexController';
 import RotationController from './RotationController';
 import MoveController from './MoveController';
 
-export interface IrregularPolygonDeformerOptions extends ContourDeformerOptions<IrregularPolygon> {}
+export type IrregularPolygonDeformerOptions = ContourDeformerOptions<IrregularPolygon>;
 
 export class IrregularPolygonDeformer extends Deformer<IrregularPolygon> {
     constructor(options: IrregularPolygonDeformerOptions) {

@@ -1,4 +1,4 @@
-import { Point, Coordinate } from './Coordinate';
+import { Coordinate, Point } from './Coordinate';
 import { DeviceCoordinate } from './DeviceCoordinate';
 import { CartesianCoordinate } from './CartesianCoordinate';
 import { PolarCoordinatate } from './PolarCoordinate';
