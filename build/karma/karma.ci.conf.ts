@@ -14,7 +14,7 @@ export default function(config: karma.Config) {
         },
         reporters: ['mocha', 'coverage-istanbul'],
         coverageIstanbulReporter: {
-            reports: ['cobertura', 'text-summary'],
+            reports: ['cobertura', 'text-summary', 'html'],
             dir: 'coverage',
             fixWebpackSourcePaths: true
         },
