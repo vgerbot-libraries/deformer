@@ -1,0 +1,59 @@
+.deformer-editor {
+  padding: 0;
+  margin: 0;
+  position: fixed;
+  display: block;
+  outline: 1px solid green;
+  will-change: left,top,width,height;
+}
+.deformer-editor--cursor-default {
+  cursor: default;
+}
+.deformer-editor--cursor-move {
+  cursor: move;
+}
+.deformer-editor--cursor-e-resize {
+  cursor: e-resize;
+}
+.deformer-editor--cursor-n-resize {
+  cursor: n-resize;
+}
+.deformer-editor--cursor-s-resize {
+  cursor: s-resize;
+}
+.deformer-editor--cursor-w-resize {
+  cursor: w-resize;
+}
+.deformer-editor--cursor-row-resize {
+  cursor: row-resize;
+}
+.deformer-editor--cursor-col-resize {
+  cursor: col-resize;
+}
+.deformer-editor--cursor-ew-resize {
+  cursor: ew-resize;
+}
+.deformer-editor--cursor-ne-resize {
+  cursor: ne-resize;
+}
+.deformer-editor--cursor-nesw-resize {
+  cursor: nesw-resize;
+}
+.deformer-editor--cursor-ns-resize {
+  cursor: ns-resize;
+}
+.deformer-editor--cursor-nw-resize {
+  cursor: nw-resize;
+}
+.deformer-editor--cursor-nwse-resize {
+  cursor: nwse-resize;
+}
+.deformer-editor--cursor-se-resize {
+  cursor: se-resize;
+}
+.deformer-editor--cursor-sw-resize {
+  cursor: sw-resize;
+}
+.deformer-editor--cursor-pointer {
+  cursor: pointer;
+}
