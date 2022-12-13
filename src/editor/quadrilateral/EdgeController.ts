@@ -30,19 +30,16 @@ export class QuadrilateralEdgeController extends ContourController<Quadrilateral
             fillStyle: '#00FFFF',
             strokeStyle: '#FF00FF',
             textAlign: 'center',
-            textBaseLine: 'bottom'
+            textBaseLine: 'bottom',
         });
         renderer.renderSquare(point, this.size);
         renderer.getContext().fill();
         renderer.restore();
     }
     public handleMouseMove(position: MousePosition) {
-        this.isMouseOver =
-            this.getPoint()
-                .vector(position.page)
-                .length() < this.size;
+        this.isMouseOver = this.getPoint().vector(position.page).length() < this.size;
         return {
-            isMouseOver: this.isMouseOver
+            isMouseOver: this.isMouseOver,
         };
     }
     public getCursorClass() {
@@ -85,14 +82,14 @@ export class QuadrilateralEdgeController extends ContourController<Quadrilateral
                     const switchedSide = this.contour.addVector(move, hside);
                     return {
                         cacheData: move,
-                        switchedSide
+                        switchedSide,
                     };
                 },
                 undo: (last?: Vector) => {
                     if (last) {
                         this.contour.addVector(last, hside);
                     }
-                }
+                },
             });
         }
         if (verticalSide !== undefined) {
@@ -103,14 +100,14 @@ export class QuadrilateralEdgeController extends ContourController<Quadrilateral
                     const switchedSide = this.contour.addVector(move, vside);
                     return {
                         cacheData: move,
-                        switchedSide
+                        switchedSide,
                     };
                 },
                 undo: (last?: Vector) => {
                     if (last) {
                         this.contour.addVector(last, vside);
                     }
-                }
+                },
             });
         }
         return handlers;

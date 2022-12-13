@@ -7,7 +7,7 @@ export default class RegularPolygonMoveController extends MoveController<Regular
     protected handleMove(move: Vector): DeformerHandlerResult<Vector> {
         this.contour.move(move);
         return {
-            cacheData: move
+            cacheData: move,
         };
     }
 }

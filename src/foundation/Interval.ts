@@ -19,7 +19,7 @@ export class Interval {
         private min: number = -Infinity,
         private max: number = Infinity,
         private includeLeft: boolean = true,
-        private includeRight: boolean = false
+        private includeRight: boolean = false,
     ) {}
     public contains(num: number) {
         const left = this.includeLeft ? num >= this.min : num > this.min;

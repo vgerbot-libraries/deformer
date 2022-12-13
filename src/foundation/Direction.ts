@@ -13,7 +13,7 @@ export enum Direction {
     RIGHT_BOTTOM = 0b101010,
     // right-top and left-bottom
     RIGHT_TOP = 0b1011,
-    LEFT_BOTTOM = 0b101011
+    LEFT_BOTTOM = 0b101011,
 }
 
 export type DiagonalDirection =
@@ -31,7 +31,7 @@ export enum Side {
     RIGHT_TOP = Direction.RIGHT_TOP,
     RIGHT_BOTTOM = Direction.RIGHT_BOTTOM,
     LEFT_BOTTOM = Direction.LEFT_BOTTOM,
-    ALL = Direction.ALL
+    ALL = Direction.ALL,
 }
 
 export function isOpposite(direction: Direction, otherDirection: Direction) {

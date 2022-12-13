@@ -17,7 +17,7 @@ describe('quadrilateral test', () => {
             contour: Quadrilateral.fromDOMElement(holder),
             enableEdge: true,
             enableVerticies: true,
-            rotatable: true
+            rotatable: true,
         });
         document.body.appendChild(editor.getDOM());
     });

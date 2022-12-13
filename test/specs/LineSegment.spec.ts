@@ -28,14 +28,14 @@ describe('LineSegment', () => {
         const lineSegments = [
             [[0, 10, 11, 31], [0, 21, 14, 10], true],
             [[0, 10, 61, 10], [20, 21, 20, 0], true],
-            [[0, 10, 61, 10], [20, 21, 20, 11], false]
+            [[0, 10, 61, 10], [20, 21, 20, 11], false],
         ];
         lineSegments
             .map(([a, b, isCross]) => {
                 return {
                     linea: new LineSegment(origin.point(a[0], a[1]), origin.point(a[2], a[3])),
                     lineb: new LineSegment(origin.point(b[0], b[1]), origin.point(b[2], b[3])),
-                    isCross: isCross as boolean
+                    isCross: isCross as boolean,
                 };
             })
             .forEach(({ linea, lineb, isCross }) => {

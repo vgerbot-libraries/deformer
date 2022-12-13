@@ -39,7 +39,7 @@ export class Quadrilateral extends Contour {
         left: number,
         right: number,
         top: number,
-        bottom: number
+        bottom: number,
     ) {
         const leftTop = coordinate.point(left, top);
         const rightTop = coordinate.point(right, top);
@@ -52,12 +52,12 @@ export class Quadrilateral extends Contour {
             point1.toDevice(),
             point2.toDevice(),
             point3.toDevice(),
-            point4.toDevice()
+            point4.toDevice(),
         ]);
         return new Quadrilateral(leftTop, rightTop, rightBottom, leftBottom);
     }
     protected static collatePoints<T extends AnyPoint>(points: T[]): T[] {
-        const devicePoints = points.map(point => point.toDevice(DEVICE_ORIGIN));
+        const devicePoints = points.map((point) => point.toDevice(DEVICE_ORIGIN));
         const leftTopPoint = devicePoints.reduce((prePoint, point) => {
             if (prePoint.x < point.x || prePoint.y < point.y) {
                 return prePoint;
@@ -93,50 +93,32 @@ export class Quadrilateral extends Contour {
     private rightBottomIndex: number = 2;
     private leftBottomIndex: number = 3;
     private rotation: number = 0;
-    @lazy.detectFieldChange(
-        q => q.getLeftTop(),
-        q => q.getLeftBottom()
-    )
-    @lazy.property(q => q.initLeftCenter())
+    @lazy.detectFieldChange((q) => q.getLeftTop(), (q) => q.getLeftBottom())
+    @lazy.property((q) => q.initLeftCenter())
     private leftCenter!: PolarPoint;
-    @lazy.detectFieldChange(
-        q => q.getRightTop(),
-        q => q.getRightBottom()
-    )
-    @lazy.property(q => q.initRightCenter())
+    @lazy.detectFieldChange((q) => q.getRightTop(), (q) => q.getRightBottom())
+    @lazy.property((q) => q.initRightCenter())
     private rightCenter!: PolarPoint;
-    @lazy.detectFieldChange(
-        q => q.getLeftTop(),
-        q => q.getRightTop()
-    )
-    @lazy.property(q => q.initTopCenter())
+    @lazy.detectFieldChange((q) => q.getLeftTop(), (q) => q.getRightTop())
+    @lazy.property((q) => q.initTopCenter())
     private topCenter!: PolarPoint;
-    @lazy.detectFieldChange(
-        q => q.getLeftBottom(),
-        q => q.getRightBottom()
-    )
-    @lazy.property(q => q.initBottomCenter())
+    @lazy.detectFieldChange((q) => q.getLeftBottom(), (q) => q.getRightBottom())
+    @lazy.property((q) => q.initBottomCenter())
     private bottomCenter!: PolarPoint;
     @lazy.detectFieldChange(
-        q => q.getLeftTop(),
-        q => q.getRightTop(),
-        q => q.getRightBottom(),
-        q => q.getLeftBottom()
+        (q) => q.getLeftTop(),
+        (q) => q.getRightTop(),
+        (q) => q.getRightBottom(),
+        (q) => q.getLeftBottom(),
     )
-    @lazy.property(q => q.initCenter())
+    @lazy.property((q) => q.initCenter())
     private center!: PolarPoint;
 
-    @lazy.detectFieldChange(
-        q => q.leftCenter,
-        q => q.rightCenter
-    )
-    @lazy.property(q => q.initWidth())
+    @lazy.detectFieldChange((q) => q.leftCenter, (q) => q.rightCenter)
+    @lazy.property((q) => q.initWidth())
     private width!: number;
-    @lazy.detectFieldChange(
-        q => q.topCenter,
-        q => q.bottomCenter
-    )
-    @lazy.property(q => q.initHeight())
+    @lazy.detectFieldChange((q) => q.topCenter, (q) => q.bottomCenter)
+    @lazy.property((q) => q.initHeight())
     private height!: number;
     protected constructor(point1: AnyPoint, point2: AnyPoint, point3: AnyPoint, point4: AnyPoint) {
         super();
@@ -199,7 +181,7 @@ export class Quadrilateral extends Contour {
     public rotate(radian: number, origin = this.getCenter()) {
         this.rotation = (this.rotation + radian + TWO_PI) % TWO_PI;
         const coordinate = PolarCoordinatate.by(origin);
-        this.points = this.points.map(p => p.toPolar(coordinate).rotate(radian));
+        this.points = this.points.map((p) => p.toPolar(coordinate).rotate(radian));
     }
     public getRotationBaseOnCenter() {
         const c2tVec = this.getCenter().vector(this.getTopCenter());
@@ -214,7 +196,7 @@ export class Quadrilateral extends Contour {
             const width = this.getWidth();
             const height = this.getHeight();
             const rotationBaseOnCenter = this.getRotationBaseOnCenter();
-            sidePoints[sideName]?.map(pindex => {
+            sidePoints[sideName]?.map((pindex) => {
                 points[pindex] = points[pindex].addVector(proj);
             });
             return this.collate(points, proj, theSide, rotationBaseOnCenter, width, height);
@@ -245,7 +227,7 @@ export class Quadrilateral extends Contour {
             case Side.LEFT_BOTTOM:
                 return doAddMulSideVector(Side.LEFT, Side.BOTTOM);
             case Side.ALL:
-                this.points = this.points.map(it => it.addVector(vector));
+                this.points = this.points.map((it) => it.addVector(vector));
                 return true;
         }
         return false;
@@ -279,19 +261,19 @@ export class Quadrilateral extends Contour {
         switch (side) {
             case Side.LEFT:
                 return {
-                    left: [this.leftTopIndex, this.leftBottomIndex]
+                    left: [this.leftTopIndex, this.leftBottomIndex],
                 };
             case Side.TOP:
                 return {
-                    top: [this.leftTopIndex, this.rightTopIndex]
+                    top: [this.leftTopIndex, this.rightTopIndex],
                 };
             case Side.RIGHT:
                 return {
-                    right: [this.rightTopIndex, this.rightBottomIndex]
+                    right: [this.rightTopIndex, this.rightBottomIndex],
                 };
             case Side.BOTTOM:
                 return {
-                    bottom: [this.leftBottomIndex, this.rightBottomIndex]
+                    bottom: [this.leftBottomIndex, this.rightBottomIndex],
                 };
             case Side.LEFT_TOP:
                 return Object.assign(this.getSidePoints(Side.LEFT), this.getSidePoints(Side.TOP));
@@ -310,7 +292,7 @@ export class Quadrilateral extends Contour {
         side: Side,
         rotationBaseOnCenter,
         width: number,
-        height: number
+        height: number,
     ): PolarPoint[] {
         let switchHorizontal = false;
         let switchVertical = false;
@@ -362,27 +344,19 @@ export class Quadrilateral extends Contour {
         }
     }
     private initLeftCenter(): PolarPoint {
-        const halfVector = this.getLeftTop()
-            .vector(this.getLeftBottom())
-            .multiply(0.5);
+        const halfVector = this.getLeftTop().vector(this.getLeftBottom()).multiply(0.5);
         return this.getLeftTop().addVector(halfVector);
     }
     private initRightCenter(): PolarPoint {
-        const halfVector = this.getRightTop()
-            .vector(this.getRightBottom())
-            .multiply(0.5);
+        const halfVector = this.getRightTop().vector(this.getRightBottom()).multiply(0.5);
         return this.getRightTop().addVector(halfVector);
     }
     private initTopCenter(): PolarPoint {
-        const halfVector = this.getLeftTop()
-            .vector(this.getRightTop())
-            .multiply(0.5);
+        const halfVector = this.getLeftTop().vector(this.getRightTop()).multiply(0.5);
         return this.getLeftTop().addVector(halfVector);
     }
     private initBottomCenter(): PolarPoint {
-        const halfVector = this.getLeftBottom()
-            .vector(this.getRightBottom())
-            .multiply(0.5);
+        const halfVector = this.getLeftBottom().vector(this.getRightBottom()).multiply(0.5);
         return this.getLeftBottom().addVector(halfVector);
     }
     private initCenter(): PolarPoint {
@@ -391,13 +365,9 @@ export class Quadrilateral extends Contour {
         return leftTop.addVector(leftTop.vector(rightBottom).multiply(0.5));
     }
     private initWidth(): number {
-        return this.getLeftTop()
-            .vector(this.getRightTop())
-            .length();
+        return this.getLeftTop().vector(this.getRightTop()).length();
     }
     private initHeight(): number {
-        return this.getLeftTop()
-            .vector(this.getLeftBottom())
-            .length();
+        return this.getLeftTop().vector(this.getLeftBottom()).length();
     }
 }

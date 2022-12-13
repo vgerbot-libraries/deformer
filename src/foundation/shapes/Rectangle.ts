@@ -16,32 +16,24 @@ export default class Rectangle extends Quadrilateral {
         if (coord) {
             return coord.convertFrom(this.getLeftTop()).x;
         }
-        return this.getLeftTop()
-            .toDevice()
-            .getDeviceX();
+        return this.getLeftTop().toDevice().getDeviceX();
     }
     public getTop(coord?: AnyCoordinate) {
         if (coord) {
             return coord.convertFrom(this.getLeftTop()).y;
         }
-        return this.getLeftTop()
-            .toDevice()
-            .getDeviceY();
+        return this.getLeftTop().toDevice().getDeviceY();
     }
     public getRight(coord: AnyCoordinate) {
         if (coord) {
             return coord.convertFrom(this.getRightTop()).x;
         }
-        return this.getRightTop()
-            .toDevice()
-            .getDeviceX();
+        return this.getRightTop().toDevice().getDeviceX();
     }
     public getBottom(coord: AnyCoordinate) {
         if (coord) {
             return coord.convertFrom(this.getRightBottom()).y;
         }
-        return this.getRightBottom()
-            .toDevice()
-            .getDeviceY();
+        return this.getRightBottom().toDevice().getDeviceY();
     }
 }

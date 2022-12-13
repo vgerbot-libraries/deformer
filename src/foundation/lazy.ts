@@ -67,7 +67,7 @@ export class Lazy<Class> {
     }
     public property<ReturnType>(
         initializer: Initializer<Class, ReturnType>,
-        readony: boolean = true
+        readony: boolean = true,
     ): PropertyDecorator {
         const key = uniqId('__lazy__');
         return (targetPrototype: Prototype, propertyKey: string | symbol) => {
@@ -79,19 +79,19 @@ export class Lazy<Class> {
             const descriptor: PropertyDescriptor = {};
             // eslint-disable-next-line
             const lazyThis$ = this;
-            descriptor.get = function() {
+            descriptor.get = function () {
                 let detectors: Array<FieldDetector> = this[detectorsKey];
                 if (!detectors) {
                     const detectorFactories = lazyThis$.detectorFactories[propertyKey];
                     if (detectorFactories) {
                         this[detectorsKey] = detectors = detectorFactories.reduce(
                             (all, factory) => all.concat(factory(this)),
-                            []
+                            [],
                         );
                     }
                 }
                 if (detectors) {
-                    const hasChanged = detectors.some(detector => {
+                    const hasChanged = detectors.some((detector) => {
                         return detector();
                     });
                     if (hasChanged) {
@@ -104,7 +104,7 @@ export class Lazy<Class> {
                 return this[key];
             };
             if (!readony) {
-                descriptor.set = newValue => {
+                descriptor.set = (newValue) => {
                     this[key] = newValue;
                 };
             }

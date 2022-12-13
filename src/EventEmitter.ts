@@ -36,7 +36,7 @@ export class DOMEventEmitter implements IEventEmitter {
         return remove;
     }
     public clear() {
-        this.removeListeners.forEach(rm => rm());
+        this.removeListeners.forEach((rm) => rm());
     }
 }
 export class JSEventEmitter implements IEventEmitter {
@@ -70,6 +70,6 @@ export class JSEventEmitter implements IEventEmitter {
         this.emitter.emit(type, ...args);
     }
     public clear() {
-        this.removeListeners.forEach(rm => rm());
+        this.removeListeners.forEach((rm) => rm());
     }
 }

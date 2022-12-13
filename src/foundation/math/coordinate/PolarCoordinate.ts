@@ -8,9 +8,9 @@ import { CoordinateConvertionTpl } from './CoordinateConversionTpl';
 const polarPointLazy = new Lazy<PolarPoint>();
 
 export class PolarPoint extends Point<PolarCoordinatate> {
-    @polarPointLazy.property(p => Math.cos(p.sita) * p.r)
+    @polarPointLazy.property((p) => Math.cos(p.sita) * p.r)
     private $x!: number;
-    @polarPointLazy.property(p => Math.sin(p.sita) * p.r)
+    @polarPointLazy.property((p) => Math.sin(p.sita) * p.r)
     private $y!: number;
     constructor(public readonly sita: number, public readonly r: number, public readonly coord: PolarCoordinatate) {
         super();

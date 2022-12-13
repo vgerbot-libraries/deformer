@@ -10,13 +10,13 @@ describe('disposable', () => {
             }
         }
         const disposable = new MyDisposable();
-        hooks.forEach(hook => {
+        hooks.forEach((hook) => {
             expect(hook).to.be.not.called;
         });
         disposable.destroy();
         expect(hooks).is.not.empty;
         expect(disposable['hooks']).is.empty;
-        hooks.forEach(hook => {
+        hooks.forEach((hook) => {
             expect(hook).to.be.calledOnce;
         });
     });

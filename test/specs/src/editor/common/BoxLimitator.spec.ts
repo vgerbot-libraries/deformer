@@ -2,15 +2,9 @@ import { expect } from 'chai';
 import { DIRECTION_RIGHT } from 'hammerjs';
 import BoxLimitator, { BoxLimiatorOptions } from '../../../../../src/editor/common/BoxLimitator';
 import MoveController from '../../../../../src/editor/common/MoveController';
-import ContourController, {
-    DeformerHandler,
-    DeformerHandlerResult,
-    HandlingType
-} from '../../../../../src/editor/ContourController';
+import ContourController, { DeformerHandlerResult } from '../../../../../src/editor/ContourController';
 import Deformer from '../../../../../src/editor/Deformer';
-import DeformerRenderer from '../../../../../src/editor/DeformerRenderer';
 import { Contour } from '../../../../../src/foundation/Contour';
-import { Direction } from '../../../../../src/foundation/Direction';
 import { DeviceCoordinate } from '../../../../../src/foundation/math/coordinate/DeviceCoordinate';
 import { Vector } from '../../../../../src/foundation/math/vector';
 import { Quadrilateral } from '../../../../../src/foundation/shapes/Quadrilateral';
@@ -24,9 +18,9 @@ describe('BoxLimitator', () => {
         expect(box1.getBottom()).to.be.equal(Infinity);
         const options = {
             left: 'not a number',
-            right: 12
+            right: 12,
         };
-        const box2 = BoxLimitator.createStaticBox((options as unknown) as BoxLimiatorOptions);
+        const box2 = BoxLimitator.createStaticBox(options as unknown as BoxLimiatorOptions);
         expect(box2.getLeft()).to.be.equal(-Infinity);
         expect(box2.getRight()).to.be.equal(12);
 
@@ -42,7 +36,7 @@ describe('BoxLimitator', () => {
             width: 1920,
             toJSON() {
                 return '';
-            }
+            },
         });
         const box3 = BoxLimitator.createDynamicBoxByDOM(dom);
         expect(box3.getLeft()).to.be.equal(0);
@@ -75,11 +69,11 @@ describe('BoxLimitator', () => {
             width: 1920,
             toJSON() {
                 return JSON.stringify(rect);
-            }
+            },
         };
         const rect2 = Object.assign({}, rect, {
             left: 12,
-            x: 12
+            x: 12,
         });
         dom.getBoundingClientRect = sinon.stub().returns(rect);
         const box = BoxLimitator.createDynamicBoxByDOM(dom);
@@ -98,7 +92,7 @@ describe('BoxLimitator', () => {
     });
     it('[BoxLimitator] should handleIt work correctly', () => {
         const fakeDeformer = {
-            contour: {} as Contour
+            contour: {} as Contour,
         } as Deformer<Contour>;
         class NotMoveabltController extends ContourController<Contour> {
             constructor() {
@@ -134,10 +128,10 @@ describe('BoxLimitator', () => {
             left: 0,
             right: 120,
             top: 0,
-            bottom: 120
+            bottom: 120,
         });
         const fakeDeformer = {
-            contour: {} as Contour
+            contour: {} as Contour,
         } as Deformer<Contour>;
         class TestMoveableController extends MoveController<Contour> {
             constructor() {
@@ -163,8 +157,8 @@ describe('BoxLimitator', () => {
                         client: DeviceCoordinate.ORIGIN.origin,
                         page: DeviceCoordinate.ORIGIN.origin,
                         screen: DeviceCoordinate.ORIGIN.origin,
-                        offset: DeviceCoordinate.ORIGIN.origin
-                    }
+                        offset: DeviceCoordinate.ORIGIN.origin,
+                    },
                 },
                 new TestMoveableController()
             );
@@ -185,8 +179,8 @@ describe('BoxLimitator', () => {
                         client: DeviceCoordinate.ORIGIN.origin,
                         page: DeviceCoordinate.ORIGIN.origin,
                         screen: DeviceCoordinate.ORIGIN.origin,
-                        offset: DeviceCoordinate.ORIGIN.origin
-                    }
+                        offset: DeviceCoordinate.ORIGIN.origin,
+                    },
                 },
                 new TestMoveableController()
             );
@@ -208,8 +202,8 @@ describe('BoxLimitator', () => {
                         client: DeviceCoordinate.ORIGIN.origin,
                         page: DeviceCoordinate.ORIGIN.origin,
                         screen: DeviceCoordinate.ORIGIN.origin,
-                        offset: DeviceCoordinate.ORIGIN.origin
-                    }
+                        offset: DeviceCoordinate.ORIGIN.origin,
+                    },
                 },
                 new TestMoveableController()
             );
@@ -230,8 +224,8 @@ describe('BoxLimitator', () => {
                         client: DeviceCoordinate.ORIGIN.origin,
                         page: DeviceCoordinate.ORIGIN.origin,
                         screen: DeviceCoordinate.ORIGIN.origin,
-                        offset: DeviceCoordinate.ORIGIN.origin
-                    }
+                        offset: DeviceCoordinate.ORIGIN.origin,
+                    },
                 },
                 new TestMoveableController()
             );
@@ -266,8 +260,8 @@ describe('BoxLimitator', () => {
                         client: DeviceCoordinate.ORIGIN.origin,
                         page: DeviceCoordinate.ORIGIN.origin,
                         screen: DeviceCoordinate.ORIGIN.origin,
-                        offset: DeviceCoordinate.ORIGIN.origin
-                    }
+                        offset: DeviceCoordinate.ORIGIN.origin,
+                    },
                 },
                 new NotMoveabltController()
             );
@@ -283,7 +277,7 @@ describe('BoxLimitator', () => {
             left: 0,
             right: 120,
             top: 0,
-            bottom: 120
+            bottom: 120,
         });
         const contour1 = Quadrilateral.fromCoordinate(DeviceCoordinate.ORIGIN, 0, 40, 0, 40);
         const contour2 = Quadrilateral.fromCoordinate(DeviceCoordinate.ORIGIN, 0, 40, -20, 20);

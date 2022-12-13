@@ -93,7 +93,7 @@ class StaticBoxLimitator extends BoxLimitator {
     private getOptionValue(
         options: Partial<BoxLimiatorOptions>,
         key: keyof BoxLimiatorOptions,
-        defaultValue: number
+        defaultValue: number,
     ): number {
         if (typeof options[key] === 'number') {
             return options[key]!;
@@ -106,7 +106,7 @@ const lazy = new Lazy<DynamicDOMBoxLimitator>();
 class DynamicDOMBoxLimitator extends BoxLimitator {
     public resetBoundary: number = 0;
     @lazy.resetBy('resetBoundary')
-    @lazy.property(it => it.dom.getBoundingClientRect())
+    @lazy.property((it) => it.dom.getBoundingClientRect())
     private domBoundary!: DOMRect;
     constructor(private readonly dom: Element) {
         super();

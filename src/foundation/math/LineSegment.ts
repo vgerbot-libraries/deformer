@@ -9,23 +9,14 @@ export default class LineSegment {
     }
     private startPoint: DevicePoint;
     private endPoint: DevicePoint;
-    @lazy.detectFieldChange(
-        ls => ls.startPoint,
-        ls => ls.endPoint
-    )
-    @lazy.property(ls => ls.calcLength())
+    @lazy.detectFieldChange((ls) => ls.startPoint, (ls) => ls.endPoint)
+    @lazy.property((ls) => ls.calcLength())
     private $length!: number;
-    @lazy.detectFieldChange(
-        ls => ls.startPoint,
-        ls => ls.endPoint
-    )
-    @lazy.property(ls => ls.seVector())
+    @lazy.detectFieldChange((ls) => ls.startPoint, (ls) => ls.endPoint)
+    @lazy.property((ls) => ls.seVector())
     private $seVector!: Vector;
-    @lazy.detectFieldChange(
-        ls => ls.startPoint,
-        ls => ls.endPoint
-    )
-    @lazy.property(ls => ls.esVector())
+    @lazy.detectFieldChange((ls) => ls.startPoint, (ls) => ls.endPoint)
+    @lazy.property((ls) => ls.esVector())
     private $esVector!: Vector;
     constructor(startPoint: AnyPoint, endPoint: AnyPoint) {
         this.startPoint = startPoint.toDevice();

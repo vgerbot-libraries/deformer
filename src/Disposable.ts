@@ -5,7 +5,7 @@ export default abstract class Disposable {
         //
     }
     public destroy() {
-        this.hooks.forEach(hook => hook());
+        this.hooks.forEach((hook) => hook());
         this.hooks.splice(0, this.hooks.length);
     }
     protected addDestroyHook(...hooks: DestroyHook[]): Disposable {

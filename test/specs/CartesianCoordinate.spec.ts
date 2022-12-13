@@ -64,10 +64,7 @@ describe('Cartesian Coordinate system', () => {
     });
     it('convertion', () => {
         const point = coordinate.point(1, 1);
-        const converted = point
-            .toDevice()
-            .toPolar()
-            .toCartesian(coordinate);
+        const converted = point.toDevice().toPolar().toCartesian(coordinate);
         expect(point.x).to.be.closeTo(converted.x, MIN_ACCURACY);
         expect(point.y).to.be.closeTo(converted.y, MIN_ACCURACY);
     });

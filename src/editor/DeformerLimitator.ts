@@ -21,7 +21,7 @@ export abstract class DeformerLimitator<C extends Contour> {
         contour: C,
         event: EditorEvent,
         controller: ContourController<C>,
-        result: DeformerHandlerResult<unknown>
+        result: DeformerHandlerResult<unknown>,
     ) {
         return false;
     }

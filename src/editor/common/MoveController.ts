@@ -18,7 +18,7 @@ export default abstract class MoveController<C extends Contour> extends ContourC
         }
         this.isMouseOver = this.contour.containsPoint(position.page);
         return {
-            isMouseOver: this.isMouseOver
+            isMouseOver: this.isMouseOver,
         };
     }
     public getCursorClass() {
@@ -35,7 +35,7 @@ export default abstract class MoveController<C extends Contour> extends ContourC
                     if (v) {
                         this.handleMove(v);
                     }
-                }
+                },
             },
             {
                 cacheResultKey: 'move-y',
@@ -46,8 +46,8 @@ export default abstract class MoveController<C extends Contour> extends ContourC
                     if (vector) {
                         this.handleMove(vector);
                     }
-                }
-            }
+                },
+            },
         ];
     }
     public render(renderer: DeformerRenderer) {

@@ -35,7 +35,7 @@ export default class DeformerRenderer {
             domRect.left,
             domRect.top,
             domRect.right,
-            domRect.bottom
+            domRect.bottom,
         );
         this.originBoundary.getHeight(); // suppress ts ERROR
         this.displayBoundary.getHeight();
@@ -71,7 +71,7 @@ export default class DeformerRenderer {
     }
     public renderOpenPath(...points: AnyPoint[]) {
         this.ctx.beginPath();
-        const pts = points.map(point => this.convertPoint(point));
+        const pts = points.map((point) => this.convertPoint(point));
         this.ctx.moveTo(pts[0].getDeviceX(), pts[0].getDeviceY());
         for (let i = 1; i < pts.length; i++) {
             this.ctx.lineTo(pts[i].getDeviceX(), pts[i].getDeviceY());

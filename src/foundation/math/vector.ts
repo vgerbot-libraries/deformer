@@ -7,13 +7,13 @@ export class Vector {
     public static NORMALIZE = new Vector(1, 1);
     public static REVERSE_VERTICAL_DIRECTION = new Vector(1, -1);
     public static REVERSE_HORIZONTAL_DIRECTION = new Vector(-1, 1);
-    @lazy.property(vec => vec.x * vec.x)
+    @lazy.property((vec) => vec.x * vec.x)
     private $squareX!: number;
-    @lazy.property(vec => vec.y * vec.y)
+    @lazy.property((vec) => vec.y * vec.y)
     private $squareY!: number;
-    @lazy.property(vec => Math.sqrt(vec.$squareX + vec.$squareY))
+    @lazy.property((vec) => Math.sqrt(vec.$squareX + vec.$squareY))
     private $length!: number;
-    @lazy.property(vec => vec.devide(vec.length()))
+    @lazy.property((vec) => vec.devide(vec.length()))
     private $norm!: Vector;
     constructor(public readonly x: number, public readonly y: number) {}
 

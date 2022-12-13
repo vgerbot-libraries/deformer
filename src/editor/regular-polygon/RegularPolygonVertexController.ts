@@ -8,7 +8,7 @@ export class RegularPolygonVertexController extends ContourController<RegularPol
         editor: ContourDeformer<RegularPolygon>,
         public index: number,
         public readonly size: number,
-        private rotatable: boolean
+        private rotatable: boolean,
     ) {
         super(editor);
     }
@@ -16,12 +16,9 @@ export class RegularPolygonVertexController extends ContourController<RegularPol
         return 'deformer-editor--cursor-pointer';
     }
     public handleMouseMove(position: MousePosition): ContourControllerHandleResult {
-        this.isMouseOver =
-            this.getPoint()
-                .vector(position.page)
-                .length() < this.size;
+        this.isMouseOver = this.getPoint().vector(position.page).length() < this.size;
         return {
-            isMouseOver: this.isMouseOver
+            isMouseOver: this.isMouseOver,
         };
     }
     public deformerHandlers(e: EditorEvent): Array<DeformerHandler<number>> {
@@ -37,15 +34,15 @@ export class RegularPolygonVertexController extends ContourController<RegularPol
                     const expansion = nc2p.length() - c2p.length();
                     this.contour.expansion(expansion);
                     return {
-                        cacheData: expansion
+                        cacheData: expansion,
                     };
                 },
                 undo: (lastExpansion?: number) => {
                     if (typeof lastExpansion === 'number') {
                         this.contour.expansion(lastExpansion);
                     }
-                }
-            }
+                },
+            },
         ];
         if (this.rotatable) {
             handles.push({
@@ -54,14 +51,14 @@ export class RegularPolygonVertexController extends ContourController<RegularPol
                     const radian = -c2p.radian(nc2p);
                     this.contour.rotate(radian);
                     return {
-                        cacheData: radian
+                        cacheData: radian,
                     };
                 },
                 undo: (lastRadian?: number) => {
                     if (typeof lastRadian === 'number') {
                         this.contour.rotate(lastRadian);
                     }
-                }
+                },
             });
         }
         return handles;
@@ -73,7 +70,7 @@ export class RegularPolygonVertexController extends ContourController<RegularPol
             fillStyle: '#00FFFF',
             strokeStyle: '#FF00FF',
             textAlign: 'center',
-            textBaseLine: 'bottom'
+            textBaseLine: 'bottom',
         });
         renderer.renderSquare(point, this.size);
         renderer.getContext().fill();

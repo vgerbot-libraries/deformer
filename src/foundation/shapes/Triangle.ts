@@ -7,12 +7,8 @@ export default class Triangle extends Contour {
     public static create(point1: AnyPoint, point2: AnyPoint, point3: AnyPoint) {
         return new Triangle(point1, point2, point3);
     }
-    @lazy.detectFieldChange(
-        t => t.point1,
-        t => t.point2,
-        t => t.point3
-    )
-    @lazy.property(t => t.resolveCenter())
+    @lazy.detectFieldChange((t) => t.point1, (t) => t.point2, (t) => t.point3)
+    @lazy.property((t) => t.resolveCenter())
     private $center!: AnyPoint;
     private constructor(private point1: AnyPoint, private point2: AnyPoint, private point3: AnyPoint) {
         super();

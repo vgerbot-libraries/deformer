@@ -12,12 +12,9 @@ export default class IrregularPolygonVertexController extends ContourController<
         return 'deformer-editor--cursor-pointer';
     }
     public handleMouseMove(position: MousePosition): ContourControllerHandleResult {
-        this.isMouseOver =
-            this.getPoint()
-                .vector(position.page)
-                .length() < this.size;
+        this.isMouseOver = this.getPoint().vector(position.page).length() < this.size;
         return {
-            isMouseOver: this.isMouseOver
+            isMouseOver: this.isMouseOver,
         };
     }
     public render(renderer: DeformerRenderer) {
@@ -27,7 +24,7 @@ export default class IrregularPolygonVertexController extends ContourController<
             fillStyle: '#00FFFF',
             strokeStyle: '#FF00FF',
             textAlign: 'center',
-            textBaseLine: 'bottom'
+            textBaseLine: 'bottom',
         });
         renderer.renderSquare(point, this.size);
         renderer.getContext().fill();
@@ -42,15 +39,15 @@ export default class IrregularPolygonVertexController extends ContourController<
                     const newPoint = this.getPoint().addVector(move);
                     this.contour.setPoint(this.index, newPoint);
                     return {
-                        cacheData: newPoint
+                        cacheData: newPoint,
                     };
                 },
                 undo: (lastPoint?: AnyPoint) => {
                     if (lastPoint) {
                         this.contour.setPoint(this.index, lastPoint);
                     }
-                }
-            }
+                },
+            },
         ];
     }
     private getPoint() {

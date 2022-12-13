@@ -44,12 +44,12 @@ const editor = new QuadrilateralDeformer({
             left: 100,
             right: 1200,
             top: 100,
-            bottom: 800
-        })
-    ]
+            bottom: 800,
+        }),
+    ],
 });
 document.body.appendChild(editor.getDOM());
-editor.on('update', contour => {
+editor.on('update', (contour) => {
     const boundary = contour.getDeviceBoundary();
     holder.style.cssText += `
         left: ${boundary.left}px;
@@ -66,7 +66,7 @@ const regularPolygonDeformer = new RegularPolygonDeformer({
     contour: new RegularPolygon(DeviceCoordinate.ORIGIN.point(400, 400), 100, 6),
     rotatable: true,
     moveable: true,
-    limitations: [new EdgeLengthLimitator(Interval.closed(10, 100))]
+    limitations: [new EdgeLengthLimitator(Interval.closed(10, 100))],
 });
 
 console.info(regularPolygonDeformer);
@@ -76,7 +76,7 @@ document.body.appendChild(regularPolygonDeformer.getDOM());
 const irregularPolygonDeformer = new IrregularPolygonDeformer({
     contour: new IrregularPolygon(),
     rotatable: true,
-    moveable: true
+    moveable: true,
 });
 irregularPolygonDeformer.addPoint(DeviceCoordinate.ORIGIN.point(500, 300));
 irregularPolygonDeformer.addPoint(DeviceCoordinate.ORIGIN.point(600, 350));

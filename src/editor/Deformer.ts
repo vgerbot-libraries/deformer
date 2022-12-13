@@ -134,7 +134,7 @@ export default abstract class ContourDeformer<C extends Contour> extends Disposa
         `;
         this.renderer.setOffset(padding);
         this.renderer.reset(displayBoundary, boundary);
-        this.controllers.forEach(ctrl => {
+        this.controllers.forEach((ctrl) => {
             ctrl.render(this.renderer);
         });
     }
@@ -160,7 +160,7 @@ export default abstract class ContourDeformer<C extends Contour> extends Disposa
         return this.cursorClass;
     }
     public validateHandleResult(result: DeformerHandlerResult<unknown>) {
-        return !this.currentLimitators.some(limit => !limit.accept(this.contour, result));
+        return !this.currentLimitators.some((limit) => !limit.accept(this.contour, result));
     }
     public handleLimitator(result: DeformerHandlerResult<unknown>) {
         const accepted = this.validateHandleResult(result);
@@ -186,30 +186,30 @@ export default abstract class ContourDeformer<C extends Contour> extends Disposa
         this.addDestroyHook(() => (this.tempVariables = {}));
         this.hammer.add(
             new Hammer.Pan({
-                direction: Hammer.DIRECTION_ALL
-            })
+                direction: Hammer.DIRECTION_ALL,
+            }),
         );
         if (this.rotatable) {
             this.hammer.add(new Hammer.Rotate({}));
         }
         let isMouseDown = false;
         if (isTouchDevice) {
-            this.attachDOMEvent('touchstart', e => {
+            this.attachDOMEvent('touchstart', () => {
                 isMouseDown = true;
             });
             this.attachDOMEvent(
                 'touchend',
-                e => {
+                () => {
                     isMouseDown = false;
                 },
                 this.getDOM(),
                 {
-                    capture: true
-                }
+                    capture: true,
+                },
             );
             this.attachDOMEvent(
                 'touchmove',
-                e => {
+                (e) => {
                     if (e.touches.length !== 1) {
                         return;
                     }
@@ -218,26 +218,26 @@ export default abstract class ContourDeformer<C extends Contour> extends Disposa
                 this.getDOM(),
                 {
                     capture: true,
-                    passive: true
-                }
+                    passive: true,
+                },
             );
         } else {
-            this.attachDOMEvent('mousedown', e => {
+            this.attachDOMEvent('mousedown', () => {
                 isMouseDown = true;
             });
             this.attachDOMEvent(
                 'mouseup',
-                e => {
+                () => {
                     isMouseDown = false;
                 },
                 document,
                 {
-                    capture: true
-                }
+                    capture: true,
+                },
             );
             this.attachDOMEvent(
                 'mousemove',
-                e => {
+                (e) => {
                     if (isMouseDown) {
                         return;
                     }
@@ -246,11 +246,11 @@ export default abstract class ContourDeformer<C extends Contour> extends Disposa
                 this.getDOM(),
                 {
                     capture: true,
-                    passive: true
-                }
+                    passive: true,
+                },
             );
         }
-        this.hammer.on('panstart', e => {
+        this.hammer.on('panstart', (e) => {
             const currentMouseOverController = this.currentMouseOverController;
             if (!currentMouseOverController) {
                 return;
@@ -259,7 +259,7 @@ export default abstract class ContourDeformer<C extends Contour> extends Disposa
             const editorEvent: EditorEvent = {
                 move: new Vector(e.deltaX, e.deltaY),
                 position,
-                direction: e.direction
+                direction: e.direction,
             };
             if (!this.continueHandle(editorEvent)) {
                 return;
@@ -270,7 +270,7 @@ export default abstract class ContourDeformer<C extends Contour> extends Disposa
             this.emitter.emit('update', this.contour);
             this.updateUI();
         });
-        this.hammer.on('panmove', e => {
+        this.hammer.on('panmove', (e) => {
             const currentMouseOverController = this.currentMouseOverController;
             if (!currentMouseOverController) {
                 return;
@@ -279,7 +279,7 @@ export default abstract class ContourDeformer<C extends Contour> extends Disposa
             const editorEvent: EditorEvent = {
                 move: new Vector(e.deltaX, e.deltaY),
                 position,
-                direction: e.direction
+                direction: e.direction,
             };
             if (!this.continueHandle(editorEvent)) {
                 return;
@@ -290,7 +290,7 @@ export default abstract class ContourDeformer<C extends Contour> extends Disposa
             this.emitter.emit('update', this.contour);
             this.updateUI();
         });
-        this.hammer.on('panend', e => {
+        this.hammer.on('panend', (e) => {
             const currentMouseOverController = this.currentMouseOverController;
             if (!currentMouseOverController) {
                 return;
@@ -299,7 +299,7 @@ export default abstract class ContourDeformer<C extends Contour> extends Disposa
             const editorEvent: EditorEvent = {
                 move: new Vector(e.deltaX, e.deltaY),
                 position,
-                direction: e.direction
+                direction: e.direction,
             };
             if (!this.continueHandle(editorEvent)) {
                 return;
@@ -314,7 +314,7 @@ export default abstract class ContourDeformer<C extends Contour> extends Disposa
             clearMethod();
         });
         if (this.rotatable) {
-            this.hammer.on('rotate', e => {
+            this.hammer.on('rotate', () => {
                 // TODO: handle rotation controller
             });
         }
@@ -330,7 +330,7 @@ export default abstract class ContourDeformer<C extends Contour> extends Disposa
             });
             observer.observe(document.body, {
                 childList: true,
-                subtree: true
+                subtree: true,
             });
             this.addDestroyHook(() => {
                 observer.disconnect();
@@ -344,23 +344,19 @@ export default abstract class ContourDeformer<C extends Contour> extends Disposa
         }
     }
     private handleContoller(editorEvent: EditorEvent, type: HandlingType) {
-        if (!this.currentMouseOverController) {
+        const currentMouseOverController = this.currentMouseOverController;
+        if (!currentMouseOverController) {
             return noop;
         }
-        const handlers = this.currentMouseOverController.deformerHandlers(editorEvent, type);
-        handlers.forEach(handler => {
+        const handlers = currentMouseOverController.deformerHandlers(editorEvent, type);
+        handlers.forEach((handler) => {
             this.contour.save();
             const lastResult = this.getTempVar(handler.cacheResultKey);
             const result = handler.handle();
             if (!this.validateHandleResult(result)) {
                 let someOneAdjustSuccess = false;
-                this.currentLimitators.forEach(limitator => {
-                    const adjusted = limitator.adjust(
-                        this.contour,
-                        editorEvent,
-                        this.currentMouseOverController!,
-                        result
-                    );
+                this.currentLimitators.forEach((limitator) => {
+                    const adjusted = limitator.adjust(this.contour, editorEvent, currentMouseOverController, result);
                     if (adjusted) {
                         someOneAdjustSuccess = adjusted;
                     }
@@ -377,20 +373,20 @@ export default abstract class ContourDeformer<C extends Contour> extends Disposa
             }
         });
         return () => {
-            handlers.forEach(handler => {
+            handlers.forEach((handler) => {
                 const key = handler.cacheResultKey;
                 this.removeTempVar(key);
             });
         };
     }
     private continueHandle(event: EditorEvent) {
-        return !this.currentLimitators.some(limit => !limit.continueHandle(event, this.contour));
+        return !this.currentLimitators.some((limit) => !limit.continueHandle(event, this.contour));
     }
     private attachDOMEvent<T extends keyof EventTypes>(
         type: T,
         listener: (e: EventTypes[T]) => void,
         target: Document | HTMLElement = this.getDOM(),
-        options?: DOMEventListenerOptions | boolean
+        options?: DOMEventListenerOptions | boolean,
     ) {
         target.addEventListener(type, listener as EventListener, options);
         this.addDestroyHook(() => {
@@ -398,28 +394,33 @@ export default abstract class ContourDeformer<C extends Contour> extends Disposa
         });
     }
     private handleMouseMove(position: MousePosition) {
-        if (this.currentMouseOverController) {
-            this.currentMouseOverController.isMouseOver = false;
-            this.currentMouseOverController = undefined;
+        let currentMouseOverController = this.currentMouseOverController;
+        if (currentMouseOverController) {
+            currentMouseOverController.isMouseOver = false;
+            currentMouseOverController = undefined;
         }
 
-        this.controllers.forEach(controller => {
+        for (const controller of this.controllers) {
             controller.handleMouseMove(position);
             if (controller.isMouseOver) {
-                if (this.currentMouseOverController) {
-                    this.currentMouseOverController.isMouseOver = false;
+                if (currentMouseOverController) {
+                    currentMouseOverController.isMouseOver = false;
                 }
-                this.currentMouseOverController = controller;
+                currentMouseOverController = controller;
             }
-        });
-        if (this.currentMouseOverController) {
-            this.setCursor(this.currentMouseOverController!.getCursorClass());
-            this.currentLimitators = this.limitations.filter(limit => limit.handleIt(this.currentMouseOverController!));
+        }
+
+        this.currentMouseOverController = currentMouseOverController;
+
+        if (currentMouseOverController) {
+            this.setCursor(currentMouseOverController.getCursorClass());
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            this.currentLimitators = this.limitations.filter((limit) => limit.handleIt(currentMouseOverController!));
         } else {
             this.setCursor('default');
             this.currentLimitators = [];
         }
-        this.controllers.forEach(ctrl => {
+        this.controllers.forEach((ctrl) => {
             ctrl.afterAllHandleMouseMove();
         });
     }

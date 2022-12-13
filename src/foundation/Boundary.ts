@@ -3,7 +3,7 @@ export class Boundary {
         public readonly left: number,
         public readonly top: number,
         public readonly right: number,
-        public readonly bottom: number
+        public readonly bottom: number,
     ) {}
     public getWidth() {
         return this.right - this.left;

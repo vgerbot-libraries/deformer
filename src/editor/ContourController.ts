@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Contour } from '../foundation/Contour';
 import DeformerRenderer from './DeformerRenderer';
 import ContourDeformer from './Deformer';
@@ -6,7 +7,7 @@ import { DeformerLimitator } from './DeformerLimitator';
 export enum HandlingType {
     START,
     MOVE,
-    END
+    END,
 }
 
 export interface DeformerHandlerResult<T> {

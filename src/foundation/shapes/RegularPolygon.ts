@@ -16,7 +16,7 @@ export interface RegularPolygonState extends ContourState {
 }
 
 export class RegularPolygon extends Contour {
-    @regularLazy.property(p => p.resolvePoints(), false)
+    @regularLazy.property((p) => p.resolvePoints(), false)
     @regularLazy.detectFieldChange('radian', 'sides', 'r', 'center')
     protected points: PolarPoint[] = [];
     private radian = 0;
@@ -31,7 +31,7 @@ export class RegularPolygon extends Contour {
             r: this.r,
             radian: this.radian,
             sides: this.sides,
-            points: this.points
+            points: this.points,
         };
     }
     public resetState(state: RegularPolygonState) {

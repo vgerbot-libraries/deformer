@@ -13,7 +13,7 @@ export default abstract class RotationController<C extends Contour> extends Cont
         const topPoint = this.resolveCtrlPoint();
         this.isMouseOver = topPoint.vector(position.page).length() < 10;
         return {
-            isMouseOver: this.isMouseOver
+            isMouseOver: this.isMouseOver,
         };
     }
     public deformerHandlers(e: EditorEvent, type: HandlingType): Array<DeformerHandler<number>> {
@@ -31,10 +31,11 @@ export default abstract class RotationController<C extends Contour> extends Cont
                     if (typeof lastRotation === 'number') {
                         this.contour.rotate(lastRotation);
                     }
-                }
-            }
+                },
+            },
         ];
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public handleRotate(rotation: number) {
         //
     }
@@ -48,7 +49,7 @@ export default abstract class RotationController<C extends Contour> extends Cont
         renderer.config({
             strokeStyle: '#00FFFF',
             fillStyle: '#00FFFF',
-            lineWidth: 2
+            lineWidth: 2,
         });
         const ctx = renderer.getContext();
         renderer.renderOpenPath(center, topPoint);
@@ -65,7 +66,7 @@ export default abstract class RotationController<C extends Contour> extends Cont
         const radian = rv.radian(mv);
         this.contour.rotate(radian);
         return {
-            cacheData: radian
+            cacheData: radian,
         };
     }
 }

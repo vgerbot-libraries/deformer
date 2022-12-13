@@ -10,7 +10,7 @@ import { fixAccuracy } from '../fixAccuracy';
 const devicePointLazy = new Lazy<DevicePoint>();
 
 export class DevicePoint extends Point<DeviceCoordinate> {
-    @devicePointLazy.property(p => Math.sqrt(p.x * p.x + p.y * p.y))
+    @devicePointLazy.property((p) => Math.sqrt(p.x * p.x + p.y * p.y))
     private $sqrtLength!: number;
     constructor(public readonly x: number, public readonly y: number, public readonly coord: DeviceCoordinate) {
         super();

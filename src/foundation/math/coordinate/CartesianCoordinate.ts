@@ -10,9 +10,9 @@ import { LinearEquation } from '../LinearEquation';
 const cartesianPointLazy = new Lazy<CartesianPoint>();
 
 export class CartesianPoint extends Point<CartesianCoordinate> {
-    @cartesianPointLazy.property(p => Math.atan2(p.x, p.y))
+    @cartesianPointLazy.property((p) => Math.atan2(p.x, p.y))
     private sita!: number;
-    @cartesianPointLazy.property(p => Math.sqrt(p.x * p.x + p.y * p.y))
+    @cartesianPointLazy.property((p) => Math.sqrt(p.x * p.x + p.y * p.y))
     private r!: number;
     constructor(public readonly x: number, public readonly y: number, public coord: CartesianCoordinate) {
         super();

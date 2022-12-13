@@ -6,7 +6,7 @@ export enum MouseOperationDirection {
     HORIZONTAL = Hammer.DIRECTION_HORIZONTAL,
     VERTICAL = Hammer.DIRECTION_VERTICAL,
     UP = Hammer.DIRECTION_UP,
-    DOWN = Hammer.DIRECTION_DOWN
+    DOWN = Hammer.DIRECTION_DOWN,
 }
 export function mousePositionFromHammerInput(e: HammerInput): MousePosition {
     const native = e.srcEvent;
@@ -24,6 +24,6 @@ export function mousePositionFromMouseEvent(e: MouseEvent | Touch | PointerEvent
         client: DeviceCoordinate.ORIGIN.point(e.clientX, e.clientY),
         page: DeviceCoordinate.ORIGIN.point(e.pageX, e.pageY),
         screen: DeviceCoordinate.ORIGIN.point(e.screenX, e.screenY),
-        offset: DeviceCoordinate.ORIGIN.point(offsetX, offsetY)
+        offset: DeviceCoordinate.ORIGIN.point(offsetX, offsetY),
     };
 }

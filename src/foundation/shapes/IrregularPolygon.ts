@@ -7,7 +7,7 @@ import UnsupportedError from '../error/UnsupportedError';
 const lazy = new Lazy<IrregularPolygon>();
 export class IrregularPolygon extends Contour {
     @lazy.resetBy('points')
-    @lazy.property(it => it.computeCenterPoint())
+    @lazy.property((it) => it.computeCenterPoint())
     private center!: PolarPoint;
     public getCenter(): AnyPoint {
         return this.center;
@@ -23,7 +23,7 @@ export class IrregularPolygon extends Contour {
     private computeCenterPoint(): PolarPoint {
         let sumX: number = 0;
         let sumY: number = 0;
-        this.points.forEach(point => {
+        this.points.forEach((point) => {
             const p = point.toDevice();
             sumX += p.x;
             sumY += p.y;

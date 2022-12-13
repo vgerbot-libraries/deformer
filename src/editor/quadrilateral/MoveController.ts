@@ -12,7 +12,7 @@ export default class QuadrilateralMoveController extends MoveController<Quadrila
     protected handleMove(move: Vector): DeformerHandlerResult<Vector> {
         this.contour.addVector(move, Side.ALL);
         return {
-            cacheData: move
+            cacheData: move,
         };
     }
 }
